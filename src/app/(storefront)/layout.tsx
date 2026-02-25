@@ -1,0 +1,16 @@
+import { StorefrontNavbar } from "@/components/layout/storefront-navbar";
+import { StorefrontFooter } from "@/components/layout/storefront-footer";
+
+export default function StorefrontLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="min-h-screen flex flex-col bg-background selection:bg-primary/20">
+      <StorefrontNavbar isAuthenticated={false} />
+      <main className="flex-1 w-full flex flex-col">{children}</main>
+      <StorefrontFooter />
+    </div>
+  );
+}
