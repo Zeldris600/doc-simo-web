@@ -22,7 +22,7 @@ export function StorefrontFooter() {
                 <Leaf className="h-6 w-6 text-white" />
               </div>
               <span className="font-extrabold text-2xl tracking-tight uppercase text-primary">
-                DOCTASIME
+                DOCTASIMO
               </span>
             </Link>
             <p className="text-gray-500 text-sm leading-relaxed max-w-xs font-medium">
@@ -163,7 +163,7 @@ export function StorefrontFooter() {
               <li className="flex items-center gap-3">
                 <Mail className="h-5 w-5 text-primary shrink-0" />
                 <span className="text-sm text-gray-500 font-bold">
-                  hello@doctasime.com
+                  hello@doctasimo.com
                 </span>
               </li>
             </ul>
@@ -172,7 +172,7 @@ export function StorefrontFooter() {
 
         <div className="pt-12 flex flex-col md:flex-row items-center justify-between gap-6">
           <p className="text-[10px] text-gray-400 tracking-tight uppercase font-bold">
-            © {new Date().getFullYear()} DOCTASIME. ALL RIGHTS RESERVED.
+            © {new Date().getFullYear()} DOCTASIMO. ALL RIGHTS RESERVED. CREATED BY THE SYSTEM.
           </p>
           <div className="flex items-center gap-8 opacity-40 grayscale">
             <span className="text-[10px] text-black font-black px-3 py-1">

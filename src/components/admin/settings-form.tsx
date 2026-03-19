@@ -59,8 +59,8 @@ export function SettingsForm() {
   const form = useForm<SettingsFormValues>({
     resolver: zodResolver(settingsSchema),
     defaultValues: {
-      appName: "DOCTASIME",
-      supportEmail: "support@doctasime.com",
+      appName: "DOCTASIMO",
+      supportEmail: "support@doctasimo.com",
       supportPhone: "+237 600 000 000",
       address: "Yaoundé, Cameroon",
       enableNotifications: true,

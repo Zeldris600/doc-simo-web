@@ -43,7 +43,7 @@ export function ProcessSection() {
  From soil to supplement
  </h2>
  <p className="text-sm text-gray-500 max-w-lg mx-auto font-medium">
- Every Doctasime product follows a meticulous 4-step journey to
+ Every Doctasimo product follows a meticulous 4-step journey to
  ensure you receive nothing but the purest clinical-grade formulations.
  </p>
  </div>

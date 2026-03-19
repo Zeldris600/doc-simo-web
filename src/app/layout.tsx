@@ -9,9 +9,9 @@ const fontSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Doctasime - Clinical Herbal Extracts",
+  title: "Doctasimo - Clinical Herbal Extracts",
   description:
-    "Your best source for natural, clinical herbal supplements by Doctasime.",
+    "Your best source for natural, clinical herbal supplements by Doctasimo.",
 };
 
 export default function RootLayout({

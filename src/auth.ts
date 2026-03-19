@@ -57,5 +57,5 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
   },
   session: { strategy: "jwt" },
-  secret: process.env.NEXTAUTH_SECRET || "doctasime-secret-never-expose",
+  secret: process.env.NEXTAUTH_SECRET || "doctasimo-secret-never-expose",
 });

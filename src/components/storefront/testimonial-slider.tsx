@@ -15,7 +15,7 @@ const TESTIMONIALS = [
   {
     id: 1,
     content:
-      "The Papaya Enzyme Extract has completely transformed my digestive health. As a nutritionist, I highly recommend Doctasime for their clinical standards.",
+      "The Papaya Enzyme Extract has completely transformed my digestive health. As a nutritionist, I highly recommend Doctasimo for their clinical standards.",
     author: "Sarah Jenkins",
     role: "Clinical Nutritionist",
     rating: 5,

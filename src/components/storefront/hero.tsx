@@ -51,26 +51,26 @@ export function Hero({
       <div className="container relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20 lg:py-32 flex flex-col lg:flex-row items-center gap-16">
         {/* Left Content */}
         <div className="flex-1 max-w-2xl text-center lg:text-left space-y-8">
-          <div className="inline-flex items-center px-4 py-2 rounded-full bg-[#f2c94c]/10 text-[#f2c94c] text-xs font-bold tracking-tight">
+          <div className="inline-flex items-center px-4 py-2 rounded-full bg-[#f2c94c]/10 text-[#f2c94c] text-xs font-bold ">
             Clinical specialist selection
           </div>
-          <h1 className="text-6xl text-white sm:text-8xl font-black leading-[1.05] text-balance tracking-tight">
+          <h1 className="text-4xl text-white sm:text-6xl font-black leading-[1.05] text-balance ">
             {title}
           </h1>
-          <p className="text-sm md:text-base lg:text-xl text-white/80 font-medium max-w-xl mx-auto lg:mx-0 leading-relaxed">
+          <p className="text-sm md:text-base lg:text-lg text-white/80 font-medium max-w-xl mx-auto lg:mx-0 leading-relaxed">
             {subtitle}
           </p>
 
           <div className="flex items-center justify-center lg:justify-start gap-4">
             <Link
               href={ctaLink}
-              className="rounded-full bg-white px-10 py-5 text-sm font-bold text-primary hover:scale-105 active:scale-95 border border-primary/10"
+              className="rounded-full bg-white px-10 py-4 text-sm font-bold text-primary hover:scale-105 active:scale-95 border border-primary/10"
             >
               {ctaText}
             </Link>
             <Link
               href="/about"
-              className="rounded-full border-2 border-white px-10 py-5 text-sm font-bold text-white hover:bg-white hover:text-primary transition-all duration-300 hover:scale-105 active:scale-95"
+              className="rounded-full border-2 border-white px-10 py-4 text-sm font-bold text-white hover:bg-white hover:text-primary transition-all duration-300 hover:scale-105 active:scale-95"
             >
               Learn more
             </Link>

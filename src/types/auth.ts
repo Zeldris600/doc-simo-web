@@ -1,5 +1,4 @@
 import { UserRole } from "@/lib/rbac/types";
-import { CustomerProfile } from "./api";
 
 export interface User {
   id: string;
@@ -12,7 +11,28 @@ export interface User {
   phoneNumber?: string;
   phoneNumberVerified?: boolean;
   role?: UserRole | string;
-  profile?: CustomerProfile;
+  customer?: {
+    id: string;
+    userId: string;
+    firstName?: string | null;
+    lastName?: string | null;
+    phoneNumber?: string | null;
+    email?: string | null;
+    address?: string | null;
+    city?: string | null;
+    region?: string | null;
+    otpChannelPreference?: "whatsapp" | "sms";
+    fcmTokens?: string[];
+    metadata?: unknown;
+    createdAt?: string;
+    updatedAt?: string;
+  };
+  address?: string | null;
+  city?: string | null;
+  region?: string | null;
+  deliveryAddress?: {
+    phone?: string;
+  };
 }
 
 export interface Session {

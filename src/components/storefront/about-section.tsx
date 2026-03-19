@@ -19,11 +19,11 @@ export function AboutSection() {
               Our Standard
             </p>
             <h2 className="text-4xl font-black text-black sm:text-5xl leading-tight tracking-tight">
-              About Doctasime
+              About Doctasimo
             </h2>
           </div>
           <p className="text-lg text-gray-600 font-medium leading-relaxed">
-            At Doctasime, we believe in the healing power of nature. We
+            At Doctasimo, we believe in the healing power of nature. We
             carefully select the purest herbs and extracts from around the world
             to craft remedies that support your journey toward holistic
             wellness.

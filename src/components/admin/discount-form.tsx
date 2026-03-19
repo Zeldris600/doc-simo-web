@@ -122,7 +122,7 @@ export function DiscountForm({ initialData, onSuccess }: DiscountFormProps) {
                     </FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="E.G. DOCTASIME20"
+                        placeholder="E.G. DOCTASIMO20"
                         {...field}
                         className="bg-black/[0.02] border-black/10 focus:border-black rounded-xl py-6 h-auto transition-all font-mono font-bold uppercase"
                       />
@@ -179,9 +179,7 @@ export function DiscountForm({ initialData, onSuccess }: DiscountFormProps) {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent className="rounded-xl border-black/10">
-                        <SelectItem value="PERCENT">
-                          PERCENTAGE (%)
-                        </SelectItem>
+                        <SelectItem value="PERCENT">PERCENTAGE (%)</SelectItem>
                         <SelectItem value="FIXED">FIXED AMOUNT ($)</SelectItem>
                       </SelectContent>
                     </Select>
@@ -203,7 +201,9 @@ export function DiscountForm({ initialData, onSuccess }: DiscountFormProps) {
                         type="number"
                         placeholder="0.00"
                         {...field}
-                        onChange={(e) => field.onChange(e.target.valueAsNumber || 0)}
+                        onChange={(e) =>
+                          field.onChange(e.target.valueAsNumber || 0)
+                        }
                         className="bg-black/[0.02] border-black/10 focus:border-black rounded-xl py-6 h-auto transition-all"
                       />
                     </FormControl>

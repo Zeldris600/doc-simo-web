@@ -34,13 +34,13 @@ export function InstagramGallery() {
  <div className="text-center mb-12 px-6 space-y-3">
  <div className="flex items-center justify-center gap-2 text-xs font-bold text-[#f2c94c] tracking-tight">
  <Instagram className="w-4 h-4" />
- Follow @doctasime
+ Follow @doctasimo
  </div>
  <h2 className="text-2xl md:text-3xl font-bold text-black tracking-tight">
  Join our community
  </h2>
  <p className="text-sm text-gray-500 max-w-md mx-auto font-medium">
- See how our community integrates Doctasime into their daily wellness
+ See how our community integrates Doctasimo into their daily wellness
  routines.
  </p>
  </div>

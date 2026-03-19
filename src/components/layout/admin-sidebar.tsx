@@ -218,7 +218,7 @@ export function AdminSidebar({
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-black uppercase text-primary tracking-tight">
-                  DOCTASIME
+                  DOCTASIMO
                 </span>
                 <span className="truncate text-[10px] font-bold text-muted-foreground uppercase">
                   Management

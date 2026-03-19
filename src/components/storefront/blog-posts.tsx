@@ -22,7 +22,7 @@ const BLOG_POSTS = [
   {
     title: "Ashwagandha: A Specialist's Perspective",
     excerpt:
-      "Dr. Simeon breaks down the neuro-protective properties of high-concentration withanolides.",
+      "Dr. Simo breaks down the neuro-protective properties of high-concentration withanolides.",
     image:
       "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=1000&auto=format&fit=crop",
     date: "Jan 02, 2026",

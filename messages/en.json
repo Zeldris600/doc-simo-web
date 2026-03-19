@@ -112,9 +112,9 @@
     "learnMore": "Learn More"
   },
   "products": {
-    "category": "Botanical category",
-    "generalRegistry": "General registry",
-    "inventoryAvailable": "Clinical inventory available",
+    "category": "Category",
+    "generalRegistry": "General Catalog",
+    "inventoryAvailable": "Stock Available",
     "units": "units",
     "inventoryRestocking": "Inventory re-stocking",
     "initiateOrder": "Initiate order",
@@ -123,7 +123,7 @@
     "viewSpecs": "View specs",
     "addedToCart": "{name} added to cart",
     "loginRequired": "Please login to place an order",
-    "registryDetails": "Clinical registry details",
+    "registryDetails": "Product details",
     "protocol": "Protocol & formulation",
     "recommendedProtocol": "Recommended protocol:",
     "protocolDesc": "Refer to the clinical instructions provided with the physical extract.",
@@ -131,9 +131,10 @@
     "componentsDesc": "Clinical grade organic botanical extract, purified vehicle.",
     "secureRepository": "Secure repository",
     "clinicalLogistics": "Clinical logistics",
-    "registryPolicy": "Registry policy",
-    "dispensary": "Dispensary",
-    "home": "Home"
+    "registryPolicy": "Return policy",
+    "dispensary": "Products",
+    "home": "Home",
+    "price": "Price"
   },
   "checkout": {
     "title": "Checkout",
@@ -167,9 +168,9 @@
     "providePhone": "Please provide the payment phone number"
   },
   "categoryShowcase": {
-    "label": "Botanical repositories",
+    "label": "Product Collections",
     "title": "Specialist collections",
-    "subtitle": "Explore our curated registries of clinical-grade botanical formulations, cada validated by our specialist team for optimal therapeutic efficacy.",
+    "subtitle": "Explore our curated selections of specialist wellness formulations, validated by our expert team for optimal therapeutic efficacy.",
     "node": "Registry node",
     "access": "Access registry",
     "loading": "Accessing Registry Nodes"
@@ -177,7 +178,7 @@
   "cart": {
     "title": "Your shopping cart",
     "empty": "Your cart is empty",
-    "emptyDesc": "Looks like you haven't added any botanical excellence to your cart yet.",
+    "emptyDesc": "Looks like you haven't added any wellness products to your cart yet.",
     "continue": "Continue shopping",
     "product": "Product",
     "price": "Price",

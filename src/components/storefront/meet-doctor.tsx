@@ -11,18 +11,18 @@ export function MeetDoctor() {
               The visionary
             </p>
             <h2 className="text-4xl font-black text-black sm:text-6xl leading-[1.1] tracking-tight">
-              Meet Dr. Simeon
+              Meet Dr. Simo
             </h2>
           </div>
           <p className="text-xl text-gray-600 leading-relaxed border-l-4 border-[#f2c94c]/20 pl-6 py-2">
-            &quot;Nature is the ultimate clinic. My mission with Doctasime is to
+            &quot;Nature is the ultimate clinic. My mission with Doctasimo is to
             validate ancient botanical wisdom with modern clinical
             rigorousness.&quot;
           </p>
           <div className="space-y-6 text-gray-500 font-medium">
             <p className="leading-relaxed">
               With over 25 years in botanical research and internal medicine,
-              Dr. Simeon founded Doctasime to create the gold standard in herbal
+              Dr. Simo founded Doctasimo to create the gold standard in herbal
               extractions.
             </p>
             <div className="grid grid-cols-2 gap-8 pt-4">
@@ -46,8 +46,8 @@ export function MeetDoctor() {
         </div>
         <div className="flex-1 relative aspect-[3/4] w-full max-w-md mx-auto lg:max-w-none rounded-xl overflow-hidden order-1 lg:order-2">
           <Image
-            src="/dr-simeon.png"
-            alt="Dr. Simeon - Specialist"
+            src="/dr-simo.png"
+            alt="Dr. Simo - Specialist"
             fill
             className="object-cover object-top"
           />
