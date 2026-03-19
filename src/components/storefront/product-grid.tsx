@@ -1,13 +1,16 @@
 import * as React from "react";
-import { ProductCard, type Product } from "./product-card";
+import { ProductCard } from "./product-card";
 import { ArrowRight } from "lucide-react";
-
+import { Product } from "@/types/api";
+import { Link } from "@/i18n/routing";
+import { ProductCardSkeleton } from "@/components/skeletons/product-card-skeleton";
 interface ProductGridProps {
   title: string;
   subtitle?: string;
   actionText?: string;
   actionUrl?: string;
   products: Product[];
+  isLoading?: boolean;
 }
 
 export function ProductGrid({
@@ -16,38 +19,48 @@ export function ProductGrid({
   actionText = "View All",
   actionUrl = "/products",
   products,
+  isLoading,
 }: ProductGridProps) {
   return (
     <section className="py-16 sm:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="md:flex md:items-center md:justify-between mb-12">
           <div className="max-w-2xl">
-            <h2 className="text-3xl font-black tracking-tight text-black sm:text-4xl">
+            <h2 className="text-3xl font-black tracking-tighter text-black sm:text-4xl">
               {title}
             </h2>
             {subtitle && (
-              <p className="mt-4 text-lg text-gray-500">{subtitle}</p>
+              <p className="mt-4 text-sm font-medium text-black/40 max-w-lg leading-relaxed">{subtitle}</p>
             )}
           </div>
           {actionUrl && (
             <div className="mt-6 flex md:ml-4 md:mt-0">
-              <a
+              <Link
                 href={actionUrl}
-                className="inline-flex items-center rounded-full bg-primary px-8 py-3 text-sm font-bold uppercase text-white shadow-lg hover:shadow-primary/30 transition-all group hover:scale-105"
+                className="inline-flex items-center text-xs font-black tracking-widest text-primary hover:opacity-70 transition-all group uppercase"
               >
                 {actionText}
                 <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </a>
+              </Link>
             </div>
           )}
         </div>
 
-        <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        {isLoading ? (
+          <div className="mt-6 grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <ProductCardSkeleton key={i} />
+            ))}
+          </div>
+        ) : (
+          <div className="mt-6 grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
+            {products.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
 }
+

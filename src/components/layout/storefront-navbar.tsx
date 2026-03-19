@@ -1,19 +1,20 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import {
   User,
   LogOut,
-  Settings,
-  ShoppingCart,
-  Leaf,
   Facebook,
   Twitter,
   Instagram,
   Linkedin,
-  ChevronDown,
+  ShoppingBag,
+  LayoutDashboard,
 } from "lucide-react";
+import Image from "next/image";
+import { useTranslations } from "next-intl";
+import { useCart } from "@/store/use-cart";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -31,184 +32,168 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { useSession, signOut } from "next-auth/react";
 
-interface StorefrontNavbarProps {
-  isAuthenticated?: boolean;
-}
-
-export function StorefrontNavbar({
-  isAuthenticated = false,
-}: StorefrontNavbarProps) {
-  // Use state or props to toggle auth state for demonstration
-  const [isAuth, setIsAuth] = React.useState(isAuthenticated);
+export function StorefrontNavbar() {
+  const t = useTranslations("navigation");
+  const { data: session } = useSession();
+  const user = session?.user;
+  const { items } = useCart();
+  const cartCount = items.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
     <header className="sticky top-0 z-50 w-full flex flex-col">
       {/* Top Bar */}
-      <div className="bg-[#0b1f14] text-white/60 py-2 border-b border-white/5">
-        <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between text-xs">
-          <div className="flex items-center gap-4">
+      <div className="bg-[#0b1f14] text-white/40 py-2 border-b border-white/5">
+        <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between text-[10px] font-bold">
+          <div className="flex items-center gap-5">
             <Link href="#" className="hover:text-white transition-colors">
-              <Twitter className="h-4 w-4 fill-current" />
+              <Twitter className="h-3.5 w-3.5 fill-current" />
             </Link>
             <Link href="#" className="hover:text-white transition-colors">
-              <Facebook className="h-4 w-4 fill-current" />
+              <Facebook className="h-3.5 w-3.5 fill-current" />
             </Link>
             <Link href="#" className="hover:text-white transition-colors">
-              <Instagram className="h-4 w-4" />
+              <Instagram className="h-3.5 w-3.5" />
             </Link>
             <Link href="#" className="hover:text-white transition-colors">
-              <Linkedin className="h-4 w-4 fill-current" />
+              <Linkedin className="h-3.5 w-3.5 fill-current" />
             </Link>
           </div>
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-8">
             <div className="flex items-center gap-4">
-              <Link
-                href="?lang=en"
-                className="hover:text-white transition-colors"
-              >
-                EN
-              </Link>
-              <span className="text-white/20">|</span>
-              <Link
-                href="?lang=fr"
-                className="hover:text-white transition-colors"
-              >
-                FR
-              </Link>
+              <Link href="/" locale="en" className="hover:text-white transition-colors">EN</Link>
+              <span className="text-white/10 font-normal">|</span>
+              <Link href="/" locale="fr" className="hover:text-white transition-colors">FR</Link>
             </div>
-            <div className="flex items-center gap-2 cursor-pointer hover:text-white transition-colors">
-              <span className="font-semibold">USD</span>
-              <ChevronDown className="h-3 w-3" />
+            <div className="flex items-center gap-1.5 hover:text-white transition-colors">
+              <span>XAF</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Main Navbar */}
-      <div className="w-full bg-primary text-white shadow-sm border-b border-white/5">
-        <div className="container mx-auto max-w-7xl grid grid-cols-2 md:grid-cols-3 h-20 items-center px-4 sm:px-6 lg:px-8">
-          {/* Left: Logo */}
-          <div className="flex items-center justify-start">
-            <Link href="/" className="flex items-center gap-2 group">
-              <div className="p-1.5 rounded-xl bg-white transition-transform group-hover:rotate-12">
-                <Leaf className="h-6 w-6 text-primary" />
-              </div>
-              <span className="font-extrabold text-2xl tracking-tight uppercase whitespace-nowrap text-white">
-                DOCTASIME
-              </span>
-            </Link>
-          </div>
+      <div className="w-full bg-primary text-white border-b border-white/5">
+        <div className="container mx-auto max-w-7xl flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="p-1 rounded-xl bg-white transition-all group-hover:scale-110 active:scale-95 overflow-hidden">
+              <Image src="/icon.png" alt="Doctasimo" width={44} height={44} className="object-contain" />
+            </div>
+            <span className="font-extrabold text-2xl tracking-tighter text-white">
+            Doctasime
+          </span>
+          </Link>
 
-          {/* Center: Navigation Menu */}
-          <div className="hidden md:flex flex-1 justify-center">
+          {/* Navigation */}
+          <div className="hidden md:flex items-center">
             <NavigationMenu>
-              <NavigationMenuList className="gap-1">
+              <NavigationMenuList className="gap-2">
                 <NavigationMenuItem>
-                  <Link href="/" legacyBehavior passHref>
-                    <NavigationMenuLink className="px-4 py-2 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all">
-                      Home
-                    </NavigationMenuLink>
-                  </Link>
+                  <NavigationMenuLink 
+                    asChild 
+                    className="px-5 py-2.5 text-xs font-bold text-white/70 hover:text-white hover:bg-white/5 rounded-full transition-all tracking-wide"
+                  >
+                    <Link href="/">{t("home")}</Link>
+                  </NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <Link href="/products" legacyBehavior passHref>
-                    <NavigationMenuLink className="px-4 py-2 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all">
-                      Shop
-                    </NavigationMenuLink>
-                  </Link>
+                  <NavigationMenuLink 
+                    asChild 
+                    className="px-5 py-2.5 text-xs font-bold text-white/70 hover:text-white hover:bg-white/5 rounded-full transition-all tracking-wide"
+                  >
+                    <Link href="/products">{t("shop")}</Link>
+                  </NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <Link href="/about" legacyBehavior passHref>
-                    <NavigationMenuLink className="px-4 py-2 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all">
-                      About
-                    </NavigationMenuLink>
-                  </Link>
+                  <NavigationMenuLink 
+                    asChild 
+                    className="px-5 py-2.5 text-xs font-bold text-white/70 hover:text-white hover:bg-white/5 rounded-full transition-all tracking-wide"
+                  >
+                    <Link href="/about">{t("about")}</Link>
+                  </NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <Link href="/contact" legacyBehavior passHref>
-                    <NavigationMenuLink className="px-4 py-2 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all">
-                      Contact
-                    </NavigationMenuLink>
-                  </Link>
+                  <NavigationMenuLink 
+                    asChild 
+                    className="px-5 py-2.5 text-xs font-bold text-white/70 hover:text-white hover:bg-white/5 rounded-full transition-all tracking-wide"
+                  >
+                    <Link href="/contact">{t("contact")}</Link>
+                  </NavigationMenuLink>
                 </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
           </div>
 
-          {/* Right: Cart and Auth */}
-          <div className="flex items-center justify-end gap-6">
+          {/* Right Actions */}
+          <div className="flex items-center gap-5">
             <Link
               href="/cart"
-              className="relative p-2 rounded-full hover:bg-white/10 text-white/80 hover:text-white transition-all"
+              className="relative p-2.5 rounded-full bg-white/5 hover:bg-white/10 text-white/80 hover:text-white transition-all active:scale-90"
             >
-              <ShoppingCart className="h-5 w-5" />
-              <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center rounded-full p-0 text-[10px] font-bold border-2 border-primary bg-white text-primary">
-                2
-              </Badge>
+              <ShoppingBag className="h-5 w-5" />
+              {cartCount > 0 && (
+                <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center rounded-full p-0 text-[10px] font-bold border-2 border-primary bg-white text-primary">
+                  {cartCount}
+                </Badge>
+              )}
             </Link>
 
-            {isAuth ? (
+            {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button className="flex items-center gap-2 outline-none group">
-                    <Avatar className="h-10 w-10 ring-2 ring-transparent transition-all group-hover:ring-white/50 rounded-full">
-                      <AvatarImage src="/avatars/user.jpg" alt="User" />
-                      <AvatarFallback className="bg-white/10 text-white">
-                        JD
+                    <Avatar className="h-10 w-10 border border-white/20 transition-all group-hover:border-white/50 rounded-xl">
+                      <AvatarImage src={user.image || undefined} alt={user.name || "User"} />
+                      <AvatarFallback className="bg-white/10 text-white font-bold text-xs">
+                        {user.name?.slice(0, 2) || "JD"}
                       </AvatarFallback>
                     </Avatar>
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                   align="end"
-                  className="w-64 rounded-2xl p-2 shadow-2xl border-border/50"
+                  className="w-64 rounded-xl p-2 shadow-xl border-black/5 bg-white"
                 >
                   <DropdownMenuLabel className="px-3 py-4">
                     <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-bold leading-none">Jane Doe</p>
-                      <p className="text-xs leading-none text-muted-foreground">
-                        jane.doe@example.com
+                      <p className="text-sm font-bold text-black leading-none">{user.name}</p>
+                      <p className="text-[10px] font-medium text-black/40">
+                        {user.email || "Patient Member"}
                       </p>
                     </div>
                   </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
+                  <DropdownMenuSeparator className="bg-black/5" />
                   <DropdownMenuGroup className="py-2">
                     <DropdownMenuItem
                       asChild
-                      className="rounded-xl px-3 py-2.5 cursor-pointer"
+                      className="rounded-lg px-3 py-2.5 cursor-pointer focus:bg-primary/5 focus:text-primary transition-colors"
                     >
                       <Link href="/account">
-                        <User className="mr-3 h-4 w-4 text-muted-foreground" />
-                        <span className="font-semibold">Profile</span>
+                        <User className="mr-3 h-4 w-4 opacity-50" />
+                        <span className="font-bold text-xs">Profile Registry</span>
                       </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem
-                      asChild
-                      className="rounded-xl px-3 py-2.5 cursor-pointer"
-                    >
-                      <Link href="/account/orders">
-                        <ShoppingCart className="mr-3 h-4 w-4 text-muted-foreground" />
-                        <span className="font-semibold">Orders</span>
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      asChild
-                      className="rounded-xl px-3 py-2.5 cursor-pointer"
-                    >
-                      <Link href="/account/settings">
-                        <Settings className="mr-3 h-4 w-4 text-muted-foreground" />
-                        <span className="font-semibold">Settings</span>
-                      </Link>
-                    </DropdownMenuItem>
+                    {user.role === "ADMIN" && (
+                      <DropdownMenuItem
+                        asChild
+                        className="rounded-lg px-3 py-2.5 cursor-pointer focus:bg-primary/5 focus:text-primary transition-colors"
+                      >
+                        <Link href="/admin">
+                          <LayoutDashboard className="mr-3 h-4 w-4 opacity-50" />
+                          <span className="font-bold text-xs">Dashboard</span>
+                        </Link>
+                      </DropdownMenuItem>
+                    )}
                   </DropdownMenuGroup>
-                  <DropdownMenuSeparator />
+                  <DropdownMenuSeparator className="bg-black/5" />
                   <DropdownMenuItem
-                    className="text-destructive focus:bg-destructive/10 focus:text-destructive cursor-pointer rounded-xl px-3 py-2.5 mt-1"
-                    onClick={() => setIsAuth(false)}
+                    className="text-primary focus:bg-primary/5 focus:text-primary cursor-pointer rounded-lg px-3 py-2.5 mt-1 transition-colors"
+                    onClick={() => signOut({ callbackUrl: "/login" })}
                   >
-                    <LogOut className="mr-3 h-4 w-4" />
-                    <span className="font-bold">Log out</span>
+                    <LogOut className="mr-3 h-4 w-4 opacity-50" />
+                    <span className="font-bold text-xs">Exit Securely</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -216,19 +201,15 @@ export function StorefrontNavbar({
               <div className="hidden sm:flex items-center gap-3">
                 <Link
                   href="/login"
-                  className="px-6 py-2.5 text-sm font-medium text-white/80 hover:text-white transition-all rounded-full hover:bg-white/10"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setIsAuth(true); // For demo purposes
-                  }}
+                  className="px-6 py-2.5 text-xs font-bold text-white/80 hover:text-white transition-all rounded-full hover:bg-white/5"
                 >
-                  Sign In
+                  {t("signIn")}
                 </Link>
                 <Link
                   href="/register"
-                  className="px-6 py-2.5 text-sm font-medium text-primary bg-white hover:bg-gray-50 hover:shadow-lg transition-all rounded-full"
+                  className="px-6 py-2.5 text-xs font-bold text-primary bg-white hover:bg-gray-50 transition-all rounded-full active:scale-95"
                 >
-                  Sign Up
+                  {t("signUp")}
                 </Link>
               </div>
             )}

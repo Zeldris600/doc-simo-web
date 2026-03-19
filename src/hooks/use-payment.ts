@@ -1,0 +1,11 @@
+"use client";
+
+import { useMutation, UseMutationOptions } from "@tanstack/react-query";
+import { PaymentService, InitiatePaymentDto, InitiatePaymentResponse } from "@/services/payment.service";
+
+export function useInitiatePayment<TError = Error>(opt?: UseMutationOptions<InitiatePaymentResponse, TError, { orderId: string; data: InitiatePaymentDto }>) {
+  return useMutation({
+    mutationFn: ({ orderId, data }: { orderId: string; data: InitiatePaymentDto }) => PaymentService.initiate(orderId, data),
+    ...opt,
+  });
+}

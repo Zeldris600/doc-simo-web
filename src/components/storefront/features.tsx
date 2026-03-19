@@ -7,7 +7,7 @@ export function Features() {
         <div className="p-4 rounded-lg bg-[#f2c94c]/5 text-[#f2c94c]">
           <Leaf className="w-8 h-8" />
         </div>
-        <h3 className="text-xl font-bold text-black uppercase tracking-tight">
+        <h3 className="text-xl font-bold text-black tracking-tight">
           100% Organic
         </h3>
         <p className="text-gray-500 max-w-xs text-sm leading-relaxed font-medium">
@@ -19,8 +19,8 @@ export function Features() {
         <div className="p-4 rounded-lg bg-[#f2c94c]/5 text-[#f2c94c]">
           <ShieldHalf className="w-8 h-8" />
         </div>
-        <h3 className="text-xl font-bold text-black uppercase tracking-tight">
-          Lab Tested
+        <h3 className="text-xl font-bold text-black tracking-tight">
+          Lab tested
         </h3>
         <p className="text-gray-500 max-w-xs text-sm leading-relaxed font-medium">
           Every batch is rigorously third-party tested for quality, safety, and
@@ -31,8 +31,8 @@ export function Features() {
         <div className="p-4 rounded-lg bg-[#f2c94c]/5 text-[#f2c94c]">
           <Truck className="w-8 h-8" />
         </div>
-        <h3 className="text-xl font-bold text-black uppercase tracking-tight">
-          Free Shipping
+        <h3 className="text-xl font-bold text-black tracking-tight">
+          Free shipping
         </h3>
         <p className="text-gray-500 max-w-xs text-sm leading-relaxed font-medium">
           Enjoy free, carbon-neutral shipping on all orders over $50 worldwide.

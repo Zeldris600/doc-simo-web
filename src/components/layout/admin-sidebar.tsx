@@ -3,15 +3,28 @@
 import * as React from "react";
 import {
   BookOpen,
-  Bot,
   Frame,
   GalleryVerticalEnd,
   PieChart,
   Settings2,
   SquareTerminal,
+  LayoutDashboard,
+  LineChart,
+  Package,
+  PlusCircle,
+  FolderTree,
+  Warehouse,
+  ShoppingBag,
+  FileText,
+  Percent,
+  Users,
+  Settings,
+  Truck,
+  MapPin,
+  Globe,
 } from "lucide-react";
 
-import { Leaf } from "lucide-react";
+import Image from "next/image";
 
 import { NavMain } from "@/components/layout/nav-main";
 import { NavProjects } from "@/components/layout/nav-projects";
@@ -51,10 +64,12 @@ const data = {
         {
           title: "Overview",
           url: "/admin",
+          icon: LayoutDashboard,
         },
         {
           title: "Analytics",
           url: "/admin/analytics",
+          icon: LineChart,
         },
       ],
     },
@@ -66,18 +81,22 @@ const data = {
         {
           title: "Products",
           url: "/admin/products",
+          icon: Package,
         },
         {
           title: "Add Product",
           url: "/admin/products/new",
+          icon: PlusCircle,
         },
         {
           title: "Categories",
           url: "/admin/categories",
+          icon: FolderTree,
         },
         {
           title: "Inventory",
           url: "/admin/inventory",
+          icon: Warehouse,
         },
       ],
     },
@@ -89,29 +108,34 @@ const data = {
         {
           title: "Orders",
           url: "/admin/orders",
+          icon: ShoppingBag,
         },
         {
           title: "Invoices",
           url: "/admin/invoices",
+          icon: FileText,
         },
         {
           title: "Discounts",
           url: "/admin/discounts",
+          icon: Percent,
         },
       ],
     },
     {
       title: "Customers",
       url: "/admin/customers",
-      icon: Bot,
+      icon: Users,
       items: [
         {
           title: "All Customers",
           url: "/admin/customers",
+          icon: Users,
         },
         {
           title: "Segments",
           url: "/admin/customers/segments",
+          icon: Users,
         },
       ],
     },
@@ -123,18 +147,22 @@ const data = {
         {
           title: "General",
           url: "/admin/settings",
+          icon: Settings,
         },
         {
           title: "Shipping",
           url: "/admin/settings/shipping",
+          icon: Truck,
         },
         {
           title: "Taxes",
           url: "/admin/settings/taxes",
+          icon: Globe,
         },
         {
           title: "Locations",
           url: "/admin/settings/locations",
+          icon: MapPin,
         },
       ],
     },
@@ -162,8 +190,14 @@ export function AdminSidebar({
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" className="hover:bg-transparent">
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                <Leaf className="size-5" />
+              <div className="flex aspect-square size-10 items-center justify-center rounded-lg overflow-hidden">
+                <Image 
+                  src="/icon.png" 
+                  alt="Doctasimo" 
+                  width={40} 
+                  height={40} 
+                  className="object-contain scale-110"
+                />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-black uppercase text-primary tracking-tight">

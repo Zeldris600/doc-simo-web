@@ -10,7 +10,7 @@ import {
   User,
 } from "lucide-react";
 
-import { Leaf } from "lucide-react";
+import Image from "next/image";
 
 import { NavMain } from "@/components/layout/nav-main";
 import { NavProjects } from "@/components/layout/nav-projects";
@@ -84,8 +84,8 @@ export function PortalSidebar({
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" className="hover:bg-transparent">
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                <Leaf className="size-5" />
+              <div className="flex aspect-square size-10 items-center justify-center rounded-lg overflow-hidden">
+                <Image src="/icon.png" alt="Doctasimo" width={40} height={40} className="object-contain scale-110" />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-black uppercase text-primary tracking-tight">

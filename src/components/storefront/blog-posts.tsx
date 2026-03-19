@@ -48,9 +48,9 @@ export function BlogPosts() {
           </div>
           <Link
             href="/blog"
-            className="inline-flex items-center gap-2 rounded-full bg-primary px-8 py-4 text-xs font-bold uppercase text-white shadow-lg hover:shadow-primary/30 transition-all hover:scale-105"
+            className="inline-flex items-center text-xs font-black tracking-widest text-primary hover:opacity-70 transition-all group uppercase"
           >
-            View All Articles <ArrowRight className="w-4 h-4" />
+            View All Articles <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
 

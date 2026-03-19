@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { ArrowRight } from "lucide-react";
 
 export function AboutSection() {
   return (
@@ -32,8 +33,8 @@ export function AboutSection() {
             and modern clinical standards. Every product we make is rigorously
             tested, fully organic, and designed with your health in mind.
           </p>
-          <button className="bg-primary hover:bg-primary/90 text-white px-10 py-4 rounded-full text-xs font-bold uppercase shadow-lg shadow-primary/10 transition-all">
-            Learn More
+          <button className="inline-flex items-center text-xs font-black tracking-widest text-primary hover:opacity-70 transition-all group uppercase">
+            Learn More <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </button>
         </div>
       </div>

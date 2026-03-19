@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { ArrowRight } from "lucide-react";
 
 export function MeetDoctor() {
   return (
@@ -6,8 +7,8 @@ export function MeetDoctor() {
       <div className="flex flex-col lg:flex-row items-center gap-20">
         <div className="flex-1 space-y-10 order-2 lg:order-1">
           <div className="space-y-4">
-            <p className="text-xs font-bold uppercase text-[#f2c94c] bg-[#f2c94c]/5 inline-block px-4 py-2 rounded">
-              The Visionary
+            <p className="text-xs font-bold text-[#f2c94c] bg-[#f2c94c]/5 inline-block px-4 py-2 rounded">
+              The visionary
             </p>
             <h2 className="text-4xl font-black text-black sm:text-6xl leading-[1.1] tracking-tight">
               Meet Dr. Simeon
@@ -27,25 +28,25 @@ export function MeetDoctor() {
             <div className="grid grid-cols-2 gap-8 pt-4">
               <div>
                 <p className="text-4xl font-black text-black">25k+</p>
-                <p className="text-[10px] uppercase font-bold text-gray-400 mt-1">
-                  Patients Helped
+                <p className="text-[10px] font-bold text-gray-400 mt-1">
+                  Patients helped
                 </p>
               </div>
               <div>
                 <p className="text-4xl font-black text-black">100%</p>
-                <p className="text-[10px] uppercase font-bold text-gray-400 mt-1">
-                  Natural Basis
+                <p className="text-[10px] font-bold text-gray-400 mt-1">
+                  Natural basis
                 </p>
               </div>
             </div>
           </div>
-          <button className="bg-primary text-white px-10 py-5 rounded-full text-xs font-bold uppercase shadow-lg shadow-primary/20 hover:scale-105 transition-all w-fit">
-            Discover Our Roots
+          <button className="inline-flex items-center text-xs font-black tracking-widest text-primary hover:opacity-70 transition-all group uppercase">
+            Discover our roots <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </button>
         </div>
         <div className="flex-1 relative aspect-[3/4] w-full max-w-md mx-auto lg:max-w-none rounded-xl overflow-hidden order-1 lg:order-2">
           <Image
-            src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?q=80&w=2000&auto=format&fit=crop"
+            src="/dr-simeon.png"
             alt="Dr. Simeon - Specialist"
             fill
             className="object-cover object-top"

@@ -1,0 +1,203 @@
+{
+  "hero": {
+    "title": "L'Excellence Botanique Redéfinie",
+    "subtitle": "Découvrez des extraits de papaye de qualité clinique et des formulations à base de plantes rares élaborées par nos médecins spécialistes pour votre santé holistique.",
+    "cta": "Acheter la Collection"
+  },
+  "features": {
+    "organic": {
+      "title": "100% Biologique",
+      "description": "Provenant directement de fermes biologiques certifiées, garantissant une pureté et une puissance maximales."
+    },
+    "tested": {
+      "title": "Testé en Laboratoire",
+      "description": "Chaque lot est rigoureusement testé par des tiers pour la qualité, la sécurité et l'efficacité."
+    },
+    "shipping": {
+      "title": "Livraison Gratuite",
+      "description": "Profitez d'une livraison gratuite et neutre en carbone pour toutes les commandes de plus de 50 $ dans le monde entier."
+    }
+  },
+  "newsletter": {
+    "title": "Obtenez 20% de Réduction Aujourd'hui",
+    "subtitle": "Rejoignez plus de 50 000 adeptes du bien-être. Recevez des conseils d'experts, des mises à jour cliniques et des offres exclusives directement dans votre boîte de réception.",
+    "placeholderName": "Votre nom",
+    "placeholderPhone": "Votre numéro de téléphone",
+    "button": "Inscrivez-moi"
+  },
+  "home": {
+    "bestSellers": {
+      "title": "Meilleures Ventes",
+      "subtitle": "Les solutions de phytothérapie préférées de notre communauté pour le bien-être quotidien.",
+      "action": "Acheter les Meilleures Ventes"
+    },
+    "clinicalSelections": {
+      "title": "Sélections Cliniques",
+      "subtitle": "Nos extractions de plantes les plus puissantes, vérifiées par nos spécialistes médicaux pour leur pureté et leur effet."
+    },
+    "about": {
+      "standard": "Notre Standard",
+      "title": "À Propos de Doctasime",
+      "content1": "Chez Doctasime, nous croyons au pouvoir de guérison de la nature. Nous sélectionnons avec soin les herbes et extraits les plus purs du monde entier pour élaborer des remèdes qui accompagnent votre parcours vers un bien-être holistique.",
+      "content2": "Notre mission est de combler le fossé entre les traditions herboristes ancestrales et les normes cliniques modernes. Chaque produit que nous fabriquons est rigoureusement testé, entièrement biologique et conçu en pensant à votre santé."
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Bon retour parmi nous",
+      "subtitle": "Connectez-vous pour accéder à votre tableau de bord bien-être.",
+      "submit": "Continuer",
+      "noAccount": "Vous n'avez pas de compte ?",
+      "registerLink": "Rejoindre la communauté"
+    },
+    "register": {
+      "title": "Rejoindre Doctasime",
+      "subtitle": "Commencez votre voyage vers une santé holistique dès aujourd'hui.",
+      "submit": "Créer un compte",
+      "hasAccount": "Déjà membre ?",
+      "loginLink": "Se connecter ici"
+    },
+    "verify": {
+      "title": "Vérifiez votre identité",
+      "subtitle": "Nous avons envoyé un code à 6 chiffres à {identifier}.",
+      "submit": "Vérifier le code",
+      "resend": "Renvoyer le code"
+    },
+    "form": {
+      "identifier": "Email ou Numéro de téléphone",
+      "identifierPlaceholder": "hello@doctasime.com ou +33...",
+      "fullName": "Nom complet",
+      "fullNamePlaceholder": "Jean Dupont",
+      "otp": "Mot de passe à usage unique"
+    }
+  },
+  "navigation": {
+    "home": "Accueil",
+    "shop": "Boutique",
+    "about": "À propos",
+    "contact": "Contact",
+    "signIn": "Se connecter",
+    "signUp": "S'inscrire",
+    "account": "Compte",
+    "orders": "Commandes",
+    "settings": "Paramètres",
+    "logout": "Déconnexion"
+  },
+  "account": {
+    "title": "Votre Compte",
+    "subtitle": "Gérez votre profil, vos commandes et vos paramètres de bien-être clinique.",
+    "profile": {
+      "title": "Informations du Profil",
+      "subtitle": "Mettez à jour vos informations personnelles et comment nous vous contactons.",
+      "name": "Nom complet",
+      "email": "Adresse Email",
+      "phone": "Numéro de téléphone",
+      "save": "Enregistrer les modifications",
+      "saving": "Enregistrement...",
+      "saveSuccess": "Profil mis à jour avec succès !"
+    },
+    "orders": {
+      "title": "Historique des Commandes",
+      "subtitle": "Suivez et gérez vos achats de bien-être passés.",
+      "empty": "Vous n'avez pas encore passé de commande.",
+      "shopNow": "Acheter maintenant"
+    },
+    "settings": {
+      "title": "Paramètres de Sécurité",
+      "subtitle": "Mettez à jour votre mot de passe et vos préférences de sécurité.",
+      "password": "Changer le mot de passe"
+    }
+  },
+  "common": {
+    "learnMore": "En savoir plus"
+  },
+  "products": {
+    "category": "Catégorie botanique",
+    "generalRegistry": "Registre général",
+    "inventoryAvailable": "Inventaire clinique disponible",
+    "units": "unités",
+    "inventoryRestocking": "Réapprovisionnement d'inventaire",
+    "initiateOrder": "Lancer la commande",
+    "processing": "Traitement...",
+    "addToCart": "Ajouter au panier",
+    "viewSpecs": "Voir les détails",
+    "addedToCart": "{name} ajouté au panier",
+    "loginRequired": "Veuillez vous connecter pour commander",
+    "registryDetails": "Détails du registre clinique",
+    "protocol": "Protocole & formulation",
+    "recommendedProtocol": "Protocole recommandé :",
+    "protocolDesc": "Se référer aux instructions fournies avec l'extrait.",
+    "activeComponents": "Composants actifs :",
+    "componentsDesc": "Extrait botanique organique purifié.",
+    "secureRepository": "Répertoire sécurisé",
+    "clinicalLogistics": "Logistique clinique",
+    "registryPolicy": "Politique du registre",
+    "dispensary": "Dispensaire",
+    "home": "Accueil"
+  },
+  "checkout": {
+    "title": "Caisse",
+    "delivery": "Détails de livraison",
+    "recipient": "Nom du destinataire",
+    "recipientPlaceholder": "Entrez le nom du destinataire",
+    "phone": "Numéro de téléphone",
+    "city": "Ville / Région",
+    "cityPlaceholder": "Ex: Yaoundé / Littoral",
+    "street": "Adresse / Quartier",
+    "streetPlaceholder": "Ex: Bastos, Rue 123",
+    "payment": "Paiement par Mobile Money",
+    "orange": "Orange Money",
+    "mtn": "MTN Mobile Money",
+    "paymentSafe": "Paiement sécurisé au Cameroun",
+    "paymentFast": "Paiement rapide et fiable",
+    "enterNumber": "Entrez votre numéro {operator}",
+    "paymentNote": "Une demande de paiement sera envoyée à ce téléphone pour confirmer la transaction.",
+    "summary": "Résumé de la commande",
+    "items": "{count} articles",
+    "subtotal": "Sous-total",
+    "shipping": "Livraison",
+    "free": "Gratuit",
+    "total": "Total à payer",
+    "vat": "TVA incluse",
+    "placeOrder": "Passer la commande",
+    "processing": "Synchronisation...",
+    "secureNote": "Transaction sécurisée via Mobile Money",
+    "guarantee": "Garantie officielle Doctasime",
+    "fillDetails": "Veuillez remplir tous les détails de livraison",
+    "providePhone": "Veuillez fournir le numéro de téléphone de paiement"
+  },
+  "categoryShowcase": {
+    "label": "Répertoires botaniques",
+    "title": "Collections spécialisées",
+    "subtitle": "Explorez nos registres de formulations botaniques de qualité clinique, chacun validé par notre équipe de spécialistes pour une efficacité thérapeutique optimale.",
+    "node": "Nœud du registre",
+    "access": "Accéder au registre",
+    "loading": "Accès aux nœuds du registre"
+  },
+  "cart": {
+    "title": "Votre panier",
+    "empty": "Votre panier est vide",
+    "emptyDesc": "Il semble que vous n'ayez pas encore ajouté d'excellence botanique à votre panier.",
+    "continue": "Continuer mes achats",
+    "product": "Produit",
+    "price": "Prix",
+    "quantity": "Quantité",
+    "total": "Total",
+    "remove": "Supprimer",
+    "summary": "Résumé de la commande",
+    "promo": "Code promo",
+    "apply": "Appliquer",
+    "subtotal": "Sous-total",
+    "shipping": "Livraison",
+    "discount": "Remise",
+    "checkout": "Passer à la caisse",
+    "secureNote": "Paiement sécurisé de qualité clinique",
+    "carbonNote": "Livraison neutre en carbone dans le monde entier",
+    "guarantee": "Garantie de bien-être de 30 jours pour les retours",
+    "accepts": "Accepte:",
+    "paymentDetails": "Détails du paiement",
+    "cardNumber": "Numéro de carte",
+    "cardHolder": "Nom du titulaire",
+    "taxes": "Toutes taxes comprises"
+  }
+}

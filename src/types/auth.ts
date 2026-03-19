@@ -1,0 +1,65 @@
+import { UserRole } from "@/lib/rbac/types";
+import { CustomerProfile } from "./api";
+
+export interface User {
+  id: string;
+  name?: string;
+  email?: string;
+  emailVerified?: boolean;
+  image?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  phoneNumber?: string;
+  phoneNumberVerified?: boolean;
+  role?: UserRole | string;
+  profile?: CustomerProfile;
+}
+
+export interface Session {
+ id: string;
+ expiresAt: string;
+ token: string;
+ createdAt: string;
+ updatedAt: string;
+ ipAddress?: string;
+ userAgent?: string;
+ userId: string;
+}
+
+export interface AuthResponse {
+ status: boolean;
+ message?: string;
+}
+
+export interface VerifyPhoneOtpResponse extends AuthResponse {
+ token: string;
+ user: User;
+}
+
+export interface SendOtpDto {
+ phoneNumber: string;
+}
+
+export interface VerifyOtpDto {
+ phoneNumber: string;
+ code: string;
+}
+
+export interface RequestPasswordResetDto {
+ phoneNumber: string;
+}
+
+export interface ResetPasswordPhoneDto {
+ phoneNumber: string;
+ otp: string;
+ newPassword: string;
+}
+
+export interface SignUpDto {
+ name: string;
+ email: string;
+ password: string;
+ phoneNumber: string;
+ rememberMe?: boolean;
+}
+

@@ -1,112 +1,112 @@
 import * as React from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import Image from "next/image";
-import { Star, Heart } from "lucide-react";
-
-export interface Product {
-  id: string;
-  name: string;
-  price: number;
-  originalPrice?: number;
-  rating: number;
-  reviewsCount: number;
-  imageSrc: string;
-  category: string;
-  isNew?: boolean;
-}
+import { Star, Heart, ShoppingBag, Flame, Zap } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { Product } from "@/types/api";
 
 interface ProductCardProps {
   product: Product;
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const discount = product.originalPrice
-    ? Math.round(
-        ((product.originalPrice - product.price) / product.originalPrice) * 100,
-      )
-    : 0;
-
+  const t = useTranslations("products");
   return (
-    <div className="group relative flex flex-col justify-between overflow-hidden rounded-lg bg-white transition-all duration-300">
-      {/* Badges - clean and rectangular */}
-      <div className="absolute top-2 left-2 z-10 flex flex-col gap-1">
-        {product.isNew && (
-          <span className="bg-primary px-3 py-1 text-[10px] uppercase font-bold text-white rounded">
-            New
-          </span>
-        )}
-        {discount > 0 && (
-          <span className="bg-destructive px-3 py-1 text-[10px] uppercase font-bold text-white rounded">
-            -{discount}%
-          </span>
-        )}
+    <div className="group relative flex flex-col justify-between overflow-hidden rounded-xl bg-white border border-black/5 transition-all duration-300 hover:border-primary/20">
+      {/* Visual Workspace */}
+      <div className="relative aspect-square overflow-hidden bg-black/[0.02]">
+        {/* Badges */}
+        <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5">
+          {product.isHot && (
+            <div className="bg-orange-500 text-white px-2.5 py-1 rounded-lg flex items-center gap-1">
+              <Flame className="h-3 w-3 fill-current" />
+              <span className="text-[10px] font-bold tracking-tight uppercase">{t("hot")}</span>
+            </div>
+          )}
+          {product.isPromotion && (
+            <div className="bg-primary text-white px-2.5 py-1 rounded-lg flex items-center gap-1">
+              <Zap className="h-3 w-3 fill-current" />
+              <span className="text-[10px] font-bold tracking-tight uppercase">{t("special")}</span>
+            </div>
+          )}
+          {product.inventoryLevel === 0 && (
+            <div className="bg-black/40 backdrop-blur-md text-white px-2.5 py-1 rounded-lg flex items-center gap-1">
+              <span className="text-[10px] font-bold tracking-tight uppercase">{t("outOfStock")}</span>
+            </div>
+          )}
+        </div>
+
+        {/* Wishlist */}
+        <button className="absolute top-3 right-3 z-10 p-2.5 rounded-xl bg-white/80 backdrop-blur-md text-black/40 hover:text-red-500 hover:bg-white transition-all opacity-0 group-hover:opacity-100 active:scale-90 border border-black/5">
+          <Heart className="h-4 w-4" />
+        </button>
+
+        {/* Product Image */}
+        <Link
+          href={`/products/${product.id}`}
+          className="block w-full h-full"
+        >
+          <Image
+            src={product.images?.[0] || product.image || "/placeholder.png"}
+            alt={product.name}
+            fill
+            className="object-cover transition-transform duration-700 group-hover:scale-110"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+          />
+        </Link>
+
+        {/* Quick Interaction Overlay */}
+        <div className="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+          <Link href={`/products/${product.id}`} className="w-full bg-primary text-white py-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 active:scale-95 transition-all">
+            <ShoppingBag className="h-3.5 w-3.5" />
+            {t("viewSpecs")}
+          </Link>
+        </div>
       </div>
 
-      {/* Wishlist button */}
-      <button className="absolute top-3 right-3 z-10 p-2 text-muted-foreground hover:text-destructive transition-colors opacity-0 group-hover:opacity-100 transition-opacity">
-        <Heart className="h-4 w-4" />
-      </button>
-
-      {/* Image Container - Flat */}
-      <Link
-        href={`/products/${product.id}`}
-        className="block relative aspect-[1/1] overflow-hidden bg-muted/20"
-      >
-        <Image
-          src={product.imageSrc}
-          alt={product.name}
-          fill
-          className="object-cover transition-transform duration-700 group-hover:scale-110"
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-        />
-        {/* Quick Add Overlay */}
-        <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <button className="bg-primary text-white px-6 py-2 text-xs font-bold uppercase transition-colors rounded-full hover:bg-primary/90">
-            Quick Add
-          </button>
+      {/* Product Information */}
+      <div className="p-5 flex flex-col flex-grow">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-xs font-bold text-black/30 tracking-widest uppercase">
+            {product.category?.name || t("generalRegistry")}
+          </span>
+          <div className="flex items-center gap-0.5">
+            <Star className="h-3 w-3 fill-primary text-primary" />
+            <span className="text-xs font-bold text-black">4.9</span>
+          </div>
         </div>
-      </Link>
 
-      {/* Content - Minimal spacing */}
-      <div className="py-4 flex flex-col flex-grow px-2">
-        <div className="text-[10px] text-muted-foreground mb-1 uppercase font-bold">
-          {product.category}
-        </div>
         <Link href={`/products/${product.id}`}>
-          <h3 className="text-sm font-bold text-foreground line-clamp-1 mb-1 hover:text-primary transition-colors">
+          <h3 className="text-sm font-bold text-black line-clamp-1 mb-1 hover:text-primary transition-colors">
             {product.name}
           </h3>
         </Link>
 
-        {/* Price - Simple line */}
-        <div className="flex items-center gap-2 mb-2">
-          <span className="text-sm font-bold text-foreground">
-            ${product.price.toFixed(2)}
-          </span>
-          {product.originalPrice && (
-            <span className="text-xs text-muted-foreground/60 line-through">
-              ${product.originalPrice.toFixed(2)}
-            </span>
-          )}
-        </div>
+        <p className="text-xs text-black/40 line-clamp-2 mb-4 font-medium leading-relaxed">
+          {product.description}
+        </p>
 
-        {/* Rating - very small and subtle */}
-        <div className="flex items-center gap-0.5 mt-auto">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <Star
-              key={i}
-              className={`h-3 w-3 ${
-                i < Math.floor(product.rating)
-                  ? "fill-[#f2c94c] text-[#f2c94c]"
-                  : "fill-muted text-muted"
-              }`}
-            />
-          ))}
-          <span className="text-[10px] text-muted-foreground ml-2">
-            {product.rating}
-          </span>
+        {/* Price Registry */}
+        <div className="mt-auto flex items-center justify-between border-t border-black/5 pt-4">
+          <div className="flex items-baseline gap-2">
+            <span className="text-base font-black text-black">
+              {Number(product.price).toLocaleString()} <span className="text-[10px]">XAF</span>
+            </span>
+            {product.isPromotion && (
+              <span className="text-xs text-black/20 line-through font-medium">
+                {(Number(product.price) * 1.2).toLocaleString()} XAF
+              </span>
+            )}
+          </div>
+          <Link 
+            href={`/products/${product.id}`}
+            className="text-xs font-bold text-primary hover:underline underline-offset-4 uppercase tracking-tighter"
+          >
+            {t("viewSpecs")}
+          </Link>
         </div>
       </div>
     </div>
   );
 }
+

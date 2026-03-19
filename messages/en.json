@@ -1,0 +1,203 @@
+{
+  "hero": {
+    "title": "Botanical Excellence Redefined",
+    "subtitle": "Experience clinical-grade papaya extracts and rare herbal formulations crafted by our specialist doctors for your holistic health.",
+    "cta": "Shop Collection"
+  },
+  "features": {
+    "organic": {
+      "title": "100% Organic",
+      "description": "Sourced directly from certified organic farms, ensuring maximum purity and potency."
+    },
+    "tested": {
+      "title": "Lab Tested",
+      "description": "Every batch is rigorously third-party tested for quality, safety, and effectiveness."
+    },
+    "shipping": {
+      "title": "Free Shipping",
+      "description": "Enjoy free, carbon-neutral shipping on all orders over $50 worldwide."
+    }
+  },
+  "newsletter": {
+    "title": "Get 20% Off Today",
+    "subtitle": "Join 50,000+ wellness seekers. Receive expert tips, clinical updates, and exclusive herbal offers directly to your inbox.",
+    "placeholderName": "Your name",
+    "placeholderPhone": "Your phone number",
+    "button": "Sign Me Up"
+  },
+  "home": {
+    "bestSellers": {
+      "title": "Best Sellers",
+      "subtitle": "Our community's favorite herbal solutions for daily wellness.",
+      "action": "Shop Best Sellers"
+    },
+    "clinicalSelections": {
+      "title": "Clinical Selections",
+      "subtitle": "Our most potent herbal extractions, verified by our medical specialists for purity and effect."
+    },
+    "about": {
+      "standard": "Our Standard",
+      "title": "About Doctasime",
+      "content1": "At Doctasime, we believe in the healing power of nature. We carefully select the purest herbs and extracts from around the world to craft remedies that support your journey toward holistic wellness.",
+      "content2": "Our mission is to bridge the gap between ancient herbal traditions and modern clinical standards. Every product we make is rigorously tested, fully organic, and designed with your health in mind."
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Welcome Back",
+      "subtitle": "Sign in to access your clinical wellness dashboard.",
+      "submit": "Continue",
+      "noAccount": "Don't have an account?",
+      "registerLink": "Join the community"
+    },
+    "register": {
+      "title": "Join Doctasime",
+      "subtitle": "Start your journey to holistic health today.",
+      "submit": "Create Account",
+      "hasAccount": "Already a member?",
+      "loginLink": "Sign in here"
+    },
+    "verify": {
+      "title": "Verify Your Identity",
+      "subtitle": "We've sent a 6-digit code to your {identifier}.",
+      "submit": "Verify Code",
+      "resend": "Resend code"
+    },
+    "form": {
+      "identifier": "Email or Phone Number",
+      "identifierPlaceholder": "hello@doctasime.com or +1...",
+      "fullName": "Full Name",
+      "fullNamePlaceholder": "John Doe",
+      "otp": "One-Time Password"
+    }
+  },
+  "navigation": {
+    "home": "Home",
+    "shop": "Shop",
+    "about": "About",
+    "contact": "Contact",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "account": "Account",
+    "orders": "Orders",
+    "settings": "Settings",
+    "logout": "Log Out"
+  },
+  "account": {
+    "title": "Your Account",
+    "subtitle": "Manage your profile, orders, and clinical wellness settings.",
+    "profile": {
+      "title": "Profile Information",
+      "subtitle": "Update your personal details and how we contact you.",
+      "name": "Full Name",
+      "email": "Email Address",
+      "phone": "Phone Number",
+      "save": "Save Changes",
+      "saving": "Saving...",
+      "saveSuccess": "Profile updated successfully!"
+    },
+    "orders": {
+      "title": "Order History",
+      "subtitle": "Track and manage your past wellness purchases.",
+      "empty": "You haven't placed any orders yet.",
+      "shopNow": "Shop now"
+    },
+    "settings": {
+      "title": "Security Settings",
+      "subtitle": "Update your password and account security preferences.",
+      "password": "Change Password"
+    }
+  },
+  "common": {
+    "learnMore": "Learn More"
+  },
+  "products": {
+    "category": "Botanical category",
+    "generalRegistry": "General registry",
+    "inventoryAvailable": "Clinical inventory available",
+    "units": "units",
+    "inventoryRestocking": "Inventory re-stocking",
+    "initiateOrder": "Initiate order",
+    "processing": "Processing...",
+    "addToCart": "Add to cart",
+    "viewSpecs": "View specs",
+    "addedToCart": "{name} added to cart",
+    "loginRequired": "Please login to place an order",
+    "registryDetails": "Clinical registry details",
+    "protocol": "Protocol & formulation",
+    "recommendedProtocol": "Recommended protocol:",
+    "protocolDesc": "Refer to the clinical instructions provided with the physical extract.",
+    "activeComponents": "Active components:",
+    "componentsDesc": "Clinical grade organic botanical extract, purified vehicle.",
+    "secureRepository": "Secure repository",
+    "clinicalLogistics": "Clinical logistics",
+    "registryPolicy": "Registry policy",
+    "dispensary": "Dispensary",
+    "home": "Home"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "delivery": "Delivery details",
+    "recipient": "Recipient Name",
+    "recipientPlaceholder": "Enter recipient's name",
+    "phone": "Phone Number",
+    "city": "City / Region",
+    "cityPlaceholder": "E.g. Yaoundé / Littoral",
+    "street": "Street Address / Neighborhood",
+    "streetPlaceholder": "E.g. Bastos, Rue 123",
+    "payment": "Payment with Mobile Money",
+    "orange": "Orange Money",
+    "mtn": "MTN Mobile Money",
+    "paymentSafe": "Secure cameroonian payment",
+    "paymentFast": "Fast & reliable payment",
+    "enterNumber": "Enter your {operator} number",
+    "paymentNote": "A payment prompt will be sent to this phone to confirm the transaction.",
+    "summary": "Order summary",
+    "items": "{count} items",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "free": "Free",
+    "total": "Total to pay",
+    "vat": "VAT Included",
+    "placeOrder": "Place Order",
+    "processing": "Synchronizing...",
+    "secureNote": "Clinical-grade secure transaction via Mobile Money",
+    "guarantee": "Official Doctasime wellness guarantee",
+    "fillDetails": "Please fill in all delivery details",
+    "providePhone": "Please provide the payment phone number"
+  },
+  "categoryShowcase": {
+    "label": "Botanical repositories",
+    "title": "Specialist collections",
+    "subtitle": "Explore our curated registries of clinical-grade botanical formulations, cada validated by our specialist team for optimal therapeutic efficacy.",
+    "node": "Registry node",
+    "access": "Access registry",
+    "loading": "Accessing Registry Nodes"
+  },
+  "cart": {
+    "title": "Your shopping cart",
+    "empty": "Your cart is empty",
+    "emptyDesc": "Looks like you haven't added any botanical excellence to your cart yet.",
+    "continue": "Continue shopping",
+    "product": "Product",
+    "price": "Price",
+    "quantity": "Quantity",
+    "total": "Total",
+    "remove": "Remove",
+    "summary": "Order summary",
+    "promo": "Promo code",
+    "apply": "Apply",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "discount": "Discount",
+    "checkout": "Proceed to Checkout",
+    "secureNote": "Secure clinical-grade checkout",
+    "carbonNote": "Carbon-neutral shipping worldwide",
+    "guarantee": "30-day wellness guarantee returns",
+    "accepts": "Accepts:",
+    "paymentDetails": "Payment details",
+    "cardNumber": "Card number",
+    "cardHolder": "Cardholder name",
+    "taxes": "Including all taxes"
+  }
+}
