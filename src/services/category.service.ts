@@ -2,10 +2,10 @@ import { api } from "./api";
 import { Category, PaginatedResponse, StandardResponse } from "../types/api";
 
 export interface CreateCategoryDto {
- name: string;
- slug: string;
- description: string;
- image?: string;
+  name: string;
+  slug: string;
+  description?: string;
+  image?: string;
 }
 
 export const CategoryService = {

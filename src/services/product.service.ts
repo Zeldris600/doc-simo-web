@@ -36,4 +36,9 @@ export const ProductService = {
     const response = await api.delete<StandardResponse<void>>(`/products/${id}`);
     return response.data.data;
   },
+
+  restock: async (id: string, quantity: number) => {
+    const response = await api.patch<StandardResponse<Product>>(`/products/${id}/restock`, { quantity });
+    return response.data.data;
+  },
 };

@@ -3,6 +3,7 @@ import {
  CreateDiscountDto, 
  Discount, 
  PaginatedResponse, 
+ StandardResponse,
  UpdateDiscountDto 
 } from "../types/api";
 
@@ -13,8 +14,8 @@ export const DiscountService = {
  },
 
  list: async (params?: { activeOnly?: "true" | "false"; page?: number; limit?: number }) => {
- const response = await api.get<PaginatedResponse<Discount>>("/discounts", { params });
- return response.data;
+ const response = await api.get<StandardResponse<PaginatedResponse<Discount>>>("/discounts", { params });
+ return response.data.data;
  },
 
  getById: async (id: string) => {

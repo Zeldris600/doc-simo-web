@@ -23,7 +23,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { AxiosError } from "axios"; // Assuming Axios is used for API calls
+import { ApiError, OrderItem } from "@/types/api";
 
 export default function OrderCheckoutPage() {
   const t = useTranslations("checkout");
@@ -63,8 +63,8 @@ export default function OrderCheckoutPage() {
           toast.success("Payment initiated. Please check your phone.");
         }
       },
-      onError: (err: AxiosError) => {
-        const errorMessage = (err.response?.data as any)?.message || "Failed to initiate payment";
+      onError: (err: ApiError) => {
+        const errorMessage = err.response?.data?.message || "Failed to initiate payment";
         toast.error(errorMessage);
       }
     });
@@ -201,7 +201,7 @@ export default function OrderCheckoutPage() {
                <h3 className="text-[10px] font-bold uppercase tracking-widest text-black/60">Procurement Registry</h3>
                
                <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
-                 {order.items.map((item: any) => (
+                 {order.items.map((item: OrderItem) => (
                    <div key={item.id} className="flex justify-between items-center text-sm font-bold">
                      <div className="flex flex-col">
                        <span className="text-black">{item.product?.name || "Formulation"}</span>

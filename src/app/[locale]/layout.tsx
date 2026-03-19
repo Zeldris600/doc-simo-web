@@ -42,7 +42,7 @@ export default async function RootLayout({
       <body className={`${fontSans.variable} font-sans antialiased`}>
         <QueryProvider>
           <AppProviders>
-            <NextIntlClientProvider messages={messages}>
+            <NextIntlClientProvider locale={locale} messages={messages}>
               {children}
             </NextIntlClientProvider>
             <Toaster />

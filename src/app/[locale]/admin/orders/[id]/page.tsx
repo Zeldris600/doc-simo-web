@@ -1,237 +1,213 @@
 "use client";
 
-import * as React from "react";
-import { useParams, useRouter } from "next/navigation";
-import { 
- ChevronLeft, 
- Package, 
- Truck, 
- CheckCircle2, 
- Clock, 
- XCircle, 
- MapPin, 
- Phone, 
- User as UserIcon,
- CreditCard,
- History,
- AlertCircle
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { useParams } from "next/navigation";
 import { useOrder, useUpdateOrderStatus } from "@/hooks/use-order";
 import { OrderStatus } from "@/types/api";
+import DashboardHeader from "@/components/dashboard-header";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Loader2, MapPin, Package, Phone, Truck } from "lucide-react";
 import { toast } from "sonner";
-import { Skeleton } from "@/components/ui/skeleton";
+import { useCan } from "@/hooks/use-can";
+import Image from "next/image";
 
-const statusConfig: Record<OrderStatus, { label: string; icon: any; color: string; bg: string }> = {
- PENDING: { label: "PENDING", icon: Clock, color: "text-amber-600", bg: "bg-amber-50" },
- PROCESSING: { label: "PROCESSING", icon: Package, color: "text-blue-600", bg: "bg-blue-50" },
- SHIPPED: { label: "SHIPPED", icon: Truck, color: "text-indigo-600", bg: "bg-indigo-50" },
- DELIVERED: { label: "DELIVERED", icon: CheckCircle2, color: "text-emerald-600", bg: "bg-emerald-50" },
- CANCELLED: { label: "CANCELLED", icon: XCircle, color: "text-rose-600", bg: "bg-rose-50" },
+const statusColorMap: Record<string, string> = {
+  PENDING: "bg-gray-100 text-gray-700",
+  PROCESSING: "bg-blue-100 text-blue-700",
+  SHIPPED: "bg-purple-100 text-purple-700",
+  DELIVERED: "bg-green-100 text-green-700",
+  CANCELLED: "bg-red-100 text-red-700",
 };
 
 export default function AdminOrderDetailsPage() {
- const params = useParams();
- const router = useRouter();
- const id = params.id as string;
- const { data: order, isLoading } = useOrder(id);
- const updateStatusMutation = useUpdateOrderStatus();
+  const { id } = useParams() as { id: string };
+  const { data: order, isLoading } = useOrder(id);
+  const { mutate: updateStatus, isPending: isUpdatingStatus } = useUpdateOrderStatus();
+  const { can } = useCan();
 
- const handleStatusUpdate = (newStatus: OrderStatus) => {
- updateStatusMutation.mutate(
- { id, data: { status: newStatus } },
- {
- onSuccess: () => {
- toast.success(`Manifest status escalated to ${newStatus}.`);
- },
- }
- );
- };
+  const handleStatusChange = (status: string) => {
+    updateStatus(
+      { id, data: { status: status as OrderStatus } },
+      {
+        onSuccess: () => toast.success(`Order status updated to ${status}`),
+        onError: () => toast.error("Failed to update order status"),
+      }
+    );
+  };
 
- if (isLoading) {
- return (
- <div className="p-8 space-y-8 animate-in fade-in duration-1000">
- <div className="flex items-center gap-4">
- <Skeleton className="h-12 w-12 rounded-full" />
- <Skeleton className="h-10 w-[300px] rounded-xl" />
- </div>
- <div className="grid lg:grid-cols-3 gap-8">
- <Skeleton className="h-[400px] lg:col-span-2 rounded-lg" />
- <Skeleton className="h-[400px] rounded-lg" />
- </div>
- </div>
- );
- }
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[40vh]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary/40" />
+      </div>
+    );
+  }
 
- if (!order) {
- return (
- <div className="flex flex-col items-center justify-center h-[600px] space-y-6">
- <AlertCircle className="h-20 w-20 text-black/10" />
- <h2 className="text-3xl font-black uppercase tracking-tighter ">Batch data nullified</h2>
- <Button variant="outline" onClick={() => router.back()} className="rounded-lg h-12 px-8 border-black/10 uppercase font-black text-[10px] tracking-widest">Return to Operations</Button>
- </div>
- );
- }
+  if (!order) {
+    return (
+      <div className="p-8 text-center text-muted-foreground font-bold uppercase tracking-widest text-xs">
+        Order not found.
+      </div>
+    );
+  }
 
- const currentStatus = statusConfig[order.status];
+  const total = typeof order.total === "number" ? order.total : parseFloat(String(order.total));
 
- return (
- <div className="p-8 space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-1000">
- {/* Header */}
- <div className="flex flex-col md:flex-row items-center justify-between gap-6 pb-6 border-b border-black/5">
- <div className="flex items-center gap-4">
- <Button 
- variant="outline" 
- size="icon" 
- className="rounded-full h-12 w-12 border-black/10 hover:bg-black hover:text-white transition-all group "
- onClick={() => router.back()}
- >
- <ChevronLeft className="h-6 w-6 group-hover:-translate-x-1 transition-transform" />
- </Button>
- <div>
- <h1 className="text-4xl font-black uppercase tracking-tighter text-black leading-none">Manifest: {order.id.slice(0, 8)}</h1>
- <p className="text-black/40 font-bold uppercase tracking-widest text-[10px] mt-1">Botanical batch deployment log.</p>
- </div>
- </div>
- <div className="flex items-center gap-3">
- <Badge className={`rounded-full px-4 py-1.5 font-black text-[10px] uppercase tracking-widest border-none ${currentStatus.bg} ${currentStatus.color}`}>
- {currentStatus.label}
- </Badge>
- <span className="text-black/20 font-black uppercase text-[10px] tracking-widest">
- {new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit', month: 'short', day: '2-digit' }).format(new Date(order.createdAt))}
- </span>
- </div>
- </div>
+  return (
+    <div className="space-y-8 max-w-4xl mx-auto px-4 py-8">
+      <DashboardHeader
+        title={`Order #${order.id.substring(0, 8)}`}
+        description={`Placed on ${new Date(order.createdAt).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}`}
+      />
 
- <div className="grid lg:grid-cols-3 gap-10">
- <div className="lg:col-span-2 space-y-10">
- {/* Order Items */}
- <Card className="border-black/5 rounded-lg overflow-hidden bg-white/50 backdrop-blur-md">
- <CardHeader className="bg-black text-white p-8">
- <CardTitle className="text-2xl font-black uppercase tracking-tight flex items-center gap-3">
- <Package className="h-6 w-6 text-white/40" />
- Batch Inventory
- </CardTitle>
- <CardDescription className="text-white/40 font-bold uppercase text-[10px] tracking-widest">
- Items secured for clinical delivery.
- </CardDescription>
- </CardHeader>
- <CardContent className="p-8 space-y-6">
- {order.items.map((item) => (
- <div key={item.id} className="flex items-center justify-between py-4 border-b border-black/5 last:border-0">
- <div className="flex items-center gap-6">
- <div className="h-16 w-16 rounded-lg bg-black/[0.02] border border-black/5 flex items-center justify-center p-2 relative">
- {item.product?.image ? (
- <img src={item.product.image} alt="" className="object-contain h-full w-full" />
- ) : (
- <Package className="h-6 w-6 text-black/10" />
- )}
- <span className="absolute -top-2 -right-2 bg-black text-white h-6 w-6 rounded-full flex items-center justify-center text-[10px] font-black ">
- {item.quantity}
- </span>
- </div>
- <div>
- <h4 className="font-black uppercase tracking-tight text-lg">{item.product?.name || "Unknown Formulation"}</h4>
- <p className="text-[10px] text-black/40 font-bold uppercase tracking-widest">Price Unit: ${item.price?.toFixed(2)}</p>
- </div>
- </div>
- <span className="text-xl font-black tracking-tighter text-black">${(item.price * item.quantity).toFixed(2)}</span>
- </div>
- ))}
- <div className="mt-10 p-8 rounded-lg bg-black text-white flex justify-between items-center transition-transform hover:scale-[1.01]">
- <div>
- <p className="text-white/40 font-black uppercase tracking-widest text-[10px]">Manifest Total Value</p>
- <h3 className="text-4xl font-black tracking-tighter ">Calculated Protocols</h3>
- </div>
- <span className="text-5xl font-black tracking-tighter">${order.total?.toFixed(2)}</span>
- </div>
- </CardContent>
- </Card>
+      {/* Status & Actions Bar */}
+      <div className="flex flex-wrap items-center justify-between gap-4 p-4 bg-white rounded-2xl border border-gray-100">
+        <div className="flex items-center gap-3">
+          <span className="text-[10px] font-black uppercase tracking-widest text-black/40">Current Status:</span>
+          <Badge className={`rounded-lg px-4 py-1.5 text-[10px] font-black uppercase tracking-widest border-none ${statusColorMap[order.status] || "bg-gray-100 text-gray-700"}`}>
+            {order.status}
+          </Badge>
+        </div>
 
- {/* Logistics Form */}
- <Card className="border-black/5 rounded-lg overflow-hidden bg-white">
- <CardHeader className="p-8 border-b border-black/5">
- <CardTitle className="text-2xl font-black uppercase tracking-tight flex items-center gap-3">
- <Truck className="h-6 w-6 text-black/20" />
- Logistics Command
- </CardTitle>
- </CardHeader>
- <CardContent className="p-8 grid grid-cols-2 md:grid-cols-5 gap-3">
- {(["PENDING", "PROCESSING", "SHIPPED", "DELIVERED", "CANCELLED"] as OrderStatus[]).map((status) => {
- const config = statusConfig[status];
- const isActive = order.status === status;
- return (
- <Button
- key={status}
- onClick={() => handleStatusUpdate(status)}
- disabled={updateStatusMutation.isPending}
- variant={isActive ? "default" : "outline"}
- className={`rounded-lg h-16 flex flex-col items-center justify-center gap-1 transition-all group active:scale-95 ${isActive ? "bg-black text-white " : "border-black/5 hover:border-black/20"}`}
- >
- <config.icon className={`h-4 w-4 ${isActive ? "text-white" : "text-black/20 group-hover:text-black"} transition-colors`} />
- <span className="text-[8px] font-black uppercase tracking-widest">{config.label}</span>
- </Button>
- );
- })}
- </CardContent>
- </Card>
- </div>
+        {can("orders:update_status") && (
+          <div className="flex items-center gap-3">
+            <span className="text-[10px] font-black uppercase tracking-widest text-black/40">Update:</span>
+            <Select
+              value={order.status}
+              onValueChange={handleStatusChange}
+              disabled={isUpdatingStatus}
+            >
+              <SelectTrigger className="w-[180px] h-9 bg-white border-gray-200 rounded-lg text-[10px] font-black uppercase tracking-widest">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="rounded-xl border-gray-100">
+                {["PENDING", "PROCESSING", "SHIPPED", "DELIVERED", "CANCELLED"].map((s) => (
+                  <SelectItem key={s} value={s} className="text-[10px] font-bold uppercase tracking-widest">
+                    {s}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {isUpdatingStatus && <Loader2 className="h-4 w-4 animate-spin text-primary" />}
+          </div>
+        )}
+      </div>
 
- <div className="space-y-10">
- {/* Patient Details */}
- <Card className="border-black/5 rounded-lg overflow-hidden bg-white p-8 space-y-8">
- <div className="flex items-center gap-4">
- <div className="h-12 w-12 rounded-lg bg-black/[0.02] border border-black/5 flex items-center justify-center">
- <UserIcon className="h-6 w-6 text-black/20" />
- </div>
- <div>
- <CardTitle className="text-xl font-black uppercase tracking-tight ">Recipient Node</CardTitle>
- <p className="text-[10px] text-black/40 font-bold uppercase tracking-widest leading-none mt-1 ">Verified Wellness Seeker</p>
- </div>
- </div>
- 
- <div className="space-y-6">
- <div className="flex items-start gap-4">
- <MapPin className="h-4 w-4 text-black/20 mt-1" />
- <div className="space-y-1">
- <p className="text-black font-bold text-sm leading-snug">{order.deliveryAddress?.address || "No active coordinates specified."}</p>
- <p className="text-[10px] text-black/40 font-black uppercase tracking-widest">
- {order.deliveryAddress?.city}, {order.deliveryAddress?.region}
- </p>
- </div>
- </div>
- <div className="flex items-center gap-4">
- <Phone className="h-4 w-4 text-black/20" />
- <p className="text-sm font-black tracking-tight">{order.deliveryAddress?.phone || "N/A"}</p>
- </div>
- </div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Order Items */}
+        <div className="lg:col-span-2">
+          <Card className="border-gray-100 shadow-none rounded-2xl">
+            <CardHeader>
+              <CardTitle className="text-xs font-black uppercase tracking-widest text-black/60 flex items-center gap-2">
+                <Package className="h-4 w-4" /> Order Items ({order.items?.length || 0})
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {order.items?.map((item) => (
+                <div key={item.id} className="flex items-center gap-4 p-3 rounded-xl bg-gray-50/50 border border-gray-100">
+                  <div className="relative h-14 w-14 rounded-lg overflow-hidden bg-gray-100 shrink-0">
+                    <Image
+                      src={item.product?.images?.[0] || item.product?.image || "/placeholder.png"}
+                      alt={item.product?.name || "Product"}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-bold text-sm text-black truncate">{item.product?.name || `Product ${item.productId.substring(0, 8)}`}</p>
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                      Qty: {item.quantity} × {Number(item.price).toLocaleString()} XAF
+                    </p>
+                  </div>
+                  <span className="font-black text-sm text-black">
+                    {(item.quantity * Number(item.price)).toLocaleString()} XAF
+                  </span>
+                </div>
+              ))}
 
- <Button className="w-full bg-black hover:bg-black/90 text-white rounded-lg h-14 font-black uppercase tracking-widest text-xs transition-all hover:scale-[1.02] ">
- Trace Location Protocol
- </Button>
- </Card>
+              {(!order.items || order.items.length === 0) && (
+                <p className="text-center text-gray-400 text-sm py-8">No items found for this order.</p>
+              )}
 
- {/* Internal Manifest History (Mock) */}
- <Card className="border-black/5 rounded-lg overflow-hidden bg-black text-white p-8 space-y-8">
- <div className="flex items-center gap-4">
- <History className="h-6 w-6 text-white/40" />
- <CardTitle className="text-xl font-black uppercase tracking-tight ">Manifest Timeline</CardTitle>
- </div>
- <div className="space-y-6 relative before:absolute before:inset-0 before:left-2 before:w-px before:bg-white/10 ml-2 pl-8">
- <div className="relative before:absolute before:-left-[37px] before:top-1.5 before:h-2.5 before:w-2.5 before:rounded-full before:bg-white before:">
- <p className="text-[8px] font-black text-white/40 uppercase tracking-widest">Protocol Initiated</p>
- <p className="text-xs font-bold mt-1">{new Intl.DateTimeFormat('en-US').format(new Date(order.createdAt))}</p>
- </div>
- <div className="relative before:absolute before:-left-[37px] before:top-1.5 before:h-2.5 before:w-2.5 before:rounded-full before:bg-white/20">
- <p className="text-[8px] font-black text-white/40 uppercase tracking-widest ">Manifest Scaled to {order.status}</p>
- <p className="text-xs font-bold mt-1">Manual admin intervention</p>
- </div>
- </div>
- </Card>
- </div>
- </div>
- </div>
- );
+              {/* Total */}
+              <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                <span className="text-xs font-black uppercase tracking-widest text-black/40">Order Total</span>
+                <span className="text-lg font-black text-black">{total.toLocaleString()} XAF</span>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Delivery & Info Sidebar */}
+        <div className="space-y-6">
+          <Card className="border-gray-100 shadow-none rounded-2xl">
+            <CardHeader>
+              <CardTitle className="text-xs font-black uppercase tracking-widest text-black/60 flex items-center gap-2">
+                <Truck className="h-4 w-4" /> Delivery Info
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {order.deliveryAddress ? (
+                <>
+                  {order.deliveryAddress.phone && (
+                    <div className="flex items-center gap-2.5">
+                      <Phone className="h-4 w-4 text-black/30" />
+                      <span className="text-sm font-bold">{order.deliveryAddress.phone}</span>
+                    </div>
+                  )}
+                  {order.deliveryAddress.address && (
+                    <div className="flex items-start gap-2.5">
+                      <MapPin className="h-4 w-4 text-black/30 mt-0.5" />
+                      <div>
+                        <p className="text-sm font-bold">{order.deliveryAddress.address}</p>
+                        <p className="text-xs text-gray-400 font-medium">
+                          {[order.deliveryAddress.city, order.deliveryAddress.region].filter(Boolean).join(", ")}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <p className="text-sm text-gray-400 font-medium">No delivery address provided.</p>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card className="border-gray-100 shadow-none rounded-2xl">
+            <CardHeader>
+              <CardTitle className="text-xs font-black uppercase tracking-widest text-black/60">
+                Timeline
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-400 font-medium">Created</span>
+                <span className="font-bold">{new Date(order.createdAt).toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-400 font-medium">Updated</span>
+                <span className="font-bold">{new Date(order.updatedAt).toLocaleString()}</span>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Button
+            variant="outline"
+            className="w-full rounded-xl"
+            onClick={() => window.history.back()}
+          >
+            ← Back to Orders
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
 }

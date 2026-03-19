@@ -2,7 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient, UseMutationOptions } from "@tanstack/react-query";
 import { DiscountService } from "@/services/discount.service";
-import { Discount, CreateDiscountDto, UpdateDiscountDto } from "@/types/api";
+import { Discount, CreateDiscountDto, UpdateDiscountDto, ApiError } from "@/types/api";
 
 export function useDiscounts(params?: { activeOnly?: "true" | "false"; page?: number; limit?: number }) {
  return useQuery({
@@ -19,7 +19,7 @@ export function useDiscount(id: string) {
  });
 }
 
-export function useCreateDiscount(opt?: UseMutationOptions<Discount, Error, CreateDiscountDto>) {
+export function useCreateDiscount(opt?: UseMutationOptions<Discount, ApiError, CreateDiscountDto>) {
  const queryClient = useQueryClient();
  return useMutation({
  mutationFn: (data: CreateDiscountDto) => DiscountService.create(data),
@@ -31,7 +31,7 @@ export function useCreateDiscount(opt?: UseMutationOptions<Discount, Error, Crea
  });
 }
 
-export function useUpdateDiscount(opt?: UseMutationOptions<Discount, Error, { id: string; data: UpdateDiscountDto }>) {
+export function useUpdateDiscount(opt?: UseMutationOptions<Discount, ApiError, { id: string; data: UpdateDiscountDto }>) {
  const queryClient = useQueryClient();
  return useMutation({
  mutationFn: ({ id, data }: { id: string; data: UpdateDiscountDto }) => DiscountService.update(id, data),
@@ -44,7 +44,7 @@ export function useUpdateDiscount(opt?: UseMutationOptions<Discount, Error, { id
  });
 }
 
-export function useDeleteDiscount(opt?: UseMutationOptions<void, Error, string>) {
+export function useDeleteDiscount(opt?: UseMutationOptions<void, ApiError, string>) {
  const queryClient = useQueryClient();
  return useMutation({
  mutationFn: (id: string) => DiscountService.delete(id),

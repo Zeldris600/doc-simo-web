@@ -2,7 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient, UseMutationOptions } from "@tanstack/react-query";
 import { CategoryService, CreateCategoryDto } from "@/services/category.service";
-import { Category } from "@/types/api";
+import { Category, ApiError } from "@/types/api";
 
 export function useCategories(params?: { page?: number; limit?: number }) {
  return useQuery({
@@ -19,7 +19,7 @@ export function useCategory(id: string) {
  });
 }
 
-export function useCreateCategory<TError = Error>(opt?: UseMutationOptions<Category, TError, CreateCategoryDto>) {
+export function useCreateCategory<TError = ApiError>(opt?: UseMutationOptions<Category, TError, CreateCategoryDto>) {
  const queryClient = useQueryClient();
  return useMutation({
  mutationFn: (data: CreateCategoryDto) => CategoryService.create(data),
@@ -31,7 +31,7 @@ export function useCreateCategory<TError = Error>(opt?: UseMutationOptions<Categ
  });
 }
 
-export function useUpdateCategory<TError = Error>(opt?: UseMutationOptions<Category, TError, { id: string; data: Partial<CreateCategoryDto> }>) {
+export function useUpdateCategory<TError = ApiError>(opt?: UseMutationOptions<Category, TError, { id: string; data: Partial<CreateCategoryDto> }>) {
  const queryClient = useQueryClient();
  return useMutation({
  mutationFn: ({ id, data }: { id: string; data: Partial<CreateCategoryDto> }) => CategoryService.update(id, data),
@@ -44,7 +44,7 @@ export function useUpdateCategory<TError = Error>(opt?: UseMutationOptions<Categ
  });
 }
 
-export function useDeleteCategory<TError = Error>(opt?: UseMutationOptions<void, TError, string>) {
+export function useDeleteCategory<TError = ApiError>(opt?: UseMutationOptions<void, TError, string>) {
  const queryClient = useQueryClient();
  return useMutation({
  mutationFn: (id: string) => CategoryService.delete(id),

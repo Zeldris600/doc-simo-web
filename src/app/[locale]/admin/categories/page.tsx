@@ -1,151 +1,154 @@
 "use client";
 
+import { useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/ui/data-table";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal, Plus, Pencil, Trash2 } from "lucide-react";
+import { MoreHorizontal, Plus } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
- DropdownMenu,
- DropdownMenuContent,
- DropdownMenuItem,
- DropdownMenuLabel,
- DropdownMenuSeparator,
- DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import DashboardHeader from "@/components/dashboard-header";
 import { useCategories, useDeleteCategory } from "@/hooks/use-category";
 import { Category } from "@/types/api";
+import { useCan } from "@/hooks/use-can";
 import { toast } from "sonner";
-import { Skeleton } from "@/components/ui/skeleton";
+import { useRouter } from "@/i18n/routing";
 
 export default function AdminCategoriesPage() {
- const router = useRouter();
- const { data: categoriesResponse, isLoading } = useCategories();
- const deleteMutation = useDeleteCategory();
+  const router = useRouter();
+  const { can } = useCan();
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
+  const { data: categoriesResponse, isLoading } = useCategories({
+    page: pagination.pageIndex + 1,
+    limit: pagination.pageSize,
+  });
+  const { mutate: deleteCategory } = useDeleteCategory();
 
- const categories = categoriesResponse?.data || [];
+  const categories = categoriesResponse?.data || [];
+  const total = categoriesResponse?.total || 0;
+  const pageCount = Math.ceil(total / pagination.pageSize);
 
- const handleDelete = (id: string) => {
- if (confirm("Are you sure you want to delete this category?")) {
- deleteMutation.mutate(id, {
- onSuccess: () => {
- toast.success("Category deleted");
- },
- });
- }
- };
+  const columns: ColumnDef<Category>[] = [
+    {
+      accessorKey: "image",
+      header: "",
+      cell: ({ row }) => {
+        const src = row.original.image || "/placeholder.png";
+        return (
+          <div className="relative h-10 w-10 rounded overflow-hidden bg-gray-50 border border-gray-100">
+            <Image
+              src={src}
+              alt={row.getValue("name")}
+              fill
+              className="object-cover"
+            />
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "name",
+      header: "Category Name",
+      cell: ({ row }) => (
+        <span className="font-bold text-black">{row.getValue("name")}</span>
+      ),
+    },
+    {
+      accessorKey: "slug",
+      header: "Slug",
+      cell: ({ row }) => (
+        <span className="text-gray-500 font-medium">
+          {row.getValue("slug")}
+        </span>
+      ),
+    },
+    {
+      accessorKey: "_count.products",
+      header: "Products",
+      cell: ({ row }) => (
+        <span className="font-bold text-gray-500">
+          {row.original._count?.products || 0} items
+        </span>
+      ),
+    },
+  ];
 
- const columns: ColumnDef<Category>[] = [
- {
- accessorKey: "image",
- header: "",
- cell: ({ row }) => {
- const image = row.getValue("image") as string;
- return (
- <div className="relative h-12 w-12 rounded-xl overflow-hidden bg-black/[0.02] border border-black/5">
- {image ? (
- <Image
- src={image}
- alt={row.getValue("name")}
- fill
- className="object-cover"
- />
- ) : (
- <div className="w-full h-full flex items-center justify-center bg-black/5">
- <Plus className="h-4 w-4 text-black/20" />
- </div>
- )}
- </div>
- );
- },
- },
- {
- accessorKey: "name",
- header: "Category",
- cell: ({ row }) => (
- <div className="flex flex-col">
- <span className="font-black text-black uppercase tracking-tight ">{row.getValue("name")}</span>
- <span className="text-[10px] font-bold text-black/40 uppercase tracking-widest">{row.original.slug}</span>
- </div>
- ),
- },
- {
- accessorKey: "_count.products",
- header: "Formulations",
- cell: ({ row }) => (
- <span className="font-bold text-black/60">{row.original._count?.products || 0} Products</span>
- ),
- },
- {
- id: "actions",
- cell: ({ row }) => (
- <DropdownMenu>
- <DropdownMenuTrigger asChild>
- <Button variant="ghost" className="h-10 w-10 p-0 rounded-full hover:bg-black hover:text-white transition-all">
- <MoreHorizontal className="h-5 w-5" />
- </Button>
- </DropdownMenuTrigger>
- <DropdownMenuContent
- align="end"
- className="w-48 rounded-lg border-black/5 p-2"
- >
- <DropdownMenuLabel className="px-4 py-2 text-[10px] font-black uppercase tracking-widest text-black/20">
- Operations
- </DropdownMenuLabel>
- <DropdownMenuSeparator className="bg-black/5" />
- <DropdownMenuItem 
- className="rounded-xl px-4 py-3 font-bold text-sm cursor-pointer hover:bg-black/[0.02]"
- onClick={() => router.push(`/admin/categories/${row.original.id}/edit`)}
- >
- <Pencil className="mr-3 h-4 w-4" /> Edit Details
- </DropdownMenuItem>
- <DropdownMenuItem 
- className="rounded-xl px-4 py-3 font-bold text-sm cursor-pointer text-destructive hover:bg-destructive/5"
- onClick={() => handleDelete(row.original.id)}
- >
- <Trash2 className="mr-3 h-4 w-4" /> Decommission
- </DropdownMenuItem>
- </DropdownMenuContent>
- </DropdownMenu>
- ),
- },
- ];
+  if (can("categories:write")) {
+    columns.push({
+      id: "actions",
+      cell: ({ row }) => {
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              className="rounded border-gray-100 shadow-none"
+            >
+              <DropdownMenuLabel className="text-xs font-bold uppercase text-gray-400">
+                Manage
+              </DropdownMenuLabel>
+              <DropdownMenuItem
+                className="text-sm font-medium"
+                onClick={() =>
+                  router.push(`/admin/categories/${row.original.id}`)
+                }
+              >
+                Edit details
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="text-sm font-medium text-destructive"
+                onClick={() => {
+                  if (
+                    confirm("Are you sure you want to delete this category?")
+                  ) {
+                    deleteCategory(row.original.id, {
+                      onSuccess: () =>
+                        toast.success("Category deleted successfully"),
+                    });
+                  }
+                }}
+              >
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      },
+    });
+  }
 
- if (isLoading) {
- return (
- <div className="space-y-8 p-10">
- <div className="flex justify-between items-center">
- <Skeleton className="h-12 w-64 rounded-lg" />
- <Skeleton className="h-12 w-48 rounded-lg" />
- </div>
- <Skeleton className="h-[400px] w-full rounded-lg" />
- </div>
- );
- }
+  const addAction = can("categories:write") ? (
+    <Button onClick={() => router.push("/admin/categories/new")}>
+      <Plus className="w-4 h-4 mr-2" /> Add Category
+    </Button>
+  ) : null;
 
- return (
- <div className="p-10 space-y-10">
- <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
- <div>
- <h1 className="text-6xl font-black uppercase tracking-tighter text-black leading-none">Taxonomy</h1>
- <p className="text-black/40 font-bold uppercase tracking-widest text-xs mt-4">Clinical classification of therapeutic formulas.</p>
- </div>
- <Link href="/admin/categories/new">
- <Button className="bg-black hover:bg-black/90 text-white rounded-lg h-16 px-10 font-black uppercase tracking-widest transition-all hover:scale-[1.02] active:scale-95 gap-3">
- <Plus className="h-6 w-6" /> New Category
- </Button>
- </Link>
- </div>
-
- <div className="bg-white rounded-lg border border-black/5 overflow-hidden p-2">
- <DataTable
- columns={columns}
- data={categories}
- searchKey="name"
- />
- </div>
- </div>
- );
+  return (
+    <div className="space-y-6">
+      <DashboardHeader
+        title="Category Management"
+        description="Organize your product catalog by therapeutic functions."
+      />
+      <DataTable
+        columns={columns}
+        data={categories}
+        searchKey="name"
+        action={addAction || undefined}
+        pageCount={pageCount}
+        pagination={pagination}
+        onPaginationChange={setPagination}
+        isLoading={isLoading}
+      />
+    </div>
+  );
 }

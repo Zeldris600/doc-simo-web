@@ -70,9 +70,12 @@ export default function AccountPage() {
         <div className="flex gap-4 w-full md:w-auto">
           <Button 
             variant="outline" 
+            asChild
             className="flex-1 md:flex-initial rounded-xl h-12 px-6 border-black/10 hover:bg-black/5 transition-all font-black text-[10px] tracking-widest active:scale-95 transition-all"
           >
-            <Settings className="mr-2 h-4 w-4" /> Profile Specs
+            <Link href="/account/profile">
+               <Settings className="mr-2 h-4 w-4" /> Profile Specs
+            </Link>
           </Button>
           <Button 
             onClick={handleLogout}

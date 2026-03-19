@@ -11,20 +11,14 @@ import {
   CreateOrderDto,
   Order,
   UpdateOrderStatusDto,
+  ApiError,
 } from "@/types/api";
 import { useRouter } from "@/i18n/routing";
 import { toast } from "sonner";
 
-// Helper for axios error handling without any
-interface ApiErrorResponse {
-  response?: {
-    data?: {
-      message?: string;
-    };
-  };
-}
 
-export function useCreateOrder<TError = Error>(
+
+export function useCreateOrder<TError extends ApiError = ApiError>(
   opt?: UseMutationOptions<Order, TError, CreateOrderDto>,
 ) {
   const router = useRouter();
@@ -40,9 +34,7 @@ export function useCreateOrder<TError = Error>(
       opt?.onSuccess?.(order, ...rest);
     },
     onError: (error, ...rest) => {
-      // Improved typing for the error check
-      const apiError = error as ApiErrorResponse;
-      const message = apiError.response?.data?.message || "Failed to place order";
+      const message = error.response?.data?.message || "Failed to place order";
       toast.error(message);
       opt?.onError?.(error, ...rest);
     },
@@ -71,7 +63,7 @@ export function useOrder(id: string) {
   });
 }
 
-export function useUpdateOrderStatus<TError = Error>(
+export function useUpdateOrderStatus<TError extends ApiError = ApiError>(
   opt?: UseMutationOptions<
     Order,
     TError,

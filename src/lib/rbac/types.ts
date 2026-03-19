@@ -26,6 +26,8 @@ export type Permission =
  | "notifications:write"
  | "analytics:read"
  | "discounts:read"
- | "discounts:write";
+ | "discounts:write"
+ | "support:read"
+ | "support:write";
 
 export type RolePermissionsMapping = Record<UserRole, Permission[]>;

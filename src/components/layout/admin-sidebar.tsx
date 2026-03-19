@@ -22,6 +22,9 @@ import {
   Truck,
   MapPin,
   Globe,
+  LifeBuoy,
+  MessageSquare,
+  type LucideIcon,
 } from "lucide-react";
 
 import Image from "next/image";
@@ -39,22 +42,35 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { useCan } from "@/hooks/use-can";
+import { Permission } from "@/lib/rbac/types";
 
-// This is sample data.
-const data = {
-  user: {
-    name: "Admin User",
-    email: "admin@ecommerce.com",
-    avatar: "/avatars/admin.jpg",
-  },
-  teams: [
-    {
-      name: "My Store",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-  ],
-  navMain: [
+type NavItem = {
+  title: string;
+  url: string;
+  icon?: LucideIcon;
+  isActive?: boolean;
+  permission?: Permission;
+  items?: {
+    title: string;
+    url: string;
+    icon?: LucideIcon;
+    permission?: Permission;
+  }[];
+};
+
+export function AdminSidebar({
+  ...props
+}: React.ComponentProps<typeof Sidebar>) {
+  const { user, can } = useCan();
+
+  const navUser = {
+    name: user?.name || "System User",
+    email: user?.email || "user@doctasimo.com",
+    avatar: user?.image || "/avatars/admin.jpg",
+  };
+
+  const navMain: NavItem[] = [
     {
       title: "Dashboard",
       url: "/admin",
@@ -70,6 +86,7 @@ const data = {
           title: "Analytics",
           url: "/admin/analytics",
           icon: LineChart,
+          permission: "analytics:read",
         },
       ],
     },
@@ -77,26 +94,25 @@ const data = {
       title: "Catalog",
       url: "/admin/products",
       icon: BookOpen,
+      permission: "products:read",
       items: [
         {
           title: "Products",
           url: "/admin/products",
           icon: Package,
+          permission: "products:read",
         },
         {
           title: "Add Product",
           url: "/admin/products/new",
           icon: PlusCircle,
+          permission: "products:write",
         },
         {
           title: "Categories",
           url: "/admin/categories",
           icon: FolderTree,
-        },
-        {
-          title: "Inventory",
-          url: "/admin/inventory",
-          icon: Warehouse,
+          permission: "categories:read",
         },
       ],
     },
@@ -104,21 +120,19 @@ const data = {
       title: "Sales",
       url: "/admin/orders",
       icon: PieChart,
+      permission: "orders:read",
       items: [
         {
           title: "Orders",
           url: "/admin/orders",
           icon: ShoppingBag,
-        },
-        {
-          title: "Invoices",
-          url: "/admin/invoices",
-          icon: FileText,
+          permission: "orders:read",
         },
         {
           title: "Discounts",
           url: "/admin/discounts",
           icon: Percent,
+          permission: "discounts:read",
         },
       ],
     },
@@ -126,64 +140,67 @@ const data = {
       title: "Customers",
       url: "/admin/customers",
       icon: Users,
+      permission: "customers:read",
       items: [
         {
           title: "All Customers",
           url: "/admin/customers",
           icon: Users,
-        },
-        {
-          title: "Segments",
-          url: "/admin/customers/segments",
-          icon: Users,
+          permission: "customers:read",
         },
       ],
     },
     {
-      title: "Settings",
-      url: "/admin/settings",
-      icon: Settings2,
+      title: "Support",
+      url: "/admin/support",
+      icon: LifeBuoy,
+      permission: "support:read",
       items: [
         {
-          title: "General",
-          url: "/admin/settings",
-          icon: Settings,
-        },
-        {
-          title: "Shipping",
-          url: "/admin/settings/shipping",
-          icon: Truck,
-        },
-        {
-          title: "Taxes",
-          url: "/admin/settings/taxes",
-          icon: Globe,
-        },
-        {
-          title: "Locations",
-          url: "/admin/settings/locations",
-          icon: MapPin,
+          title: "Threads",
+          url: "/admin/support",
+          icon: MessageSquare,
+          permission: "support:read",
         },
       ],
     },
-  ],
-  projects: [
+    {
+      title: "Users",
+      url: "/admin/users",
+      icon: Settings2,
+      permission: "users:read",
+      items: [
+        {
+          title: "Registry",
+          url: "/admin/users",
+          icon: Users,
+          permission: "users:read",
+        },
+      ],
+    },
+  ];
+
+  const projects = [
     {
       name: "Storefront",
       url: "/",
-      icon: Frame,
+      icon: Globe,
     },
-    {
-      name: "Marketing",
-      url: "/admin/marketing",
-      icon: PieChart,
-    },
-  ],
-};
+  ];
 
-export function AdminSidebar({
-  ...props
-}: React.ComponentProps<typeof Sidebar>) {
+  // Helper function to filter recursive items
+  const filterNavItems = (items: NavItem[]) => {
+    return items
+      .filter((item) => !item.permission || can(item.permission))
+      .map((item) => ({
+        ...item,
+        items: item.items?.filter((sub) => !sub.permission || can(sub.permission)),
+      }))
+      .filter((item) => (item.items ? item.items.length > 0 : true));
+  };
+
+  const filteredNavMain = filterNavItems(navMain);
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -212,11 +229,11 @@ export function AdminSidebar({
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        <NavMain items={filteredNavMain} />
+        <NavProjects projects={projects} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={navUser} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

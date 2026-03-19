@@ -10,6 +10,8 @@ import {
   getSortedRowModel,
   ColumnFiltersState,
   getFilteredRowModel,
+  PaginationState,
+  Updater,
 } from "@tanstack/react-table";
 
 import {
@@ -23,13 +25,20 @@ import {
 import { Button } from "@/components/ui/button";
 import * as React from "react";
 import { Input } from "@/components/ui/input";
-import { SlidersHorizontal, Search } from "lucide-react";
+import { SlidersHorizontal } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   searchKey?: string;
   action?: React.ReactNode;
+  pageCount?: number;
+  pagination?: {
+    pageIndex: number;
+    pageSize: number;
+  };
+  onPaginationChange?: (updater: Updater<PaginationState>) => void;
+  isLoading?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -37,6 +46,10 @@ export function DataTable<TData, TValue>({
   data,
   searchKey,
   action,
+  pageCount,
+  pagination,
+  onPaginationChange,
+  isLoading,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -47,7 +60,15 @@ export function DataTable<TData, TValue>({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
+    ...(pagination && onPaginationChange
+      ? {
+          pageCount,
+          manualPagination: true,
+          onPaginationChange,
+        }
+      : {
+          getPaginationRowModel: getPaginationRowModel(),
+        }),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
@@ -55,6 +76,7 @@ export function DataTable<TData, TValue>({
     state: {
       sorting,
       columnFilters,
+      ...(pagination && { pagination }),
     },
   });
 
@@ -63,9 +85,8 @@ export function DataTable<TData, TValue>({
       <div className="flex items-center justify-between gap-4 pb-4 pt-2">
         <div className="flex flex-1 items-center gap-2 max-w-sm">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
             <Input
-              placeholder="Search..."
+              placeholder="Search"
               value={
                 (table
                   .getColumn(searchKey ?? "")
@@ -76,21 +97,16 @@ export function DataTable<TData, TValue>({
                   .getColumn(searchKey ?? "")
                   ?.setFilterValue(event.target.value)
               }
-              className="pl-9 rounded bg-gray-50 border-gray-100 focus-visible:ring-primary h-10"
             />
           </div>
-          <Button
-            variant="outline"
-            size="icon"
-            className="rounded border-gray-100 h-10 w-10 shrink-0"
-          >
+          <Button variant="outline" size="icon" className="shrink-0">
             <SlidersHorizontal className="h-4 w-4 text-gray-500" />
           </Button>
         </div>
         {action && <div className="flex items-center gap-2">{action}</div>}
       </div>
 
-      <div className="rounded border border-gray-100 overflow-hidden bg-white">
+      <div className="rounded-lg border border-gray-100 overflow-hidden bg-white">
         <Table>
           <TableHeader className="bg-gray-50/30 border-b border-gray-100">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -102,7 +118,7 @@ export function DataTable<TData, TValue>({
                   return (
                     <TableHead
                       key={header.id}
-                      className="text-xs font-bold tracking-tight text-black py-4 px-6"
+                      className="text-base text-black py-2 px-6"
                     >
                       {header.isPlaceholder
                         ? null
@@ -125,10 +141,7 @@ export function DataTable<TData, TValue>({
                   className="border-gray-100 hover:bg-gray-50/30 transition-colors"
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      className="py-4 px-6 text-sm font-medium text-gray-700"
-                    >
+                    <TableCell key={cell.id} className="py-4 px-6 text-sm">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext(),
@@ -141,9 +154,9 @@ export function DataTable<TData, TValue>({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-32 text-center text-gray-400 font-bold uppercase text-[10px] tracking-widest"
+                  className="h-32 text-center text-gray-400 font-semibold capitalize text-sm"
                 >
-                  No records found.
+                  {isLoading ? "Loading..." : "No records found."}
                 </TableCell>
               </TableRow>
             )}

@@ -1,6 +1,6 @@
 import { api } from "./api";
 import { User } from "../types/auth";
-import { PaginatedResponse } from "../types/api";
+import { PaginatedResponse, StandardResponse } from "../types/api";
 import { UserRole } from "@/lib/rbac/types";
 
 export interface UpdateUserDto {
@@ -21,8 +21,8 @@ export const UserService = {
 
  // Admin section: 
  getAll: async (params?: { role?: UserRole; page?: number; limit?: number }) => {
- const response = await api.get<PaginatedResponse<User>>("/users", { params });
- return response.data;
+ const response = await api.get<StandardResponse<PaginatedResponse<User>>>("/users", { params });
+ return response.data.data;
  },
 
  getById: async (id: string) => {

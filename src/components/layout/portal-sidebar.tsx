@@ -13,8 +13,8 @@ import {
 import Image from "next/image";
 
 import { NavMain } from "@/components/layout/nav-main";
-import { NavProjects } from "@/components/layout/nav-projects";
 import { NavUser } from "@/components/layout/nav-user";
+import { useCan } from "@/hooks/use-can";
 import {
   Sidebar,
   SidebarContent,
@@ -26,58 +26,42 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 
-const data = {
-  user: {
-    name: "Support Agent",
-    email: "agent@support.com",
-    avatar: "/avatars/support.jpg",
-  },
-  teams: [
-    {
-      name: "Support Desk",
-      logo: LifeBuoy,
-      plan: "Pro",
-    },
-  ],
-  navMain: [
+
+export function PortalSidebar({
+  ...props
+}: React.ComponentProps<typeof Sidebar>) {
+  const { user } = useCan();
+  
+  const portalUser = {
+    name: user?.name || "Customer User",
+    email: user?.email || "customer@doctasimo.com",
+    avatar: user?.image || "/avatars/customer.jpg",
+  };
+
+  const navMain = [
     {
       title: "Dashboard",
       url: "/portal",
       icon: SquareTerminal,
       isActive: true,
-      items: [], // Flat link
     },
     {
-      title: "Tickets",
+      title: "Support Tickets",
       url: "/portal/tickets",
       icon: Ticket,
-      items: [], // Flat link
     },
     {
       title: "Messages",
       url: "/portal/messages",
       icon: MessageSquare,
-      items: [], // Flat link
-    },
-    {
-      title: "Customers",
-      url: "/portal/customers",
-      icon: User,
-      items: [], // Flat link
     },
     {
       title: "Settings",
       url: "/portal/settings",
       icon: Settings2,
-      items: [], // Flat link
     },
-  ],
-  projects: [], // No projects for portal needed, or we can add some if required
-};
+  ];
 
-export function PortalSidebar({
-  ...props
-}: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -92,7 +76,7 @@ export function PortalSidebar({
                   DOCTASIME
                 </span>
                 <span className="truncate text-[10px] font-bold text-muted-foreground uppercase">
-                  Support Portal
+                  Customer Portal
                 </span>
               </div>
             </SidebarMenuButton>
@@ -100,11 +84,10 @@ export function PortalSidebar({
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        {data.projects.length > 0 && <NavProjects projects={data.projects} />}
+        <NavMain items={navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={portalUser} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

@@ -5,7 +5,8 @@ import {
  PaginatedResponse, 
  PushOrderLocationDto, 
  UpdateOrderStatusDto,
- OrderStatus
+ OrderStatus,
+ StandardResponse
 } from "../types/api";
 
 export const OrderService = {
@@ -16,8 +17,8 @@ export const OrderService = {
  },
 
  list: async (params?: { page?: number; limit?: number }) => {
- const response = await api.get<PaginatedResponse<Order>>("/orders", { params });
- return response.data;
+ const response = await api.get<StandardResponse<PaginatedResponse<Order>>>("/orders", { params });
+ return response.data.data;
  },
 
  getMe: async () => {

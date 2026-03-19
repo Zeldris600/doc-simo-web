@@ -32,6 +32,7 @@ import {
 import { useCart } from "@/store/use-cart";
 import { useCreateOrder } from "@/hooks/use-order";
 import { toast } from "sonner";
+import { AxiosError } from "axios";
 
 const checkoutSchema = z.object({
   recipientName: z.string().min(2, "Name is required"),
@@ -47,11 +48,17 @@ export default function CartPage() {
   const t = useTranslations("cart");
   const checkoutT = useTranslations("checkout");
   const router = useRouter();
-  const { items, updateQuantity, removeItem, subtotal: getSubtotal, clearCart } = useCart();
+  const {
+    items,
+    updateQuantity,
+    removeItem,
+    subtotal: getSubtotal,
+    clearCart,
+  } = useCart();
   const { mutate: createOrder, isPending: isCreating } = useCreateOrder();
-  
+
   const [promoCode] = useState("");
-  
+
   const form = useForm<CheckoutValues>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
@@ -68,24 +75,27 @@ export default function CartPage() {
   const total = subtotal + shipping;
 
   const onSubmit = (values: CheckoutValues) => {
-    createOrder({
-      items: items.map(i => ({ productId: i.id, quantity: i.quantity })),
-      deliveryAddress: {
-        address: values.address,
-        city: values.city,
-        region: values.region,
-        phone: values.phone
+    createOrder(
+      {
+        items: items.map((i) => ({ productId: i.id, quantity: i.quantity })),
+        deliveryAddress: {
+          address: values.address,
+          city: values.city,
+          region: values.region,
+          phone: values.phone,
+        },
+        code: promoCode || undefined,
       },
-      code: promoCode || undefined
-    }, {
-      onSuccess: (order) => {
-        clearCart();
-        router.push(`/checkout/${order.id}`);
+      {
+        onSuccess: (order) => {
+          clearCart();
+          router.push(`/checkout/${order.id}`);
+        },
+        onError: (err: AxiosError<{ message?: string }>) => {
+          toast.error(err?.response?.data?.message || "Failed to create order");
+        },
       },
-      onError: (err: any) => {
-        toast.error(err?.response?.data?.message || "Failed to create order");
-      }
-    });
+    );
   };
 
   if (items.length === 0) {
@@ -97,7 +107,10 @@ export default function CartPage() {
         <p className="text-black/40 mb-10 text-sm max-w-md mx-auto font-medium leading-relaxed">
           {t("emptyDesc")}
         </p>
-        <Button asChild className="rounded-md px-10 h-11 text-xs font-bold bg-primary hover:bg-primary/90 transition-all active:scale-95 shadow-none">
+        <Button
+          asChild
+          className="rounded-md px-10 h-11 text-xs font-bold bg-primary hover:bg-primary/90 transition-all active:scale-95 shadow-none"
+        >
           <Link href="/products">{t("continue")}</Link>
         </Button>
       </div>
@@ -167,7 +180,8 @@ export default function CartPage() {
                     {t("price")}:
                   </span>
                   <span className="text-sm font-bold text-black">
-                    {Number(item.price).toLocaleString()} <span className="text-[10px]">XAF</span>
+                    {Number(item.price).toLocaleString()}{" "}
+                    <span className="text-[10px]">XAF</span>
                   </span>
                 </div>
 
@@ -197,7 +211,8 @@ export default function CartPage() {
                     {t("total")}:
                   </span>
                   <span className="text-sm font-bold text-black">
-                    {(Number(item.price) * item.quantity).toLocaleString()} <span className="text-[10px]">XAF</span>
+                    {(Number(item.price) * item.quantity).toLocaleString()}{" "}
+                    <span className="text-[10px]">XAF</span>
                   </span>
                 </div>
               </div>
@@ -208,22 +223,30 @@ export default function CartPage() {
         {/* Order Summary + Delivery */}
         <div className="lg:col-span-5">
           <div className="bg-black/[0.02] rounded-md p-8 sticky top-24 border border-black/5 space-y-8 shadow-none">
-            <h2 className="text-[10px] font-bold uppercase tracking-widest text-black/60">{t("summary")}</h2>
+            <h2 className="text-[10px] font-bold uppercase tracking-widest text-black/60">
+              {t("summary")}
+            </h2>
 
             <div className="space-y-4">
               <div className="flex justify-between text-sm font-medium">
                 <span className="text-black/40">{t("subtotal")}</span>
-                <span className="text-black">{subtotal.toLocaleString()} XAF</span>
+                <span className="text-black">
+                  {subtotal.toLocaleString()} XAF
+                </span>
               </div>
               <div className="flex justify-between text-sm font-medium">
                 <span className="text-black/40">{t("shipping")}</span>
-                <span className="text-emerald-500 font-bold tracking-widest text-[10px]">{t("free")}</span>
+                <span className="text-emerald-500 font-bold tracking-widest text-[10px]">
+                  {t("free")}
+                </span>
               </div>
 
               <Separator className="bg-black/5" />
 
               <div className="flex justify-between items-baseline pt-2">
-                <span className="text-base font-black tracking-tight">{t("total")}</span>
+                <span className="text-base font-black tracking-tight">
+                  {t("total")}
+                </span>
                 <div className="text-right">
                   <span className="text-3xl font-black text-primary">
                     {total.toLocaleString()} XAF
@@ -239,17 +262,25 @@ export default function CartPage() {
             <div className="space-y-6 pt-6 border-t border-black/5">
               <div className="flex items-center gap-3">
                 <Truck className="h-4 w-4 text-black/30" />
-                <span className="text-[10px] font-bold uppercase tracking-widest text-black/40">{checkoutT("delivery")}</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-black/40">
+                  {checkoutT("delivery")}
+                </span>
               </div>
-              
+
               <Form {...form}>
-                <form id="checkout-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <form
+                  id="checkout-form"
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-4"
+                >
                   <FormField
                     control={form.control}
                     name="recipientName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-black/40 px-1">{checkoutT("recipient")}</FormLabel>
+                        <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-black/40 px-1">
+                          {checkoutT("recipient")}
+                        </FormLabel>
                         <FormControl>
                           <Input
                             placeholder={checkoutT("recipientPlaceholder")}
@@ -261,14 +292,16 @@ export default function CartPage() {
                       </FormItem>
                     )}
                   />
-                  
+
                   <div className="grid grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
                       name="city"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-black/40 px-1">{checkoutT("city")}</FormLabel>
+                          <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-black/40 px-1">
+                            {checkoutT("city")}
+                          </FormLabel>
                           <FormControl>
                             <Input
                               placeholder={checkoutT("cityPlaceholder")}
@@ -285,7 +318,9 @@ export default function CartPage() {
                       name="region"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-black/40 px-1">Region</FormLabel>
+                          <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-black/40 px-1">
+                            Region
+                          </FormLabel>
                           <FormControl>
                             <Input
                               placeholder="E.g. Center"
@@ -303,7 +338,9 @@ export default function CartPage() {
                     name="phone"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-black/40 px-1">{checkoutT("phone")}</FormLabel>
+                        <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-black/40 px-1">
+                          {checkoutT("phone")}
+                        </FormLabel>
                         <FormControl>
                           <Input
                             placeholder="+237 ..."
@@ -321,7 +358,9 @@ export default function CartPage() {
                     name="address"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-black/40 px-1">{checkoutT("street")}</FormLabel>
+                        <FormLabel className="text-[10px] font-bold uppercase tracking-widest text-black/40 px-1">
+                          {checkoutT("street")}
+                        </FormLabel>
                         <FormControl>
                           <Input
                             placeholder={checkoutT("streetPlaceholder")}
@@ -337,7 +376,7 @@ export default function CartPage() {
               </Form>
             </div>
 
-            <Button 
+            <Button
               form="checkout-form"
               type="submit"
               disabled={isCreating}
