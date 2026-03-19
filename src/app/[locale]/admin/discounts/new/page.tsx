@@ -30,9 +30,9 @@ import { Loader2 } from "lucide-react";
 const discountSchema = z.object({
   code: z.string().min(3, "Code must be at least 3 characters"),
   type: z.enum(["PERCENT", "FIXED"]),
-  value: z.coerce.number().min(1, "Value must be at least 1"),
+  value: z.number().min(1, "Value must be at least 1"),
   expiresAt: z.string().optional(),
-  maxUses: z.coerce.number().optional(),
+  maxUses: z.number().optional(),
 });
 
 type DiscountFormValues = z.infer<typeof discountSchema>;
@@ -58,14 +58,16 @@ export default function AdminAddDiscountPage() {
         code: values.code.toUpperCase(),
         type: values.type,
         value: values.value,
-        expiresAt: values.expiresAt ? new Date(values.expiresAt).toISOString() : undefined,
+        expiresAt: values.expiresAt
+          ? new Date(values.expiresAt).toISOString()
+          : undefined,
         maxUses: values.maxUses || undefined,
       },
       {
         onSuccess: () => {
           router.push("/admin/discounts");
         },
-      }
+      },
     );
   };
 
@@ -91,7 +93,9 @@ export default function AdminAddDiscountPage() {
                   <Input
                     placeholder="e.g. SUMMER25"
                     {...field}
-                    onChange={(e) => field.onChange(e.target.value.toUpperCase())}
+                    onChange={(e) =>
+                      field.onChange(e.target.value.toUpperCase())
+                    }
                     className="uppercase tracking-widest font-bold"
                   />
                 </FormControl>
@@ -110,7 +114,10 @@ export default function AdminAddDiscountPage() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Discount Type</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select type" />
@@ -174,12 +181,18 @@ export default function AdminAddDiscountPage() {
           </div>
 
           <div className="flex justify-end gap-3 pt-4 border-t border-gray-50">
-            <Button type="button" variant="outline" onClick={() => router.push("/admin/discounts")}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => router.push("/admin/discounts")}
+            >
               Cancel
             </Button>
             <Button type="submit" disabled={isCreating}>
               {isCreating ? (
-                <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Creating...</>
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Creating...
+                </>
               ) : (
                 "Create Discount"
               )}

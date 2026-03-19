@@ -32,7 +32,7 @@ import {
 import { useCart } from "@/store/use-cart";
 import { useCreateOrder } from "@/hooks/use-order";
 import { toast } from "sonner";
-import { AxiosError } from "axios";
+import { ApiError } from "@/types/api";
 
 const checkoutSchema = z.object({
   recipientName: z.string().min(2, "Name is required"),
@@ -91,7 +91,7 @@ export default function CartPage() {
           clearCart();
           router.push(`/checkout/${order.id}`);
         },
-        onError: (err: AxiosError<{ message?: string }>) => {
+        onError: (err: ApiError) => {
           toast.error(err?.response?.data?.message || "Failed to create order");
         },
       },

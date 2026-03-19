@@ -33,10 +33,10 @@ import { toast } from "sonner";
 const discountSchema = z.object({
   code: z.string().min(3, "Code must be at least 3 characters"),
   type: z.enum(["PERCENT", "FIXED"]),
-  value: z.coerce.number().min(1, "Value must be at least 1"),
+  value: z.number().min(1, "Value must be at least 1"),
   expiresAt: z.string().optional(),
   active: z.boolean(),
-  maxUses: z.coerce.number().optional(),
+  maxUses: z.number().optional(),
 });
 
 type DiscountFormValues = z.infer<typeof discountSchema>;
@@ -82,7 +82,9 @@ export default function AdminEditDiscountPage() {
           code: values.code.toUpperCase(),
           type: values.type,
           value: values.value,
-          expiresAt: values.expiresAt ? new Date(values.expiresAt).toISOString() : undefined,
+          expiresAt: values.expiresAt
+            ? new Date(values.expiresAt).toISOString()
+            : undefined,
           active: values.active,
           maxUses: values.maxUses || undefined,
         },
@@ -92,7 +94,7 @@ export default function AdminEditDiscountPage() {
           toast.success("Discount updated successfully");
           router.push("/admin/discounts");
         },
-      }
+      },
     );
   };
 
@@ -126,7 +128,9 @@ export default function AdminEditDiscountPage() {
                   <Input
                     placeholder="e.g. SUMMER25"
                     {...field}
-                    onChange={(e) => field.onChange(e.target.value.toUpperCase())}
+                    onChange={(e) =>
+                      field.onChange(e.target.value.toUpperCase())
+                    }
                     className="uppercase tracking-widest font-bold"
                   />
                 </FormControl>
@@ -210,23 +214,34 @@ export default function AdminEditDiscountPage() {
             render={({ field }) => (
               <FormItem className="flex items-center gap-3 rounded-xl border border-gray-100 p-4">
                 <FormControl>
-                  <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
                 </FormControl>
                 <div>
                   <FormLabel className="text-sm font-bold">Active</FormLabel>
-                  <FormDescription>Toggle to activate or deactivate this discount code.</FormDescription>
+                  <FormDescription>
+                    Toggle to activate or deactivate this discount code.
+                  </FormDescription>
                 </div>
               </FormItem>
             )}
           />
 
           <div className="flex justify-end gap-3 pt-4 border-t border-gray-50">
-            <Button type="button" variant="outline" onClick={() => router.push("/admin/discounts")}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => router.push("/admin/discounts")}
+            >
               Cancel
             </Button>
             <Button type="submit" disabled={isUpdating}>
               {isUpdating ? (
-                <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Updating...</>
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Updating...
+                </>
               ) : (
                 "Update Discount"
               )}

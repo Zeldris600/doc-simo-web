@@ -12,10 +12,11 @@ interface ImageUploaderProps {
   onUploadSuccess?: (url: string) => void;
   defaultValue?: string;
   label?: string;
+  category?: string;
   className?: string;
 }
 
-export function ImageUploader({ 
+export function ImageUploader({
   onUploadSuccess,
   defaultValue = "",
   label,
@@ -35,12 +36,18 @@ export function ImageUploader({
           onSuccess: (res: unknown) => {
             // Robust parsing for Cloudinary response
             let uploadedUrl = "";
-            const rawRes = res as { data?: { url?: string } | Array<{ url?: string }> | string };
+            const rawRes = res as {
+              data?: { url?: string } | Array<{ url?: string }> | string;
+            };
             const rawData = rawRes?.data || rawRes;
-            
+
             if (typeof rawData === "string") {
               uploadedUrl = rawData;
-            } else if (rawData && !Array.isArray(rawData) && (rawData as { url?: string }).url) {
+            } else if (
+              rawData &&
+              !Array.isArray(rawData) &&
+              (rawData as { url?: string }).url
+            ) {
               uploadedUrl = (rawData as { url?: string }).url || "";
             } else if (Array.isArray(rawData) && rawData[0]?.url) {
               uploadedUrl = rawData[0].url;
@@ -57,12 +64,14 @@ export function ImageUploader({
           },
           onError: (err) => {
             console.error("Cloudinary upload error:", err);
-            toast.error("Failed to upload to Cloudinary. Verify backend synchronization.");
+            toast.error(
+              "Failed to upload to Cloudinary. Verify backend synchronization.",
+            );
           },
-        }
+        },
       );
     },
-    [uploadMutation, onUploadSuccess]
+    [uploadMutation, onUploadSuccess],
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -73,17 +82,21 @@ export function ImageUploader({
   });
 
   return (
-    <div 
-      {...getRootProps()} 
+    <div
+      {...getRootProps()}
       className={cn(
         "relative flex flex-col items-center justify-center cursor-pointer overflow-hidden border-2 border-dashed transition-all bg-black/[0.01] hover:bg-black/[0.03] group",
-        isDragActive ? "border-black bg-black/[0.05]" : "border-black/10 hover:border-black/20",
-        preview ? "border-solid border-black/5" : "rounded-2xl p-8 min-h-[160px]",
-        className
+        isDragActive
+          ? "border-black bg-black/[0.05]"
+          : "border-black/10 hover:border-black/20",
+        preview
+          ? "border-solid border-black/5"
+          : "rounded-2xl p-8 min-h-[160px]",
+        className,
       )}
     >
       <input {...getInputProps()} />
-      
+
       {preview ? (
         <div className="relative h-full w-full min-h-[160px] group">
           <Image
@@ -96,7 +109,9 @@ export function ImageUploader({
             <div className="h-10 w-10 rounded-full bg-white flex items-center justify-center shadow-lg">
               <Upload className="h-5 w-5 text-black" />
             </div>
-            <span className="text-[10px] font-black uppercase text-white tracking-[0.2em]">Update Asset</span>
+            <span className="text-[10px] font-black uppercase text-white tracking-[0.2em]">
+              Update Asset
+            </span>
           </div>
           <button
             type="button"
@@ -121,8 +136,12 @@ export function ImageUploader({
                 </div>
               </div>
               <div>
-                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-black/40">Synchronizing...</p>
-                <p className="text-[8px] font-bold text-black/20 mt-1 uppercase">Uploading to Cloudinary Mesh</p>
+                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-black/40">
+                  Synchronizing...
+                </p>
+                <p className="text-[8px] font-bold text-black/20 mt-1 uppercase">
+                  Uploading to Cloudinary Mesh
+                </p>
               </div>
             </>
           ) : (
@@ -131,9 +150,17 @@ export function ImageUploader({
                 <ImageIcon className="h-6 w-6 text-black/40 group-hover:text-white transition-colors" />
               </div>
               <div>
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-black/60 ">Drop Design Asset</p>
-                <p className="text-[9px] font-bold text-black/20 mt-1 uppercase tracking-wider">PNG, JPG, WEBP • Max 5MB</p>
-                {label && <p className="text-[8px] font-bold text-primary mt-2 uppercase">{label}</p>}
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-black/60 ">
+                  Drop Design Asset
+                </p>
+                <p className="text-[9px] font-bold text-black/20 mt-1 uppercase tracking-wider">
+                  PNG, JPG, WEBP • Max 5MB
+                </p>
+                {label && (
+                  <p className="text-[8px] font-bold text-primary mt-2 uppercase">
+                    {label}
+                  </p>
+                )}
               </div>
             </>
           )}

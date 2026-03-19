@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ImageUploader } from "@/components/ui/image-uploader";
 import { MultiImageUploader } from "@/components/ui/multi-image-uploader";
@@ -75,7 +74,7 @@ export function ProductForm({ initialData, onSuccess }: ProductFormProps) {
       name: initialData?.name || "",
       slug: initialData?.slug || "",
       description: initialData?.description || "",
-          price: initialData?.price ? Number(initialData.price) : 0,
+      price: initialData?.price ? Number(initialData.price) : 0,
       categoryId: initialData?.categoryId || "",
       availability: initialData?.availability !== false,
       isHot: initialData?.isHot || false,
@@ -141,7 +140,6 @@ export function ProductForm({ initialData, onSuccess }: ProductFormProps) {
                           defaultValue={field.value}
                           onUploadSuccess={field.onChange}
                           className="rounded-xl border-dashed"
-                          category="category"
                         />
                       </FormControl>
                       <FormMessage />
@@ -226,7 +224,7 @@ export function ProductForm({ initialData, onSuccess }: ProductFormProps) {
                   />
 
                   <FormField
-                    control={form.control as any}
+                    control={form.control}
                     name="categoryId"
                     render={({ field }) => (
                       <FormItem>
@@ -263,7 +261,7 @@ export function ProductForm({ initialData, onSuccess }: ProductFormProps) {
             </div>
 
             <FormField
-              control={form.control }
+              control={form.control}
               name="description"
               render={({ field }) => (
                 <FormItem>
@@ -284,7 +282,7 @@ export function ProductForm({ initialData, onSuccess }: ProductFormProps) {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <FormField
-                control={form.control as any}
+                control={form.control}
                 name="availability"
                 render={({ field }) => (
                   <FormItem className="flex flex-row items-center justify-between p-6 bg-black/[0.02] rounded-xl border border-black/5">
@@ -330,7 +328,7 @@ export function ProductForm({ initialData, onSuccess }: ProductFormProps) {
                 )}
               />
               <FormField
-                control={form.control as any}
+                control={form.control}
                 name="isPromotion"
                 render={({ field }) => (
                   <FormItem className="flex flex-row items-center justify-between p-6 bg-emerald-50/50 rounded-xl border border-emerald-100">
@@ -367,7 +365,7 @@ export function ProductForm({ initialData, onSuccess }: ProductFormProps) {
                     <MultiImageUploader
                       defaultValue={field.value}
                       onChange={field.onChange}
-                      category="product"
+                      category="image"
                       className="mt-4"
                     />
                   </FormControl>
