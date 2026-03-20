@@ -128,7 +128,7 @@ export default function ProductDetailsPage() {
     <div className="bg-white min-h-screen animate-in fade-in duration-700">
       <div className="container mx-auto max-w-6xl px-4 py-4 md:py-8">
         {/* Breadcrumbs */}
-        <nav className="flex items-center gap-4 text-[10px] font-bold uppercase tracking-widest text-black/40 mb-8">
+        <nav className="flex items-center gap-4 text-sm font-bold text-black/40 mb-8">
           <Link href="/" className="hover:text-primary transition-colors">
             {t("home")}
           </Link>

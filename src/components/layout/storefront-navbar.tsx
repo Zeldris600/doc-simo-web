@@ -192,6 +192,12 @@ export function StorefrontNavbar() {
                     {t("shop")}
                   </Link>
                   <Link
+                    href="/account/orders"
+                    className="px-4 py-3 text-sm font-bold text-white/70 hover:text-white hover:bg-white/5 rounded-xl transition-all"
+                  >
+                    {t("orders")}
+                  </Link>
+                  <Link
                     href="/about"
                     className="px-4 py-3 text-sm font-bold text-white/70 hover:text-white hover:bg-white/5 rounded-xl transition-all"
                   >
@@ -272,7 +278,16 @@ export function StorefrontNavbar() {
                     >
                       <Link href="/account">
                         <User className="mr-3 h-4 w-4" />
-                        <span className="font-medium text-sm">Profile</span>
+                        <span className="font-medium text-sm">{t("account")}</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      asChild
+                      className="rounded-lg px-3 py-2.5 cursor-pointer focus:bg-primary/5 focus:text-primary transition-colors"
+                    >
+                      <Link href="/account/orders">
+                        <ShoppingBag className="mr-3 h-4 w-4" />
+                        <span className="font-medium text-sm">{t("orders")}</span>
                       </Link>
                     </DropdownMenuItem>
                     {user.role === "ADMIN" && (

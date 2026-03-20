@@ -1,3 +1,4 @@
+import { StandardResponse } from "../types/api";
 import { api } from "./api";
 
 export interface InitiatePaymentDto {
@@ -8,11 +9,13 @@ export interface InitiatePaymentDto {
 export interface InitiatePaymentResponse {
   link: string;
   transId: string;
+  dateInitiated?: string;
+  message?: string;
 }
 
 export const PaymentService = {
   initiate: async (orderId: string, data: InitiatePaymentDto) => {
-    const response = await api.post<InitiatePaymentResponse>(`/payments/orders/${orderId}/initiate`, data);
-    return response.data;
+    const response = await api.post<StandardResponse<InitiatePaymentResponse>>(`/payments/orders/${orderId}/initiate`, data);
+    return response.data.data;
   },
 };

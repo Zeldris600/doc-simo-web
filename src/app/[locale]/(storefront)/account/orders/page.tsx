@@ -15,12 +15,32 @@ import { Badge } from "@/components/ui/badge";
 import { useMyOrders } from "@/hooks/use-order";
 import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
+import { useEffect } from "react";
+import { toast } from "sonner";
+import { Order } from "@/types/api";
 
 export default function OrdersPage() {
   const t = useTranslations("account.orders");
   const navT = useTranslations("navigation");
+  const searchParams = useSearchParams();
   const { data: ordersResponse, isLoading } = useMyOrders();
   const orders = ordersResponse?.data || [];
+
+  const status = searchParams.get("status");
+  const transId = searchParams.get("transId");
+
+  useEffect(() => {
+    if (status === "SUCCESSFUL") {
+      toast.success("Payment Received!", {
+        description: `Your transaction ${transId} has been successfully processed.`,
+      });
+    } else if (status === "FAILED") {
+      toast.error("Payment Failed", {
+        description: "Your transaction could not be completed. Please try again.",
+      });
+    }
+  }, [status, transId]);
 
   return (
     <div className="container mx-auto max-w-6xl px-4 py-16 space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -28,14 +48,14 @@ export default function OrdersPage() {
       <div className="space-y-4">
         <Link 
           href="/account"
-          className="flex items-center text-xs font-black text-black/30 hover:text-primary transition-all uppercase tracking-[0.2em]"
+          className="flex items-center text-xs font-semibold text-black/40 hover:text-primary transition-all tracking-tight"
         >
           <ArrowLeft className="mr-2 h-3.5 w-3.5" />
           {navT("account")}
         </Link>
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="space-y-2">
-            <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-black uppercase">
+            <h1 className="text-xl md:text-2xl font-semibold text-black">
               {t("title")}
             </h1>
             <p className="text-sm font-medium text-black/40 max-w-md">
@@ -47,52 +67,52 @@ export default function OrdersPage() {
             <input 
               type="text" 
               placeholder="Search by order ID..." 
-              className="w-full bg-black/[0.02] border border-black/5 rounded-2xl h-12 pl-12 pr-4 text-sm font-bold focus:outline-none focus:border-primary/20 transition-all"
+              className="w-full bg-black/[0.02] border border-black/5 rounded-2xl h-12 pl-12 pr-4 text-sm font-medium focus:outline-none focus:border-primary/20 transition-all"
             />
           </div>
         </div>
       </div>
 
       {/* Orders List */}
-      <div className="grid grid-cols-1 gap-6">
+      <div className="grid grid-cols-1 gap-4">
         {isLoading ? (
           Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="h-32 bg-black/[0.02] animate-pulse rounded-2xl border border-black/5" />
+            <div key={i} className="h-24 bg-black/[0.02] animate-pulse rounded-2xl border border-black/5" />
           ))
         ) : orders.length > 0 ? (
-          orders.map((order) => (
+          orders.map((order: Order) => (
             <Card key={order.id} className="border-black/5 rounded-2xl overflow-hidden bg-white hover:border-primary/20 transition-all duration-300 group">
-              <div className="p-8 flex flex-col lg:flex-row justify-between gap-8">
-                <div className="flex gap-6">
-                  <div className="h-20 w-20 rounded-2xl bg-black/[0.02] border border-black/5 flex items-center justify-center group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all duration-500">
-                    <Package className="h-10 w-10" />
+              <div className="p-5 flex flex-col lg:flex-row justify-between gap-5">
+                <div className="flex gap-4">
+                  <div className="h-12 w-12 rounded-xl bg-black/[0.02] border border-black/5 flex items-center justify-center group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all duration-500">
+                    <Package className="h-6 w-6" />
                   </div>
                   <div className="space-y-2">
                     <div className="flex items-center gap-3">
-                      <span className="text-[10px] font-black text-black/30 tracking-widest uppercase">Batch {order.id.slice(0, 8)}</span>
-                      <Badge className="bg-primary/10 text-primary rounded-full px-3 py-0.5 text-[9px] font-black uppercase tracking-wider border-none">
+                      <span className="text-xs font-medium text-black/30">Batch {order.id.slice(0, 8)}</span>
+                      <Badge className="bg-primary/10 text-primary rounded-full px-3 py-0.5 text-[10px] font-semibold border-none">
                         {order.status?.toLowerCase()}
                       </Badge>
                     </div>
-                    <h3 className="text-xl font-black text-black tracking-tight leading-none">
+                    <h3 className="text-lg font-semibold text-black tracking-tight leading-none">
                       {order.items?.[0]?.product?.name || "Multiple Formulations"}
                     </h3>
-                    <div className="flex items-center gap-4 text-[10px] font-bold text-black/40 uppercase tracking-widest">
-                      <span className="flex items-center gap-1.5"><ShoppingBag className="h-3 w-3" /> {order.items?.length || 0} items</span>
-                      <span className="flex items-center gap-1.5"><Calendar className="h-3 w-3" /> {new Date(order.createdAt).toLocaleDateString()}</span>
+                    <div className="flex items-center gap-4 text-[11px] font-medium text-black/40">
+                      <span className="flex items-center gap-1.5"><ShoppingBag className="h-3.5 w-3.5" /> {order.items?.length || 0} items</span>
+                      <span className="flex items-center gap-1.5"><Calendar className="h-3.5 w-3.5" /> {new Date(order.createdAt).toLocaleDateString()}</span>
                     </div>
                   </div>
                 </div>
                 
-                <div className="flex items-center justify-between lg:justify-end gap-10 border-t lg:border-t-0 lg:border-l border-black/5 pt-6 lg:pt-0 lg:pl-10">
+                <div className="flex items-center justify-between lg:justify-end gap-6 border-t lg:border-t-0 lg:border-l border-black/5 pt-4 lg:pt-0 lg:pl-8">
                   <div className="text-left lg:text-right">
-                    <p className="text-[10px] text-black/30 font-black uppercase tracking-widest leading-none mb-1">Total Value</p>
+                    <p className="text-[10px] text-black/30 font-semibold uppercase tracking-widest leading-none mb-1">Total Value</p>
                     <span className="text-2xl font-black text-black">
-                      {Number(order.total).toLocaleString()} <span className="text-xs uppercase">XAF</span>
+                      {Number(order.amount || order.total).toLocaleString()} <span className="text-xs font-semibold">{order.currency || "XAF"}</span>
                     </span>
                   </div>
-                  <Button asChild className="rounded-xl h-12 px-6 font-black text-[11px] uppercase tracking-widest bg-black text-white hover:bg-black/80 transition-all active:scale-95 shadow-xl shadow-black/10">
-                    <Link href={`/orders/${order.id}`}>
+                  <Button asChild>
+                    <Link href={`/checkout/${order.id}`}>
                       Trace Log <ChevronRight className="ml-2 h-4 w-4" />
                     </Link>
                   </Button>
