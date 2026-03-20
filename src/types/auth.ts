@@ -33,6 +33,7 @@ export interface User {
   deliveryAddress?: {
     phone?: string;
   };
+  token?: string;
 }
 
 export interface Session {

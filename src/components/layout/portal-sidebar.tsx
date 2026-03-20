@@ -2,12 +2,10 @@
 
 import * as React from "react";
 import {
-  LifeBuoy,
   MessageSquare,
   Settings2,
   SquareTerminal,
   Ticket,
-  User,
 } from "lucide-react";
 
 import Image from "next/image";
@@ -27,7 +25,7 @@ import {
 } from "@/components/ui/sidebar";
 
 
-export function PortalSidebar({
+export function SupportSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
   const { user } = useCan();
@@ -41,23 +39,23 @@ export function PortalSidebar({
   const navMain = [
     {
       title: "Dashboard",
-      url: "/portal",
+      url: "/support",
       icon: SquareTerminal,
       isActive: true,
     },
     {
       title: "Support Tickets",
-      url: "/portal/tickets",
+      url: "/support/tickets",
       icon: Ticket,
     },
     {
       title: "Messages",
-      url: "/portal/messages",
+      url: "/support/messages",
       icon: MessageSquare,
     },
     {
       title: "Settings",
-      url: "/portal/settings",
+      url: "/support/settings",
       icon: Settings2,
     },
   ];
@@ -76,7 +74,7 @@ export function PortalSidebar({
                   DOCTASIMO
                 </span>
                 <span className="truncate text-[10px] font-bold text-muted-foreground uppercase">
-                  Customer Portal
+                  Support Center
                 </span>
               </div>
             </SidebarMenuButton>

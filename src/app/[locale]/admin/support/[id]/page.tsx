@@ -77,8 +77,8 @@ export default function AdminThreadPage() {
 
   // Realtime
   useEffect(() => {
-    if (!threadId) return;
-    const pusher = getPusherClient();
+    if (!threadId || !user?.token) return;
+    const pusher = getPusherClient(user.token);
     const channel = pusher.subscribe(`private-thread-${threadId}`);
 
     channel.bind("support.message.new", (newMessage: SupportMessage) => {
@@ -101,7 +101,7 @@ export default function AdminThreadPage() {
     });
 
     return () => { channel.unbind_all(); channel.unsubscribe(); };
-  }, [threadId, queryClient, user?.id]);
+  }, [threadId, queryClient, user?.id, user?.token]);
 
   useEffect(() => {
     if (scrollRef.current) {

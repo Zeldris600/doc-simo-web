@@ -1,11 +1,15 @@
 "use client";
 
 import React from "react";
+import { Channel } from "pusher-js";
 import { useSupportThreads } from "@/hooks/use-support";
 import { useParams, useRouter } from "next/navigation";
 import { Link } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 import { MessageSquare, ArrowLeft, Search } from "lucide-react";
+import { getPusherClient } from "@/lib/pusher";
+import { useCan } from "@/hooks/use-can";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function SupportLayout({
   children,
@@ -17,10 +21,35 @@ export default function SupportLayout({
   const { data: threads = [], isLoading } = useSupportThreads();
   const [showSidebar, setShowSidebar] = React.useState(!id);
 
+  const { user } = useCan();
+  const queryClient = useQueryClient();
+
   React.useEffect(() => {
     if (id) setShowSidebar(false);
     else setShowSidebar(true);
   }, [id]);
+
+  // Realtime updates for the thread list
+  React.useEffect(() => {
+    if (!user?.token) return;
+    const pusher = getPusherClient(user.token);
+    
+    // If we're viewing a specific thread, listen to it to update the list
+    let channel: Channel | undefined;
+    if (id) {
+      channel = pusher.subscribe(`private-thread-${id}`);
+      channel.bind("support.message.new", () => {
+        queryClient.invalidateQueries({ queryKey: ["support-threads"] });
+      });
+    }
+
+    return () => {
+      if (channel) {
+        channel.unbind_all();
+        channel.unsubscribe();
+      }
+    };
+  }, [id, user?.token, queryClient]);
 
   return (
     <div className="flex flex-col h-[calc(100vh-100px)] bg-white overflow-hidden border border-black/5 rounded-lg">
