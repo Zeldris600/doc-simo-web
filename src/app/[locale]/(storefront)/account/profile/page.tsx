@@ -54,9 +54,9 @@ export default function ProfileSettingsPage() {
         name: user.name || "",
         image: user.image || "",
         phoneNumber: user.phoneNumber || "",
-        address: user.profile?.address || "",
-        city: user.profile?.city || "",
-        region: user.profile?.region || "",
+        address: user.address || user.customer?.address || "",
+        city: user.city || user.customer?.city || "",
+        region: user.region || user.customer?.region || "",
       });
     }
   }, [user, form]);

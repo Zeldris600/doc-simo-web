@@ -94,7 +94,7 @@ export default function CustomerThreadPage() {
   const handleSend = (e: React.FormEvent) => {
     e.preventDefault();
     if (!messageBody.trim() || sendMessageMutation.isPending) return;
-    sendMessageMutation.mutate(messageBody);
+    sendMessageMutation.mutate({ body: messageBody });
   };
 
   if (isLoading) {

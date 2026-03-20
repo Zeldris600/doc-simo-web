@@ -33,33 +33,12 @@ export function ImageUploader({
       uploadMutation.mutate(
         { file },
         {
-          onSuccess: (res: unknown) => {
-            // Robust parsing for Cloudinary response
-            let uploadedUrl = "";
-            const rawRes = res as {
-              data?: { url?: string } | Array<{ url?: string }> | string;
-            };
-            const rawData = rawRes?.data || rawRes;
-
-            if (typeof rawData === "string") {
-              uploadedUrl = rawData;
-            } else if (
-              rawData &&
-              !Array.isArray(rawData) &&
-              (rawData as { url?: string }).url
-            ) {
-              uploadedUrl = (rawData as { url?: string }).url || "";
-            } else if (Array.isArray(rawData) && rawData[0]?.url) {
-              uploadedUrl = rawData[0].url;
-            }
-
+          onSuccess: (res: { url: string }) => {
+            const uploadedUrl = res.url;
             if (uploadedUrl) {
               setPreview(uploadedUrl);
               onUploadSuccess?.(uploadedUrl);
-              toast.success("Design asset synchronized with Cloudinary.");
-            } else {
-              console.error("Unknown media upload response format:", res);
-              toast.error("Cloudinary synchronization failed.");
+              toast.success("Asset synchronized.");
             }
           },
           onError: (err) => {

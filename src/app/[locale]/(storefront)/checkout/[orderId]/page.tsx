@@ -38,7 +38,7 @@ export default function OrderCheckoutPage() {
   const [phoneNumber, setPhoneNumber] = useState("");
 
   const handlePayment = () => {
-    const email = user?.email || user?.profile?.email;
+    const email = user?.email || user?.customer?.email;
     if (!email) {
       toast.error("User email not found. Please update your profile.");
       return;

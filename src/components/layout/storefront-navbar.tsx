@@ -142,7 +142,7 @@ export function StorefrontNavbar() {
                 <NavigationMenuItem>
                   <NavigationMenuLink
                     asChild
-                    className="px-5 py-2.5 text-[11px] font-bold text-white/70 hover:text-white hover:bg-white/5 rounded-full transition-all uppercase tracking-widest"
+                    className="px-5 py-2.5 text-xs font-medium text-white hover:text-white hover:bg-white/5 rounded-full transition-all"
                   >
                     <Link href="/contact">{t("contact")}</Link>
                   </NavigationMenuLink>
@@ -199,7 +199,7 @@ export function StorefrontNavbar() {
                   </Link>
                   <Link
                     href="/contact"
-                    className="px-4 py-3 text-sm font-medium text-white hover:text-white hover:bg-white/5 rounded-xl transition-all"
+                    className="px-4 py-3 text-sm font-bold text-white/70 hover:text-white hover:bg-white/5 rounded-xl transition-all"
                   >
                     {t("contact")}
                   </Link>
@@ -272,9 +272,7 @@ export function StorefrontNavbar() {
                     >
                       <Link href="/account">
                         <User className="mr-3 h-4 w-4" />
-                        <span className="font-medium text-sm">
-                          Profile
-                        </span>
+                        <span className="font-medium text-sm">Profile</span>
                       </Link>
                     </DropdownMenuItem>
                     {user.role === "ADMIN" && (
@@ -292,7 +290,7 @@ export function StorefrontNavbar() {
                   <DropdownMenuSeparator className="bg-black/5" />
                   <DropdownMenuItem
                     className="text-primary focus:bg-primary/5 focus:text-primary cursor-pointer rounded-lg px-3 py-2.5 mt-1 transition-colors"
-                    onClick={() => signOut({ callbackUrl: "/login" })}
+                    onClick={() => signOut({ callbackUrl: "/en/login" })}
                   >
                     <LogOut className="mr-3 h-4 w-4" />
                     <span className="font-medium text-sm">Log out</span>

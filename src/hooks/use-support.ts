@@ -12,6 +12,7 @@ import {
   SupportMessage,
   MessagesResponse,
   CreateThreadResponse,
+  SendMessageDto,
 } from "@/services/support.service";
 import { ApiError } from "@/types/api";
 
@@ -52,11 +53,11 @@ export function useCreateSupportThread(
 
 export function useSendSupportMessage(
   threadId: string,
-  opt?: UseMutationOptions<SupportMessage, ApiError, string>
+  opt?: UseMutationOptions<SupportMessage, ApiError, SendMessageDto>
 ) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (body: string) => SupportService.sendMessage(threadId, body),
+    mutationFn: (data: SendMessageDto) => SupportService.sendMessage(threadId, data),
     ...opt,
     onSuccess: (data, ...rest) => {
       queryClient.invalidateQueries({ queryKey: ["support-messages", threadId] });

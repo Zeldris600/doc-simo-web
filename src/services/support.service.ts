@@ -1,3 +1,4 @@
+import { StandardResponse } from "../types/api";
 import { api } from "./api";
 
 export type ThreadStatus = "OPEN" | "CLOSED";
@@ -10,13 +11,27 @@ export interface SupportThread {
   updatedAt: string;
 }
 
+export interface SupportAttachment {
+  url: string;
+  publicId?: string;
+  mimeType?: string;
+  originalName?: string;
+  sizeBytes?: number;
+}
+
 export interface SupportMessage {
   id: string;
   threadId: string;
   senderUserId: string;
   senderRole: "CUSTOMER" | "ADMIN";
   body: string;
+  attachments?: SupportAttachment[];
   createdAt: string;
+}
+
+export interface SendMessageDto {
+  body: string;
+  attachments?: SupportAttachment[];
 }
 
 export interface CreateThreadResponse {
@@ -31,35 +46,35 @@ export interface MessagesResponse {
 
 export const SupportService = {
   createThread: async (firstMessage?: string) => {
-    const response = await api.post<CreateThreadResponse>("/support/threads", {
+    const response = await api.post<StandardResponse<CreateThreadResponse>>("/support/threads", {
       firstMessage,
     });
-    return response.data;
+    return response.data.data;
   },
 
   listThreads: async (params?: { limit?: number; cursor?: string }) => {
-    const response = await api.get<SupportThread[]>("/support/threads", {
+    const response = await api.get<StandardResponse<SupportThread[]>>("/support/threads", {
       params,
     });
-    return response.data;
+    return response.data.data;
   },
 
   listMessages: async (
     threadId: string,
     params?: { limit?: number; cursor?: string }
   ) => {
-    const response = await api.get<MessagesResponse>(
+    const response = await api.get<StandardResponse<MessagesResponse>>(
       `/support/threads/${threadId}/messages`,
       { params }
     );
-    return response.data;
+    return response.data.data;
   },
 
-  sendMessage: async (threadId: string, body: string) => {
-    const response = await api.post<SupportMessage>(
+  sendMessage: async (threadId: string, data: SendMessageDto) => {
+    const response = await api.post<StandardResponse<SupportMessage>>(
       `/support/threads/${threadId}/messages`,
-      { body }
+      data
     );
-    return response.data;
+    return response.data.data;
   },
 };

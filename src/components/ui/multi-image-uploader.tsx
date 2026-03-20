@@ -4,7 +4,7 @@ import * as React from "react";
 import { useDropzone } from "react-dropzone";
 import { Loader2, Plus, X } from "lucide-react";
 import Image from "next/image";
-import { useUploadMultipleDocuments } from "@/hooks/use-document";
+import { useUploadMultipleMedia } from "@/hooks/use-media";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -20,12 +20,11 @@ interface MultiImageUploaderProps {
 export function MultiImageUploader({
   defaultValue = [],
   onChange,
-  label,
   className,
   maxFiles = 5,
 }: MultiImageUploaderProps) {
   const [images, setImages] = React.useState<string[]>(defaultValue);
-  const uploadMutation = useUploadMultipleDocuments();
+  const uploadMutation = useUploadMultipleMedia();
 
   const onDrop = React.useCallback(
     (acceptedFiles: File[]) => {
@@ -35,38 +34,15 @@ export function MultiImageUploader({
       }
 
       uploadMutation.mutate(
-        { 
-          files: acceptedFiles,
-          category: "image",
-          isPublic: true,
-          label: label || "gallery-shot",
-        },
+        { files: acceptedFiles },
         {
-          onSuccess: (res: unknown) => {
-            let newUrls: string[] = [];
-            const rawRes = res as { data?: Array<{ url?: string; data?: { url?: string } } | string | { url?: string }> | { url?: string; data?: { url?: string } } | string };
-            const rawData = rawRes?.data || rawRes;
-            
-            if (Array.isArray(rawData)) {
-              newUrls = (rawData as Array<{ url?: string; data?: { url?: string } } | string>).map((d) => {
-                if (typeof d === 'string') return d;
-                return d?.url || d?.data?.url;
-              }).filter(Boolean) as string[];
-            } else if (rawData && typeof rawData === 'object') {
-              const url = (rawData as { url?: string }).url || (rawData as { data?: { url?: string } }).data?.url;
-              if (url) newUrls = [url];
-            } else if (typeof rawData === 'string') {
-              newUrls = [rawData];
-            }
-
+          onSuccess: (res: { url: string }[]) => {
+            const newUrls = res.map(item => item.url);
             if (newUrls.length > 0) {
               const updatedImages = [...images, ...newUrls].slice(0, maxFiles);
               setImages(updatedImages);
               onChange?.(updatedImages);
               toast.success(`${newUrls.length} images synchronized`);
-            } else {
-              console.error("Unknown multi-upload response format:", res);
-              toast.error("Format conversion failed.");
             }
           },
           onError: (err) => {
@@ -76,7 +52,7 @@ export function MultiImageUploader({
         }
       );
     },
-    [images, maxFiles, onChange, uploadMutation, label]
+    [images, maxFiles, onChange, uploadMutation]
   );
 
   const removeImage = (index: number) => {
