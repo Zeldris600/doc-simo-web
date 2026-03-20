@@ -8,7 +8,7 @@ const BLOG_POSTS = [
     excerpt:
       "New studies reveal the significant impact of papaya seeds on gut health and anti-inflammatory pathways.",
     image:
-      "https://images.unsplash.com/photo-1596541249704-54fd0c326cfd?q=80&w=1000&auto=format&fit=crop",
+      "/extract_blog.png",
     date: "Jan 12, 2026",
   },
   {
@@ -16,7 +16,7 @@ const BLOG_POSTS = [
     excerpt:
       "How clinical-grade elderberry extractions are redefining seasonal immunity protocols in modern clinics.",
     image:
-      "https://images.unsplash.com/photo-1622484211148-7bf331d27993?q=80&w=1000&auto=format&fit=crop",
+      "/elderberry_extract_blog.png",
     date: "Jan 08, 2026",
   },
   {
@@ -24,7 +24,7 @@ const BLOG_POSTS = [
     excerpt:
       "Dr. Simo breaks down the neuro-protective properties of high-concentration withanolides.",
     image:
-      "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=1000&auto=format&fit=crop",
+      "/ashwagandha_extract_blog.png",
     date: "Jan 02, 2026",
   },
 ];

@@ -7,8 +7,8 @@ export function AboutSection() {
       <div className="flex flex-col lg:flex-row items-center gap-20">
         <div className="flex-1 relative aspect-[1/1] w-full rounded-xl overflow-hidden grayscale hover:grayscale-0 transition-all duration-1000">
           <Image
-            src="https://images.unsplash.com/photo-1512428559087-560fa5ceab42?q=80&w=2000&auto=format&fit=crop"
-            alt="Our Research Lab"
+            src="/about_doctasimo_lab.png"
+            alt="Doctasimo Research Lab"
             fill
             className="object-cover"
           />

@@ -24,13 +24,15 @@ export function ProductGrid({
   return (
     <section className="py-16 sm:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="md:flex md:items-center md:justify-between mb-12">
+        <div className="md:flex md:items-center md:justify-between mb-6">
           <div className="max-w-2xl">
-            <h2 className="text-3xl font-black tracking-tighter text-black sm:text-4xl">
+            <h2 className="text-xl md:text-3xl font-black tracking-tighter text-black">
               {title}
             </h2>
             {subtitle && (
-              <p className="mt-4 text-sm font-medium text-black/40 max-w-lg leading-relaxed">{subtitle}</p>
+              <p className="mt-4 text-sm font-medium text-black/40 max-w-lg leading-relaxed">
+                {subtitle}
+              </p>
             )}
           </div>
           {actionUrl && (
@@ -63,4 +65,3 @@ export function ProductGrid({
     </section>
   );
 }
-

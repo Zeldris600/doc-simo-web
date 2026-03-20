@@ -201,5 +201,32 @@
     "cardHolder": "Cardholder name",
     "taxes": "Including all taxes",
     "free": "Free"
+  },
+  "about": {
+    "title": "About Doctasimo",
+    "subtitle": "Pioneering clinical excellence in botanical wellness",
+    "mission": "Our Mission",
+    "missionDesc": "At Doctasimo, we believe in the profound synergy between traditional botanical formulations and modern clinical standards. Our mission is to provide you with the highest quality, lab-tested herbal extracts designed to promote holistic health and well-being.",
+    "values": "Core Values",
+    "quality": "Clinical Quality",
+    "qualityDesc": "Every product is rigorously tested to ensure therapeutic efficacy.",
+    "purity": "Botanical Purity",
+    "purityDesc": "We source the finest organic ingredients without compromise.",
+    "innovation": "Continuous Innovation",
+    "innovationDesc": "Bridging ancient herbal wisdom with modern scientific validation."
+  },
+  "contact": {
+    "title": "Get in Touch",
+    "subtitle": "Our clinical support team is here to assist you.",
+    "sayHello": "Send us a message",
+    "name": "Full Name",
+    "email": "Email Address",
+    "subject": "Subject",
+    "message": "Message",
+    "send": "Send Message",
+    "contactInfo": "Contact Information",
+    "address": "Clinical Center, Douala, Cameroon",
+    "phoneLabel": "Phone",
+    "emailLabel": "Email"
   }
 }

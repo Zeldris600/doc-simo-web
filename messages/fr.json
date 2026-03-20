@@ -200,5 +200,32 @@
     "cardHolder": "Nom du titulaire",
     "taxes": "Toutes taxes comprises",
     "free": "Gratuit"
+  },
+  "about": {
+    "title": "À propos de Doctasimo",
+    "subtitle": "Pionnier de l'excellence clinique dans le bien-être botanique",
+    "mission": "Notre Mission",
+    "missionDesc": "Chez Doctasimo, nous croyons en la profonde synergie entre les formulations botaniques traditionnelles et les normes cliniques modernes. Notre mission est de vous fournir des extraits de plantes de la plus haute qualité, testés en laboratoire et conçus pour promouvoir une santé globale.",
+    "values": "Valeurs Fondamentales",
+    "quality": "Qualité Clinique",
+    "qualityDesc": "Chaque produit est rigoureusement testé pour garantir son efficacité thérapeutique.",
+    "purity": "Pureté Botanique",
+    "purityDesc": "Nous sélectionnons les meilleurs ingrédients biologiques sans compromis.",
+    "innovation": "Innovation Continue",
+    "innovationDesc": "Faire le pont entre l'ancienne sagesse herbale et la validation scientifique moderne."
+  },
+  "contact": {
+    "title": "Contactez-nous",
+    "subtitle": "Notre équipe de support clinique est là pour vous aider.",
+    "sayHello": "Envoyez-nous un message",
+    "name": "Nom complet",
+    "email": "Adresse Email",
+    "subject": "Sujet",
+    "message": "Message",
+    "send": "Envoyer le Message",
+    "contactInfo": "Informations de Contact",
+    "address": "Centre Clinique, Douala, Cameroun",
+    "phoneLabel": "Téléphone",
+    "emailLabel": "Email"
   }
 }

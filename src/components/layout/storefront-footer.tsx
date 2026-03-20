@@ -149,21 +149,21 @@ export function StorefrontFooter() {
               <li className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-primary shrink-0" />
                 <span className="text-sm text-gray-500 leading-relaxed font-bold">
-                  124 Wellness Blvd, Suite 402
+                  Clinical Center
                   <br />
-                  Tropical Bay, CA 90210
+                  Douala, Cameroon
                 </span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="h-5 w-5 text-primary shrink-0" />
                 <span className="text-sm text-gray-500 font-bold">
-                  +1 (555) 123-4567
+                  +237 600 000 000
                 </span>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="h-5 w-5 text-primary shrink-0" />
                 <span className="text-sm text-gray-500 font-bold">
-                  hello@doctasimo.com
+                  support@doctasimo.com
                 </span>
               </li>
             </ul>

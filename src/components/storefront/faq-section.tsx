@@ -47,7 +47,7 @@ export function FaqSection() {
                 7-14 business days depending on customs processing in your area.
               </AccordionContent>
             </AccordionItem>
-            <AccordionItem value="item-3" className="border-none py-4">
+            <AccordionItem value="item-3" className="border-b border-border py-4">
               <AccordionTrigger className="text-left text-xl font-bold text-foreground hover:text-primary hover:no-underline transition-colors">
                 Consultation and Safety
               </AccordionTrigger>
@@ -56,6 +56,30 @@ export function FaqSection() {
                 always recommend consulting with your primary healthcare
                 provider before adding any new supplements to your routine,
                 especially if you are on prescribed medications.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="item-4" className="border-b border-border py-4">
+              <AccordionTrigger className="text-left text-xl font-bold text-foreground hover:text-primary hover:no-underline transition-colors">
+                How should I store the botanical extracts?
+              </AccordionTrigger>
+              <AccordionContent className="text-muted-foreground text-base leading-relaxed pt-4 font-medium">
+                We recommend storing all clinical-grade herbal extracts in a cool, dark place away from direct sunlight. Once opened, certain formulations may require refrigeration. Please refer to the specific label instructions on your product&apos;s amber bottle.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="item-5" className="border-b border-border py-4">
+              <AccordionTrigger className="text-left text-xl font-bold text-foreground hover:text-primary hover:no-underline transition-colors">
+                Can I combine different wellness bundles?
+              </AccordionTrigger>
+              <AccordionContent className="text-muted-foreground text-base leading-relaxed pt-4 font-medium">
+                Yes, many of our formulations are designed to work synergistically. However, to ensure optimal therapeutic efficacy and safety, we advise consulting with our support team or your primary healthcare provider before combining advanced protocols.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="item-6" className="border-none py-4">
+              <AccordionTrigger className="text-left text-xl font-bold text-foreground hover:text-primary hover:no-underline transition-colors">
+                What payment methods do you accept?
+              </AccordionTrigger>
+              <AccordionContent className="text-muted-foreground text-base leading-relaxed pt-4 font-medium">
+                We accept major credit cards (Visa, Mastercard, AMEX) globally, as well as secure African Mobile Money options (MTN Mobile Money, Orange Money) for select regional locations.
               </AccordionContent>
             </AccordionItem>
           </Accordion>

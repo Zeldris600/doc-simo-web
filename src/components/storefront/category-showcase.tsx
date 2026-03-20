@@ -19,7 +19,7 @@ export function CategoryShowcase() {
           <span className="text-xs font-black text-primary tracking-[0.2em] uppercase">
             {t("label")}
           </span>
-          <h2 className="text-3xl md:text-5xl font-black text-black tracking-tighter">
+          <h2 className="text-xl md:text-3xl font-black text-black tracking-tighter">
             {t("title")}
           </h2>
           <p className="text-base text-black/40 max-w-lg mx-auto font-medium leading-relaxed">
@@ -38,15 +38,16 @@ export function CategoryShowcase() {
                 className="group relative aspect-[3/4] rounded-2xl overflow-hidden bg-black/[0.02] border border-black/5"
               >
                 <Image
-                  src={category.image || "https://images.unsplash.com/photo-1596541249704-54fd0c326cfd?q=80&w=800&auto=format&fit=crop"}
+                  src={
+                    category.image ||
+                    "https://images.unsplash.com/photo-1596541249704-54fd0c326cfd?q=80&w=800&auto=format&fit=crop"
+                  }
                   alt={category.name}
                   fill
                   className="object-cover transition-transform duration-1000 group-hover:scale-110"
                 />
-                {/* Visual Depth Overlay */}
                 <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
 
-                {/* Registry Content */}
                 <div className="absolute inset-x-0 bottom-0 p-8 flex flex-col gap-2">
                   <div className="flex items-center gap-2">
                     <div className="h-px w-4 bg-primary/60" />

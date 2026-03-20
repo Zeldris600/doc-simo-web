@@ -7,7 +7,6 @@ import { MeetDoctor } from "@/components/storefront/meet-doctor";
 import { AboutSection } from "@/components/storefront/about-section";
 import { BlogPosts } from "@/components/storefront/blog-posts";
 import { FaqSection } from "@/components/storefront/faq-section";
-import { Newsletter } from "@/components/storefront/newsletter";
 import { CategoryShowcase } from "@/components/storefront/category-showcase";
 import { TrustBanner } from "@/components/storefront/trust-banner";
 import { ProcessSection } from "@/components/storefront/process-section";
@@ -66,6 +65,8 @@ export default function HomePage() {
         <CategoryProductRow key={category.id} category={category} />
       ))}
 
+      <PromoBanner />
+
       {/* 8. Process — How it's made (transparency & trust) */}
       <ProcessSection />
 
@@ -86,8 +87,6 @@ export default function HomePage() {
       {/* 15. FAQ — Address concerns */}
       <FaqSection />
 
-      {/* 16. Newsletter — Capture leads */}
-      <Newsletter />
     </div>
   );
 }
