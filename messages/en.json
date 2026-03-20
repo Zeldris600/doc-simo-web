@@ -199,6 +199,7 @@
     "paymentDetails": "Payment details",
     "cardNumber": "Card number",
     "cardHolder": "Cardholder name",
-    "taxes": "Including all taxes"
+    "taxes": "Including all taxes",
+    "free": "Free"
   }
 }

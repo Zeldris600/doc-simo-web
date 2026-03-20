@@ -24,6 +24,7 @@ import { toast } from "sonner";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { ApiError, OrderItem } from "@/types/api";
+import { CheckoutSkeleton } from "@/components/skeletons/checkout-skeleton";
 
 export default function OrderCheckoutPage() {
   const t = useTranslations("checkout");
@@ -71,12 +72,7 @@ export default function OrderCheckoutPage() {
   };
 
   if (isLoadingOrder) {
-    return (
-      <div className="container mx-auto max-w-5xl px-4 py-20 flex flex-col items-center justify-center space-y-4">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <p className="text-sm font-bold text-black/40 uppercase tracking-widest leading-none">Accessing Registry...</p>
-      </div>
-    );
+    return <CheckoutSkeleton />;
   }
 
   if (!order) {
@@ -198,7 +194,12 @@ export default function OrderCheckoutPage() {
         <aside className="lg:col-span-5">
            <Card className="border-black/5 rounded-xl bg-black/[0.02] shadow-none overflow-hidden sticky top-24">
              <div className="p-8 space-y-6">
-               <h3 className="text-[10px] font-bold uppercase tracking-widest text-black/60">Procurement Registry</h3>
+               <div className="flex justify-between items-start">
+                 <h3 className="text-[10px] font-bold uppercase tracking-widest text-black/60">Procurement Registry</h3>
+                 {order.orderNumber && (
+                   <span className="text-[10px] font-bold text-black/20 font-mono">{order.orderNumber}</span>
+                 )}
+               </div>
                
                <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
                  {order.items.map((item: OrderItem) => (
@@ -214,20 +215,20 @@ export default function OrderCheckoutPage() {
 
                <Separator className="bg-black/5" />
 
-               <div className="space-y-4">
-                 <div className="flex justify-between text-[11px] font-bold text-black/40">
-                   <span>Registry Total</span>
-                   <span>{order.total.toLocaleString()} XAF</span>
-                 </div>
-                 <div className="flex justify-between text-[11px] font-bold text-black/40">
-                   <span>Shipping Fees</span>
-                   <span className="text-emerald-500">FREE</span>
-                 </div>
-                 <div className="flex justify-between items-baseline pt-4">
-                   <span className="text-base font-black tracking-tight text-black">Total to pay</span>
-                   <span className="text-2xl font-black text-primary">{order.total.toLocaleString()} XAF</span>
-                 </div>
-               </div>
+                <div className="space-y-4">
+                  <div className="flex justify-between text-[11px] font-bold text-black/40">
+                    <span>Registry Total</span>
+                    <span>{Number(order.amount).toLocaleString()} {order.currency || "XAF"}</span>
+                  </div>
+                  <div className="flex justify-between text-[11px] font-bold text-black/40">
+                    <span>Shipping Fees</span>
+                    <span className="text-emerald-500">FREE</span>
+                  </div>
+                  <div className="flex justify-between items-baseline pt-4">
+                    <span className="text-base font-black tracking-tight text-black">Total to pay</span>
+                    <span className="text-2xl font-black text-primary">{Number(order.amount).toLocaleString()} {order.currency || "XAF"}</span>
+                  </div>
+                </div>
              </div>
            </Card>
         </aside>

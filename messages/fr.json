@@ -198,6 +198,7 @@
     "paymentDetails": "Détails du paiement",
     "cardNumber": "Numéro de carte",
     "cardHolder": "Nom du titulaire",
-    "taxes": "Toutes taxes comprises"
+    "taxes": "Toutes taxes comprises",
+    "free": "Gratuit"
   }
 }

@@ -117,7 +117,10 @@ export interface UpdateDiscountDto extends Partial<CreateDiscountDto> {
 
 export interface Order {
   id: string;
-  total: number;
+  orderNumber?: string;
+  amount: string | number;
+  total?: number; // Legacy/fallback
+  currency: string;
   status: OrderStatus;
   deliveryAddress?: {
     address?: string;
@@ -126,6 +129,11 @@ export interface Order {
     phone?: string;
   };
   items: OrderItem[];
+  user?: {
+    id: string;
+    name: string;
+    email: string;
+  };
   createdAt: string;
   updatedAt: string;
 }

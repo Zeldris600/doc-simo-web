@@ -3,13 +3,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 export function ProductDetailsSkeleton() {
   return (
     <div className="bg-white min-h-screen">
-      <div className="container mx-auto max-w-7xl px-4 py-8 md:py-16">
-        <nav className="flex items-center gap-3 mb-12">
+      <div className="container mx-auto max-w-6xl px-4 py-4 md:py-8">
+        <nav className="flex items-center gap-3 mb-8">
           <Skeleton className="h-3 w-40 bg-black/5" />
         </nav>
 
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-24">
-          <div className="space-y-6">
+        <div className="grid lg:grid-cols-12 gap-12 lg:gap-20">
+          <div className="lg:col-span-6 space-y-6">
             <Skeleton className="aspect-[4/5] w-full rounded-3xl bg-black/[0.02]" />
             <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
               <Skeleton className="w-24 h-24 shrink-0 rounded-2xl bg-black/[0.02]" />
@@ -19,7 +19,7 @@ export function ProductDetailsSkeleton() {
             </div>
           </div>
 
-          <div className="flex flex-col space-y-10">
+          <div className="lg:col-span-6 flex flex-col space-y-10">
             <div className="space-y-4">
               <div className="flex items-center gap-3">
                 <Skeleton className="h-6 w-32 bg-black/5" />
