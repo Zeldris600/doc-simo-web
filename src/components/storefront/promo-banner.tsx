@@ -53,7 +53,7 @@ export function PromoBanner() {
               <div className="flex flex-col sm:flex-row items-center gap-4 pt-2">
                 <Link
                   href="/products"
-                  className="inline-flex items-center gap-2 bg-white text-primary px-8 py-3 rounded-full text-xs font-black tracking-widest uppercase hover:bg-white/90 transition-all shadow-xl shadow-black/10"
+                  className="inline-flex items-center gap-2 bg-white text-primary px-6 py-2.5 md:px-8 md:py-3 rounded-full text-[10px] md:text-xs font-black tracking-widest uppercase hover:bg-white/90 transition-all shadow-xl shadow-black/10"
                 >
                   Access Formulary
                   <ArrowRight className="w-4 h-4" />

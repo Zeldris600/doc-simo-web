@@ -66,13 +66,13 @@ export function Hero({
           <div className="flex items-center justify-center lg:justify-start gap-4">
             <Link
               href={ctaLink}
-              className="rounded-full bg-primary px-10 py-4 text-sm font-bold text-white hover:bg-[#142c1b] hover:scale-105 active:scale-95 transition-all duration-300"
+              className="rounded-full bg-primary px-6 py-3 md:px-10 md:py-4 text-xs md:text-sm font-bold text-white hover:bg-[#142c1b] hover:scale-105 active:scale-95 transition-all duration-300"
             >
               {ctaText}
             </Link>
             <Link
               href="/about"
-              className="rounded-full border-2 border-primary/20 px-10 py-4 text-sm font-bold text-primary hover:bg-primary/5 transition-all duration-300 hover:scale-105 active:scale-95"
+              className="rounded-full border-2 border-primary/20 px-6 py-3 md:px-10 md:py-4 text-xs md:text-sm font-bold text-primary hover:bg-primary/5 transition-all duration-300 hover:scale-105 active:scale-95"
             >
               Learn more
             </Link>
