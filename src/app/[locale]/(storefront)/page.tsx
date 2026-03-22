@@ -42,6 +42,9 @@ export default function HomePage() {
         isLoading={isLoadingPromo}
       />
 
+      {/* 2. Meet the Doctor — Human connection & authority moved directly up top */}
+      <MeetDoctor />
+
       {/* 2. Trust Features — Immediate credibility (organic, lab-tested, free shipping) */}
       <Features />
 
@@ -69,9 +72,6 @@ export default function HomePage() {
 
       {/* 8. Process — How it's made (transparency & trust) */}
       <ProcessSection />
-
-      {/* 9. Meet the Doctor — Human connection & authority */}
-      <MeetDoctor />
 
       {/* 10. Trust Banner — Stats & social proof numbers */}
       <TrustBanner />

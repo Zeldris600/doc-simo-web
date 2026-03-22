@@ -100,7 +100,7 @@ export default function CartPage() {
 
   if (items.length === 0) {
     return (
-      <div className="container mx-auto max-w-7xl px-4 py-20 text-center">
+      <div className="container mx-auto max-w-7xl px-4 pt-24 md:pt-32 pb-20 text-center">
         <h1 className="text-2xl font-black text-black mb-4 tracking-tight">
           {t("empty")}
         </h1>
@@ -118,7 +118,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="container mx-auto max-w-7xl px-4 py-8 md:py-12">
+    <div className="container mx-auto max-w-7xl px-4 pt-24 md:pt-32 pb-8 md:pb-12">
       <div className="flex items-center gap-2 mb-10 group">
         <Link
           href="/products"

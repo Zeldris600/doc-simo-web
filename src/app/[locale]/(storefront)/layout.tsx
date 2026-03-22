@@ -1,5 +1,6 @@
 import { StorefrontNavbar } from "@/components/layout/storefront-navbar";
 import { StorefrontFooter } from "@/components/layout/storefront-footer";
+import { FloatingConsultation } from "@/components/shared/floating-consultation";
 
 export default function StorefrontLayout({
   children,
@@ -11,6 +12,7 @@ export default function StorefrontLayout({
       <StorefrontNavbar />
       <main className="flex-1 w-full flex flex-col">{children}</main>
       <StorefrontFooter />
+      <FloatingConsultation />
     </div>
   );
 }

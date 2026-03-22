@@ -26,11 +26,11 @@ export function ProductGrid({
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="md:flex md:items-center md:justify-between mb-6">
           <div className="max-w-2xl">
-            <h2 className="text-xl md:text-3xl font-black tracking-tighter text-black">
+            <h2 className="text-xl md:text-3xl font-black tracking-tighter text-primary">
               {title}
             </h2>
             {subtitle && (
-              <p className="mt-4 text-sm font-medium text-black/40 max-w-lg leading-relaxed">
+              <p className="mt-4 text-sm font-medium text-foreground/60 max-w-lg leading-relaxed">
                 {subtitle}
               </p>
             )}

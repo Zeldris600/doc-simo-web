@@ -26,8 +26,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             loginPayload,
           );
 
-          console.log(res);
-
           if (!res.data.user) return null;
 
           return {

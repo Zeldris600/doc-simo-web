@@ -136,7 +136,7 @@ export function UserForm({ initialData, onSuccess }: UserFormProps) {
  </FormLabel>
  <Input 
  disabled
- value={(initialData as any)?.phoneNumber || "N/A"} 
+ value={initialData?.phoneNumber || "N/A"} 
  className="bg-black/[0.02] border-black/5 rounded-xl py-4 h-auto text-xs font-bold"
  />
  </div>
@@ -150,7 +150,7 @@ export function UserForm({ initialData, onSuccess }: UserFormProps) {
  <h4 className="font-black uppercase tracking-widest text-xs ">Primary Delivery Coordinates (Simulation)</h4>
  </div>
  <p className="text-[10px] text-white/40 font-bold uppercase tracking-[0.2em] leading-relaxed ">
- { (initialData as any)?.profile?.address || "Coordinate sync not established for this node." }
+ { initialData?.customer?.address || initialData?.address || "Coordinate sync not established for this node." }
  </p>
  </div>
  </CardContent>

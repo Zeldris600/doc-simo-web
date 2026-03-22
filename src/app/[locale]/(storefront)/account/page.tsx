@@ -31,7 +31,7 @@ export default function AccountPage() {
 
   if (isPending) {
     return (
-      <div className="container mx-auto max-w-4xl px-4 py-16 space-y-12">
+      <div className="container mx-auto max-w-4xl px-4 pt-24 md:pt-32 pb-16 space-y-12">
         <div className="flex flex-col md:flex-row items-center justify-between gap-8 pb-12 border-b border-black/5">
           <div className="flex flex-col md:flex-row items-center gap-8">
             <Skeleton className="h-24 w-24 rounded-full" />
@@ -73,7 +73,7 @@ export default function AccountPage() {
   }
 
   return (
-    <div className="container mx-auto max-w-4xl px-4 py-16 space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div className="container mx-auto max-w-4xl px-4 pt-24 md:pt-32 pb-16 space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
       {/* Simple Profile Header */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-8 pb-12 border-b border-black/5">
         <div className="flex flex-col md:flex-row items-center gap-8">

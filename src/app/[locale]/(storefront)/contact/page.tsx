@@ -27,8 +27,8 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="bg-white min-h-screen animate-in fade-in duration-700">
-      <div className="container mx-auto px-4 py-16 md:py-24 max-w-6xl">
+    <div className="bg-white min-h-screen animate-in fade-in duration-700 pt-24 md:pt-32">
+      <div className="container mx-auto px-4 py-8 md:py-12 max-w-6xl">
         <div className="text-center max-w-3xl mx-auto space-y-6 mb-16 md:mb-24">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-black tracking-tight leading-none">
             {t("title")}

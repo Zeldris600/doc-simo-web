@@ -6,15 +6,15 @@ export default function AboutPage() {
   const t = useTranslations("about");
 
   return (
-    <div className="bg-white min-h-screen animate-in fade-in duration-700">
-      <div className="container mx-auto px-4 py-16 md:py-24 max-w-6xl">
+    <div className="bg-white min-h-screen animate-in fade-in duration-700 pt-24 md:pt-32">
+      <div className="container mx-auto px-4 py-8 md:py-12 max-w-6xl">
         <div className="flex flex-col lg:flex-row gap-16 lg:gap-24 items-center">
           <div className="flex-1 space-y-10">
-            <div className="space-y-4">
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-black tracking-tight leading-none">
+            <div className="space-y-3">
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-black text-black tracking-tight leading-none uppercase">
                 {t("title")}
               </h1>
-              <p className="text-lg md:text-xl text-black/60 font-medium max-w-lg leading-relaxed">
+              <p className="text-sm md:text-base text-black/60 font-medium max-w-lg leading-relaxed">
                 {t("subtitle")}
               </p>
             </div>

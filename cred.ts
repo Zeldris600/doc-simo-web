@@ -1,0 +1,21 @@
+// {
+//     email: 'admin@doctasimo.local',
+//     phoneNumber: '+237600000001',
+//     role: UserRole.ADMIN,
+//     name: 'Doctasimo Admin',
+//     password: 'Test1234!',
+//   },
+//   {
+//     email: 'sales@doctasimo.local',
+//     phoneNumber: '+237600000002',
+//     role: UserRole.SALES,
+//     name: 'Doctasimo Sales',
+//     password: 'Test1234!',
+//   },
+//   {
+//     email: 'delivery@doctasimo.local',
+//     phoneNumber: '+237600000003',
+//     role: UserRole.DELIVERY,
+//     name: 'Doctasimo Delivery',
+//     password: 'Test1234!',
+//   },

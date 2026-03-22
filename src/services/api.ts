@@ -18,6 +18,9 @@ api.interceptors.request.use(
 
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
+        console.log("User Auth Token added to request:", token);
+      } else {
+        console.log("No User Auth Token found in session!");
       }
     }
     return config;

@@ -54,7 +54,7 @@ export default function ProductsPage() {
   }, [searchQuery, selectedCategorySlug, priceRange]);
 
   return (
-    <div className="bg-white min-h-screen">
+    <div className="bg-white min-h-screen pt-24 md:pt-32">
       {/* Search Header */}
       <div className="bg-white border-b border-black/5">
         <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">

@@ -35,42 +35,44 @@ export function Hero({
     : "Essential clinical extract";
 
   return (
-    <div className="relative w-full min-h-[850px] flex items-center overflow-hidden bg-primary pt-16">
-      {/* Deep Background pattern/image layer */}
-      <div className="absolute inset-0 z-0">
+    <div className="relative w-full min-h-[850px] flex items-center overflow-hidden bg-white">
+      {/* Soft medical background layer */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
         <Image
-          src="/forest-bg.jpg" // Large forest background
-          alt="Papaya leaves background"
+          src="/forest-bg.jpg"
+          alt="Natural forest background - clinical botanical excellence"
           fill
-          className="object-cover opacity-[0.05] grayscale"
+          className="object-cover opacity-[0.9] scale-105"
           priority
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-primary via-transparent to-primary/50" />
+        {/* Soft elegant gradient from white to very subtle green/gray to enhance the medical look */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white/90 via-white/40 to-secondary/10 mix-blend-overlay" />
+        <div className="absolute inset-0 bg-gradient-to-t from-white via-white/40 to-transparent" />
       </div>
 
-      <div className="container relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20 lg:py-32 flex flex-col lg:flex-row items-center gap-16">
+      <div className="container relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-32 pb-20 lg:py-32 flex flex-col lg:flex-row items-center gap-16">
         {/* Left Content */}
         <div className="flex-1 max-w-2xl text-center lg:text-left space-y-8">
-          <div className="inline-flex items-center px-4 py-2 rounded-full bg-[#f2c94c]/10 text-[#f2c94c] text-xs font-bold ">
+          <div className="inline-flex items-center px-4 py-2 rounded-full bg-primary/10 text-primary text-xs font-bold border border-primary/20">
             Clinical specialist selection
           </div>
-          <h1 className="text-4xl text-white sm:text-6xl font-black leading-[1.05] text-balance ">
+          <h1 className="text-4xl text-primary sm:text-6xl font-black leading-[1.05] text-balance tracking-tight">
             {title}
           </h1>
-          <p className="text-sm md:text-base lg:text-lg text-white/80 font-medium max-w-xl mx-auto lg:mx-0 leading-relaxed">
+          <p className="text-sm md:text-base lg:text-lg text-foreground/80 font-medium max-w-xl mx-auto lg:mx-0 leading-relaxed">
             {subtitle}
           </p>
 
           <div className="flex items-center justify-center lg:justify-start gap-4">
             <Link
               href={ctaLink}
-              className="rounded-full bg-white px-10 py-4 text-sm font-bold text-primary hover:scale-105 active:scale-95 border border-primary/10"
+              className="rounded-full bg-primary px-10 py-4 text-sm font-bold text-white hover:bg-[#142c1b] hover:scale-105 active:scale-95 transition-all duration-300"
             >
               {ctaText}
             </Link>
             <Link
               href="/about"
-              className="rounded-full border-2 border-white px-10 py-4 text-sm font-bold text-white hover:bg-white hover:text-primary transition-all duration-300 hover:scale-105 active:scale-95"
+              className="rounded-full border-2 border-primary/20 px-10 py-4 text-sm font-bold text-primary hover:bg-primary/5 transition-all duration-300 hover:scale-105 active:scale-95"
             >
               Learn more
             </Link>
@@ -80,7 +82,7 @@ export function Hero({
         {/* Right Product Image Area */}
         <div className="flex-1 relative w-full h-[450px] lg:h-[600px] flex items-center justify-center mt-12 lg:mt-0">
           {/* Main image container */}
-          <div className="relative w-[70%] md:w-[50%] lg:w-[65%] max-w-sm lg:max-w-md aspect-[3/4] z-10 rounded-xl overflow-hidden border border-white/10">
+          <div className="relative w-[70%] md:w-[50%] lg:w-[65%] max-w-sm lg:max-w-md aspect-[3/4] z-10 rounded-3xl overflow-hidden backdrop-blur-xl bg-white/40 ring-1 ring-white/60">
             <Image
               src={displayImage}
               alt={product?.name || imageAlt}
@@ -89,38 +91,38 @@ export function Hero({
               sizes="(max-width: 768px) 100vw, 50vw"
               priority
             />
-            <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/60 via-black/20 to-transparent pointer-events-none" />
+            <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 via-black/30 to-transparent pointer-events-none" />
             <div className="absolute bottom-10 left-10 right-10">
               <p className="text-white text-3xl font-black leading-tight tracking-tight">
                 {displayName}
                 <br />
-                <span className="text-[#f2c94c] text-sm font-bold tracking-normal">
+                <span className="text-emerald-300 text-sm font-bold tracking-normal">
                   {displayDesc}
                 </span>
               </p>
             </div>
           </div>
 
-          {/* Floating Info Cards */}
-          <div className="absolute top-[10%] right-0 lg:-right-8 bg-white/90 px-8 py-8 rounded-xl z-20 w-52 transition-transform">
-            <div className="bg-[#f2c94c]/10 w-10 h-10 rounded-full flex items-center justify-center mb-4">
-              <Leaf className="w-5 h-5 text-[#f2c94c]" />
+          {/* Floating Info Cards - Glassmorphism */}
+          <div className="absolute top-[10%] right-0 lg:-right-8 bg-white/70 backdrop-blur-lg px-8 py-8 rounded-3xl border border-white/60 z-20 w-52 transition-transform hover:-translate-y-2 duration-500">
+            <div className="bg-primary/10 w-10 h-10 rounded-full flex items-center justify-center mb-4">
+              <Leaf className="w-5 h-5 text-primary" />
             </div>
-            <h4 className="font-black text-xs text-[#f2c94c] mb-1">Purity</h4>
-            <p className="font-extrabold text-xl leading-tight text-black">
+            <h4 className="font-black text-xs text-primary mb-1">Purity</h4>
+            <p className="font-extrabold text-xl leading-tight text-foreground">
               100% Organic
             </p>
           </div>
 
-          <div className="absolute bottom-[10%] left-0 lg:-left-12 bg-white/90 px-8 py-8 rounded-xl z-20 w-56 transition-transform">
-            <div className="bg-yellow-400/10 w-10 h-10 rounded-full flex items-center justify-center mb-4">
-              <span className="text-yellow-600 text-lg font-bold">✓</span>
+          <div className="absolute bottom-[10%] left-0 lg:-left-12 bg-white/70 backdrop-blur-lg px-8 py-8 rounded-3xl border border-white/60 z-20 w-56 transition-transform hover:-translate-y-2 duration-500 delay-100">
+            <div className="bg-emerald-50 w-10 h-10 rounded-full flex items-center justify-center mb-4">
+              <span className="text-emerald-600 text-lg font-bold">✓</span>
             </div>
-            <h4 className="font-black text-xs text-yellow-600 mb-1">
+            <h4 className="font-black text-xs text-emerald-600 mb-1">
               Standard
             </h4>
-            <p className="font-extrabold text-xl leading-tight text-black">
-              Verified pure
+            <p className="font-extrabold text-xl leading-tight text-foreground">
+              Verified clinical
             </p>
           </div>
         </div>

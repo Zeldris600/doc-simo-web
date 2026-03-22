@@ -83,7 +83,7 @@ export default function OrderCheckoutPage() {
   }
 
   return (
-    <div className="container mx-auto max-w-5xl px-4 py-8 md:py-16">
+    <div className="container mx-auto max-w-5xl px-4 pt-24 md:pt-32 pb-8 md:pb-16">
       <div className="flex items-center gap-2 mb-8 group">
         <Link
           href="/cart"

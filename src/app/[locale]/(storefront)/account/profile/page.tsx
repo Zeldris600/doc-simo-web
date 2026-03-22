@@ -20,6 +20,7 @@ import { ImageUploader } from "@/components/ui/image-uploader";
 import { toast } from "sonner";
 import { Loader2, User, MapPin, ShieldCheck } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ProfileSkeleton } from "@/components/skeletons/profile-skeleton";
 
 const profileSchema = z.object({
   name: z.string().min(2, "Name is too short"),
@@ -73,11 +74,7 @@ export default function ProfileSettingsPage() {
   };
 
   if (isLoadingUser) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="h-8 w-8 animate-spin text-primary/40" />
-      </div>
-    );
+    return <ProfileSkeleton />;
   }
 
   return (
