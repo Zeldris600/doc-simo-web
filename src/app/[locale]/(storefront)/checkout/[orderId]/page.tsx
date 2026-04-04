@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import { useParams } from "next/navigation";
 import { useOrder } from "@/hooks/use-order";
 import { useInitiatePayment } from "@/hooks/use-payment";
@@ -12,14 +13,21 @@ import {
   Loader2,
   Lock,
   ChevronRight,
+  Truck,
+  Clock,
+  MapPin,
+  AlertTriangle,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { ApiError, OrderItem } from "@/types/api";
+import { ApiError, Discount, OrderItem } from "@/types/api";
 import { CheckoutSkeleton } from "@/components/skeletons/checkout-skeleton";
+import { useDiscounts } from "@/hooks/use-discount";
+import { Tag, X } from "lucide-react";
 
 export default function OrderCheckoutPage() {
   const t = useTranslations("checkout");
@@ -30,6 +38,49 @@ export default function OrderCheckoutPage() {
   const { data: user } = useMe();
   const { mutate: initiatePayment, isPending: isInitiating } =
     useInitiatePayment();
+
+  // Coupon state
+  const [couponInput, setCouponInput] = React.useState("");
+  const [appliedDiscount, setAppliedDiscount] = React.useState<Discount | null>(
+    null,
+  );
+  const [couponError, setCouponError] = React.useState("");
+  const [isValidating, setIsValidating] = React.useState(false);
+  const { data: discountsRes } = useDiscounts({
+    activeOnly: "true",
+    limit: 100,
+  });
+
+  const handleApplyCoupon = () => {
+    const code = couponInput.trim().toUpperCase();
+    if (!code) return;
+    setIsValidating(true);
+    setCouponError("");
+    const match = discountsRes?.data?.find(
+      (d) => d.code.toUpperCase() === code && d.active,
+    );
+    setTimeout(() => {
+      if (match) {
+        setAppliedDiscount(match);
+        toast.success(`Coupon "${match.code}" applied!`);
+      } else {
+        setCouponError("Invalid or expired coupon code.");
+        setAppliedDiscount(null);
+      }
+      setIsValidating(false);
+    }, 600);
+  };
+
+  const discountAmount = (() => {
+    if (!appliedDiscount || !order) return 0;
+    const total = Number(order.amount);
+    if (appliedDiscount.type === "PERCENT")
+      return Math.round((total * Number(appliedDiscount.value)) / 100);
+    return Math.min(Number(appliedDiscount.value), total);
+  })();
+  const finalTotal = order
+    ? Math.max(0, Number(order.amount) - discountAmount)
+    : 0;
 
   const handlePayment = () => {
     const email = user?.email || user?.customer?.email;
@@ -121,30 +172,168 @@ export default function OrderCheckoutPage() {
             </div>
           </section>
 
+          {/* ── Medical Disclaimer ── */}
+          <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5 space-y-2">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0" />
+              <p className="text-xs font-black text-amber-800 uppercase tracking-wider">
+                Health Disclaimer
+              </p>
+            </div>
+            <p className="text-xs text-amber-700 font-medium leading-relaxed">
+              Doctasimo products are traditional herbal &amp; antiviral
+              formulations rooted in African botanical medicine. They are{" "}
+              <strong>not intended to diagnose, treat, cure, or replace</strong>{" "}
+              any prescribed medical treatment. Always consult your licensed
+              healthcare provider before use, especially if you are pregnant,
+              nursing, or on prescription medication. Results may vary.
+            </p>
+          </div>
+
+          {/* ── Delivery Timeline ── */}
+          <div className="rounded-2xl border border-black/5 bg-[#f5faf6] p-5 space-y-4">
+            <div className="flex items-center gap-2 mb-1">
+              <Truck className="h-4 w-4 text-primary" />
+              <p className="text-xs font-black text-primary uppercase tracking-wider">
+                Estimated Delivery
+              </p>
+            </div>
+            <div className="space-y-3">
+              {/* Inbound */}
+              <div className="flex items-start gap-3">
+                <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                  <Clock className="h-3.5 w-3.5 text-primary" />
+                </div>
+                <div>
+                  <p className="text-xs font-black text-primary">
+                    Inbound — Within Cameroon
+                  </p>
+                  <p className="text-xs text-black/50 font-medium mt-0.5">
+                    <span className="font-bold text-emerald-700">
+                      2–4 business days
+                    </span>{" "}
+                    · Yaoundé, Douala, Bafoussam, Bamenda, Garoua, Ngaoundéré,
+                    Bertoua
+                  </p>
+                </div>
+              </div>
+              {/* Africa */}
+              <div className="flex items-start gap-3">
+                <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                  <Clock className="h-3.5 w-3.5 text-primary" />
+                </div>
+                <div>
+                  <p className="text-xs font-black text-primary">
+                    Outbound — West &amp; Central Africa
+                  </p>
+                  <p className="text-xs text-black/50 font-medium mt-0.5">
+                    <span className="font-bold text-amber-700">
+                      5–8 business days
+                    </span>{" "}
+                    · Nigeria, Gabon, Congo, Côte d&apos;Ivoire, Senegal, Ghana,
+                    Burkina Faso
+                  </p>
+                </div>
+              </div>
+              {/* International */}
+              <div className="flex items-start gap-3">
+                <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                  <Clock className="h-3.5 w-3.5 text-primary" />
+                </div>
+                <div>
+                  <p className="text-xs font-black text-primary">
+                    International — Worldwide
+                  </p>
+                  <p className="text-xs text-black/50 font-medium mt-0.5">
+                    <span className="font-bold text-black/50">
+                      7–14 business days
+                    </span>{" "}
+                    · Europe, USA, Canada, UK, Asia &amp; more — subject to
+                    customs clearance
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ── Available Delivery Locations ── */}
+          <div className="rounded-2xl border border-black/5 bg-white p-5 space-y-3">
+            <div className="flex items-center gap-2">
+              <MapPin className="h-4 w-4 text-primary" />
+              <p className="text-xs font-black text-primary uppercase tracking-wider">
+                We Deliver To
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {[
+                "Yaoundé",
+                "Douala",
+                "Bafoussam",
+                "Bamenda",
+                "Garoua",
+                "Ngaoundéré",
+                "Bertoua",
+                "Kribi",
+                "Limbe",
+                "Maroua",
+                "Lagos",
+                "Abidjan",
+                "Dakar",
+                "Libreville",
+                "Brazzaville",
+                "Paris",
+                "London",
+                "New York",
+                "Montréal",
+              ].map((city) => (
+                <span
+                  key={city}
+                  className="text-[10px] font-bold bg-[#f5faf6] text-primary/70 border border-primary/10 rounded-full px-2.5 py-1"
+                >
+                  {city}
+                </span>
+              ))}
+              <span className="text-[10px] font-bold text-black/30 px-2.5 py-1">
+                + worldwide
+              </span>
+            </div>
+            <p className="text-[11px] text-black/40 font-medium">
+              Don&apos;t see your city? Contact us at{" "}
+              <a
+                href="mailto:orders@doctasimo.com"
+                className="text-primary font-bold hover:underline"
+              >
+                orders@doctasimo.com
+              </a>{" "}
+              — we ship to most destinations globally.
+            </p>
+          </div>
+
+          {/* ── Payment button ── */}
           <Button
             onClick={handlePayment}
             disabled={isInitiating}
-            className="w-full"
+            className="w-full bg-primary hover:bg-[#142c1b] rounded-xl h-13 shadow-lg shadow-primary/20 font-bold"
             size={"lg"}
           >
             {isInitiating ? (
-              <Loader2 className="h-6 w-6 animate-spin" />
+              <Loader2 className="h-5 w-5 animate-spin" />
             ) : (
               <>
-                <Lock className="mr-2 h-4 w-4 opacity-50" />
+                <Lock className="mr-2 h-4 w-4 opacity-70" />
                 Proceed to Secure Payment
                 <ChevronRight className="ml-2 h-4 w-4" />
               </>
             )}
           </Button>
 
-          <div className="grid grid-cols-2 gap-4 pt-6 pb-20">
-            <div className="flex items-center gap-3 text-sm text-black/40 font-medium ">
-              <ShieldCheck className="h-4 w-4 text-emerald-500" />
+          <div className="grid grid-cols-2 gap-4 pt-2 pb-20">
+            <div className="flex items-center gap-2 text-xs text-black/40 font-medium">
+              <ShieldCheck className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
               <span>{t("secureNote")}</span>
             </div>
-            <div className="flex items-center gap-3 text-sm text-black/40 font-medium ">
-              <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+            <div className="flex items-center gap-2 text-xs text-black/40 font-medium">
+              <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
               <span>{t("guarantee")}</span>
             </div>
           </div>
@@ -185,27 +374,103 @@ export default function OrderCheckoutPage() {
                 ))}
               </div>
 
+              {/* ── Coupon code input ── */}
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Tag className="h-3.5 w-3.5 text-primary" />
+                  <p className="text-xs font-black text-primary uppercase tracking-wider">
+                    Promo / Coupon Code
+                  </p>
+                </div>
+                {appliedDiscount ? (
+                  <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-2.5">
+                    <div>
+                      <p className="text-xs font-black text-emerald-700">
+                        {appliedDiscount.code}
+                      </p>
+                      <p className="text-[10px] text-emerald-600 font-medium">
+                        {appliedDiscount.type === "PERCENT"
+                          ? `${appliedDiscount.value}% off applied`
+                          : `${Number(appliedDiscount.value).toLocaleString()} ${order.currency || "XAF"} off applied`}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => {
+                        setAppliedDiscount(null);
+                        setCouponInput("");
+                      }}
+                      className="text-emerald-600 hover:text-red-500 transition-colors"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-1.5">
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="Enter coupon code"
+                        value={couponInput}
+                        onChange={(e) => {
+                          setCouponInput(e.target.value.toUpperCase());
+                          setCouponError("");
+                        }}
+                        onKeyDown={(e) =>
+                          e.key === "Enter" && handleApplyCoupon()
+                        }
+                        className="h-10 text-xs font-bold uppercase tracking-wider border-black/10 focus:border-primary/30 rounded-xl"
+                      />
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={handleApplyCoupon}
+                        disabled={isValidating || !couponInput.trim()}
+                        className="h-10 px-4 text-xs font-black border-primary/20 text-primary hover:bg-primary/5 rounded-xl shrink-0"
+                      >
+                        {isValidating ? (
+                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                        ) : (
+                          "Apply"
+                        )}
+                      </Button>
+                    </div>
+                    {couponError && (
+                      <p className="text-[11px] text-red-500 font-medium">
+                        {couponError}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+
               <Separator className="bg-black/5" />
 
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <div className="flex justify-between text-sm font-bold text-black/40">
-                  <span>Registry Total</span>
+                  <span>Subtotal</span>
                   <span>
                     {Number(order.amount).toLocaleString()}{" "}
                     {order.currency || "XAF"}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm font-bold text-black/40">
-                  <span>Shipping Fees</span>
+                  <span>Shipping</span>
                   <span className="text-emerald-500">FREE</span>
                 </div>
-                <div className="flex justify-between items-baseline pt-4">
-                  <span className="text-base font-black  text-black">
+                {appliedDiscount && discountAmount > 0 && (
+                  <div className="flex justify-between text-sm font-bold text-emerald-600">
+                    <span>Discount ({appliedDiscount.code})</span>
+                    <span>
+                      − {discountAmount.toLocaleString()}{" "}
+                      {order.currency || "XAF"}
+                    </span>
+                  </div>
+                )}
+                <div className="flex justify-between items-baseline pt-3 border-t border-black/5">
+                  <span className="text-base font-black text-black">
                     Total to pay
                   </span>
                   <span className="text-2xl font-black text-primary">
-                    {Number(order.amount).toLocaleString()}{" "}
-                    {order.currency || "XAF"}
+                    {finalTotal.toLocaleString()} {order.currency || "XAF"}
                   </span>
                 </div>
               </div>

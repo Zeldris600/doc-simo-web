@@ -121,7 +121,47 @@
   * {
     @apply border-border outline-ring/50;
   }
+
+  html {
+    /* Fluid type scale — min 15px (mobile) → max 17px (desktop) */
+    font-size: clamp(15px, 1.2vw + 12px, 17px);
+    scroll-behavior: smooth;
+  }
+
   body {
     @apply bg-background text-foreground;
+    font-size: 1rem; /* 15–17px following html clamp */
+    line-height: 1.65;
+  }
+
+  /* Consistent heading scale */
+  h1 {
+    @apply tracking-tight leading-[1.02];
+  }
+  h2 {
+    @apply tracking-tight leading-[1.05];
+  }
+  h3 {
+    @apply tracking-tight leading-snug;
+  }
+  h4,
+  h5,
+  h6 {
+    @apply leading-snug;
+  }
+
+  /* Smoother link transitions */
+  a {
+    @apply transition-colors duration-200;
+  }
+
+  /* Better button touch targets */
+  button {
+    @apply cursor-pointer;
+  }
+
+  /* Selection color */
+  ::selection {
+    background-color: color-mix(in srgb, var(--primary) 20%, transparent);
   }
 }

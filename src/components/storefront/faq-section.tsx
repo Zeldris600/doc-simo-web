@@ -5,85 +5,66 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
+const FAQS = [
+  {
+    q: "Are your products 100% organic?",
+    a: "Yes. All of our sources are thoroughly vetted and strictly organically grown, without the use of chemical pesticides or synthetic fertilizers. We provide documentation on all product packaging.",
+  },
+  {
+    q: "How long does shipping take?",
+    a: "Within Cameroon: 2–4 business days. West & Central Africa: 5–8 business days. International orders: 7–14 business days depending on customs processing.",
+  },
+  {
+    q: "Consultation and Safety",
+    a: "While our herbal clinical extracts are natural and safe, we always recommend consulting with your primary healthcare provider before adding any new supplements, especially if you are on prescribed medications.",
+  },
+  {
+    q: "How should I store the botanical extracts?",
+    a: "Store in a cool, dark place away from direct sunlight. Once opened, certain formulations may require refrigeration. Refer to the label instructions on your product's packaging.",
+  },
+  {
+    q: "Can I combine different wellness bundles?",
+    a: "Yes, many of our formulations work synergistically. To ensure safety and efficacy, consult with our support team or your healthcare provider before combining advanced protocols.",
+  },
+  {
+    q: "What payment methods do you accept?",
+    a: "We accept Visa, Mastercard, and AMEX globally, as well as MTN Mobile Money and Orange Money for regional orders across Africa.",
+  },
+];
+
 export function FaqSection() {
   return (
-    <section className="px-6 py-24 lg:px-12 bg-white">
-      <div className="container max-w-5xl mx-auto">
-        <div className="text-center mb-16 w-full space-y-4">
-          <p className="text-xs font-bold uppercase text-[#f2c94c] tracking-tight">
+    <section className="px-4 sm:px-6 py-16 lg:px-12 bg-white">
+      <div className="container max-w-3xl mx-auto">
+        <div className="text-center mb-10 space-y-2">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-[#f2c94c]">
             Support Center
           </p>
-          <h2 className="text-3xl font-black text-black sm:text-4xl tracking-tight">
-            Inquiries & Support
+          <h2 className="text-2xl font-black text-primary tracking-tight">
+            Frequently Asked Questions
           </h2>
         </div>
 
-        <div className="w-full">
-          <Accordion type="single" collapsible className="w-full">
+        <Accordion type="single" collapsible className="w-full">
+          {FAQS.map((faq, i) => (
             <AccordionItem
-              value="item-1"
-              className="border-b border-border py-4"
+              key={i}
+              value={`item-${i}`}
+              className={
+                i === FAQS.length - 1
+                  ? "border-none"
+                  : "border-b border-black/6"
+              }
             >
-              <AccordionTrigger className="text-left text-xl font-bold text-foreground hover:text-primary hover:no-underline transition-colors">
-                Are your products 100% organic?
+              <AccordionTrigger className="text-left text-sm font-bold text-foreground hover:text-primary hover:no-underline transition-colors py-4">
+                {faq.q}
               </AccordionTrigger>
-              <AccordionContent className="text-muted-foreground text-base leading-relaxed pt-4 font-medium">
-                Yes. All of our sources are thoroughly vetted and strictly
-                organically grown, without the use of chemical pesticides or
-                synthetic fertilizers. We provide certifications on all product
-                packaging.
+              <AccordionContent className="text-xs text-muted-foreground leading-relaxed pb-4 font-medium">
+                {faq.a}
               </AccordionContent>
             </AccordionItem>
-            <AccordionItem
-              value="item-2"
-              className="border-b border-border py-4"
-            >
-              <AccordionTrigger className="text-left text-xl font-bold text-foreground hover:text-primary hover:no-underline transition-colors">
-                How long does shipping take?
-              </AccordionTrigger>
-              <AccordionContent className="text-muted-foreground text-base leading-relaxed pt-4 font-medium">
-                Standard free shipping usually takes 3-5 business days
-                domestically. If you are ordering internationally, please allow
-                7-14 business days depending on customs processing in your area.
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="item-3" className="border-b border-border py-4">
-              <AccordionTrigger className="text-left text-xl font-bold text-foreground hover:text-primary hover:no-underline transition-colors">
-                Consultation and Safety
-              </AccordionTrigger>
-              <AccordionContent className="text-muted-foreground text-base leading-relaxed pt-4 font-medium">
-                While our herbal clinical extracts are natural and safe, we
-                always recommend consulting with your primary healthcare
-                provider before adding any new supplements to your routine,
-                especially if you are on prescribed medications.
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="item-4" className="border-b border-border py-4">
-              <AccordionTrigger className="text-left text-xl font-bold text-foreground hover:text-primary hover:no-underline transition-colors">
-                How should I store the botanical extracts?
-              </AccordionTrigger>
-              <AccordionContent className="text-muted-foreground text-base leading-relaxed pt-4 font-medium">
-                We recommend storing all clinical-grade herbal extracts in a cool, dark place away from direct sunlight. Once opened, certain formulations may require refrigeration. Please refer to the specific label instructions on your product&apos;s amber bottle.
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="item-5" className="border-b border-border py-4">
-              <AccordionTrigger className="text-left text-xl font-bold text-foreground hover:text-primary hover:no-underline transition-colors">
-                Can I combine different wellness bundles?
-              </AccordionTrigger>
-              <AccordionContent className="text-muted-foreground text-base leading-relaxed pt-4 font-medium">
-                Yes, many of our formulations are designed to work synergistically. However, to ensure optimal therapeutic efficacy and safety, we advise consulting with our support team or your primary healthcare provider before combining advanced protocols.
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="item-6" className="border-none py-4">
-              <AccordionTrigger className="text-left text-xl font-bold text-foreground hover:text-primary hover:no-underline transition-colors">
-                What payment methods do you accept?
-              </AccordionTrigger>
-              <AccordionContent className="text-muted-foreground text-base leading-relaxed pt-4 font-medium">
-                We accept major credit cards (Visa, Mastercard, AMEX) globally, as well as secure African Mobile Money options (MTN Mobile Money, Orange Money) for select regional locations.
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-        </div>
+          ))}
+        </Accordion>
       </div>
     </section>
   );

@@ -64,15 +64,23 @@ export function StorefrontNavbar() {
   const headerActive = isScrolled || !isHome;
 
   return (
-    <header className={cn(
-      "fixed top-0 z-50 w-full transition-all duration-500",
-      headerActive ? "translate-y-0 shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-black/5" : ""
-    )}>
+    <header
+      className={cn(
+        "fixed top-0 z-50 w-full transition-all duration-500",
+        headerActive
+          ? "translate-y-0 shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-black/5"
+          : "",
+      )}
+    >
       {/* Top Bar */}
-      <div className={cn(
-        "w-full transition-all duration-500 overflow-hidden",
-        headerActive ? "h-0 opacity-0 py-0 border-none" : "bg-black/5 backdrop-blur-sm text-primary/60 py-2 border-b border-primary/5"
-      )}>
+      <div
+        className={cn(
+          "w-full transition-all duration-500 overflow-hidden",
+          headerActive
+            ? "h-0 opacity-0 py-0 border-none"
+            : "bg-black/5 backdrop-blur-sm text-primary/60 py-2 border-b border-primary/5",
+        )}
+      >
         <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between text-[10px] font-bold">
           <div className="flex items-center gap-5">
             <Link href="#" className="hover:text-[#173b27] transition-colors">
@@ -108,12 +116,14 @@ export function StorefrontNavbar() {
       </div>
 
       {/* Main Navbar */}
-      <div className={cn(
-        "w-full transition-all duration-500 border-b",
-        headerActive 
-          ? "bg-white/70 backdrop-blur-2xl py-0 border-black/5" 
-          : "bg-transparent py-2 border-transparent"
-      )}>
+      <div
+        className={cn(
+          "w-full transition-all duration-500 border-b",
+          headerActive
+            ? "bg-white/70 backdrop-blur-2xl py-0 border-black/5"
+            : "bg-transparent py-2 border-transparent",
+        )}
+      >
         <div className="container mx-auto max-w-7xl flex h-20 items-center justify-between px-2 sm:px-6 lg:px-8">
           <Link href="/" className="flex items-center gap-3 group">
             <div className="p-1 rounded-xl bg-primary/5 transition-all group-hover:scale-110 active:scale-95 overflow-hidden">
@@ -139,9 +149,9 @@ export function StorefrontNavbar() {
                     asChild
                     className={cn(
                       "px-5 py-2.5 text-xs font-bold transition-all rounded-full cursor-pointer",
-                      headerActive 
-                        ? "text-foreground hover:text-primary hover:bg-primary/5" 
-                        : "text-primary hover:bg-black/5"
+                      headerActive
+                        ? "text-foreground hover:text-primary hover:bg-primary/5"
+                        : "text-primary hover:bg-black/5",
                     )}
                   >
                     <Link href="/">{t("home")}</Link>
@@ -152,9 +162,9 @@ export function StorefrontNavbar() {
                     asChild
                     className={cn(
                       "px-5 py-2.5 text-xs font-bold transition-all rounded-full cursor-pointer",
-                      headerActive 
-                        ? "text-foreground hover:text-primary hover:bg-primary/5" 
-                        : "text-primary hover:bg-black/5"
+                      headerActive
+                        ? "text-foreground hover:text-primary hover:bg-primary/5"
+                        : "text-primary hover:bg-black/5",
                     )}
                   >
                     <Link href="/products">{t("shop")}</Link>
@@ -165,9 +175,9 @@ export function StorefrontNavbar() {
                     asChild
                     className={cn(
                       "px-5 py-2.5 text-xs font-bold transition-all rounded-full cursor-pointer",
-                      headerActive 
-                        ? "text-foreground hover:text-primary hover:bg-primary/5" 
-                        : "text-primary hover:bg-black/5"
+                      headerActive
+                        ? "text-foreground hover:text-primary hover:bg-primary/5"
+                        : "text-primary hover:bg-black/5",
                     )}
                   >
                     <Link href="/about">{t("about")}</Link>
@@ -178,9 +188,9 @@ export function StorefrontNavbar() {
                     asChild
                     className={cn(
                       "px-5 py-2.5 text-xs font-bold transition-all rounded-full cursor-pointer",
-                      headerActive 
-                        ? "text-foreground hover:text-primary hover:bg-primary/5" 
-                        : "text-primary hover:bg-black/5"
+                      headerActive
+                        ? "text-foreground hover:text-primary hover:bg-primary/5"
+                        : "text-primary hover:bg-black/5",
                     )}
                   >
                     <Link href="/contact">{t("contact")}</Link>
@@ -198,10 +208,7 @@ export function StorefrontNavbar() {
                   <Menu className="h-5 w-5" />
                 </button>
               </SheetTrigger>
-              <SheetContent
-                side="left"
-                className="bg-white border-black/5 p-0"
-              >
+              <SheetContent side="left" className="bg-white border-black/5 p-0">
                 <SheetHeader className="p-6 border-b border-black/5 items-start">
                   <div className="flex items-center gap-3">
                     <div className="p-1 rounded-xl bg-primary/5 overflow-hidden">
@@ -249,7 +256,6 @@ export function StorefrontNavbar() {
                     {t("contact")}
                   </Link>
 
-
                   {!user && (
                     <div className="mt-4 pt-4 border-t border-black/5 flex flex-col gap-3">
                       <Link
@@ -274,7 +280,9 @@ export function StorefrontNavbar() {
               href="/cart"
               className={cn(
                 "relative p-2.5 rounded-full transition-all active:scale-90",
-                headerActive ? "bg-primary/5 text-primary/80 hover:bg-primary/10" : "bg-black/5 text-primary hover:bg-black/10"
+                headerActive
+                  ? "bg-primary/5 text-primary/80 hover:bg-primary/10"
+                  : "bg-black/5 text-primary hover:bg-black/10",
               )}
             >
               <ShoppingBag className="h-5 w-5" />
@@ -322,7 +330,9 @@ export function StorefrontNavbar() {
                     >
                       <Link href="/account">
                         <User className="mr-3 h-4 w-4" />
-                        <span className="font-medium text-sm">{t("account")}</span>
+                        <span className="font-medium text-sm">
+                          {t("account")}
+                        </span>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem
@@ -331,7 +341,9 @@ export function StorefrontNavbar() {
                     >
                       <Link href="/account/orders">
                         <ShoppingBag className="mr-3 h-4 w-4" />
-                        <span className="font-medium text-sm">{t("orders")}</span>
+                        <span className="font-medium text-sm">
+                          {t("orders")}
+                        </span>
                       </Link>
                     </DropdownMenuItem>
 
@@ -369,14 +381,21 @@ export function StorefrontNavbar() {
             ) : (
               <div className="hidden sm:flex items-center gap-3">
                 <Link
+                  href="/consultation"
+                  className="inline-flex items-center gap-1.5 px-5 py-2.5 text-xs font-bold text-primary/80 hover:text-primary transition-all rounded-full hover:bg-primary/5 border border-primary/20"
+                >
+                  <MessageSquare className="h-3.5 w-3.5" />
+                  Consultation
+                </Link>
+                <Link
                   href="/login"
-                  className="px-6 py-2.5 text-xs font-bold text-primary/80 hover:text-primary transition-all rounded-full hover:bg-primary/5"
+                  className="px-5 py-2.5 text-xs font-bold text-primary/80 hover:text-primary transition-all rounded-full hover:bg-primary/5"
                 >
                   {t("signIn")}
                 </Link>
                 <Link
                   href="/register"
-                  className="px-6 py-2.5 text-xs font-bold text-white bg-primary hover:bg-[#142c1b] transition-all rounded-full active:scale-95 shadow-lg shadow-primary/20"
+                  className="px-5 py-2.5 text-xs font-bold text-white bg-primary hover:bg-[#142c1b] transition-all rounded-full active:scale-95 shadow-lg shadow-primary/20"
                 >
                   {t("signUp")}
                 </Link>

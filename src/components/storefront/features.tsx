@@ -1,43 +1,113 @@
-import { Leaf, ShieldHalf, Truck } from "lucide-react";
+import {
+  Leaf,
+  HeartPulse,
+  MapPin,
+  Stethoscope,
+  PackageCheck,
+  FlaskConical,
+} from "lucide-react";
+
+const FEATURES = [
+  {
+    icon: Leaf,
+    emoji: "🌿",
+    title: "Cameroonian Botanicals",
+    description:
+      "Wild-harvested from Mount Cameroon's rainforests, the Bamileke highlands, and the Congo basin — plants our grandmothers trusted for generations.",
+    iconBg: "bg-emerald-100",
+    iconColor: "text-emerald-700",
+  },
+  {
+    icon: FlaskConical,
+    emoji: "🧪",
+    title: "Ancestral Formulas",
+    description:
+      "Recipes passed down through Beti, Bamileke, and Fulbe healing traditions, refined by Dr. Simo's clinic into precise, effective preparations.",
+    iconBg: "bg-amber-100",
+    iconColor: "text-amber-700",
+  },
+  {
+    icon: HeartPulse,
+    emoji: "⚕️",
+    title: "Clinically Guided",
+    description:
+      "Every product is developed and reviewed by Dr. Simo's medical team at our Douala clinic — grounded in both tradition and modern clinical practice.",
+    iconBg: "bg-rose-100",
+    iconColor: "text-rose-700",
+  },
+  {
+    icon: Stethoscope,
+    emoji: "🏥",
+    title: "Clinic Consultation",
+    description:
+      "Book a one-on-one session with our specialists in Douala. We assess your condition and build a personalised herbal treatment plan.",
+    iconBg: "bg-purple-100",
+    iconColor: "text-purple-700",
+  },
+  {
+    icon: PackageCheck,
+    emoji: "📦",
+    title: "Authentic & Pure",
+    description:
+      "No fillers, no synthetic additives. What you receive is exactly what nature provided — carefully prepared, freshly packed, and properly sealed.",
+    iconBg: "bg-blue-100",
+    iconColor: "text-blue-700",
+  },
+  {
+    icon: MapPin,
+    emoji: "🚚",
+    title: "Delivered Across Cameroon",
+    description:
+      "We deliver to all 10 regions — Yaoundé, Douala, Bafoussam, Bamenda, Garoua, Bertoua and beyond. International shipping also available.",
+    iconBg: "bg-teal-100",
+    iconColor: "text-teal-700",
+  },
+];
 
 export function Features() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-6 lg:px-12 mx-auto max-w-7xl w-full py-16">
-      <div className="flex flex-col items-center text-center space-y-6 p-10 bg-white/40 backdrop-blur-xl rounded-3xl ring-1 ring-black/5 transition-all hover:-translate-y-1 duration-300">
-        <div className="p-4 rounded-2xl bg-primary/10 text-primary">
-          <Leaf className="w-8 h-8" />
+    <section className="px-4 sm:px-6 lg:px-12 py-20 bg-white">
+      <div className="container mx-auto max-w-7xl">
+        <div className="text-center mb-12 space-y-3">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-[#f2c94c]">
+            🇨🇲 Proudly Cameroonian
+          </p>
+          <h2 className="text-3xl sm:text-4xl font-black text-primary tracking-tight">
+            Healing Rooted in Our Land
+          </h2>
+          <p className="text-sm text-foreground/50 font-medium max-w-lg mx-auto leading-relaxed">
+            From Cameroon&apos;s forests and highlands — plants our ancestors
+            used, prepared with the precision of modern medicine.
+          </p>
         </div>
-        <h3 className="text-xl font-black text-[#173b27] tracking-tight">
-          100% Organic
-        </h3>
-        <p className="text-[#173b27]/70 max-w-xs text-sm leading-relaxed font-medium">
-          Sourced directly from certified organic farms, ensuring maximum purity
-          and potency.
-        </p>
-      </div>
-      <div className="flex flex-col items-center text-center space-y-6 p-10 bg-white/40 backdrop-blur-xl rounded-3xl ring-1 ring-black/5 transition-all hover:-translate-y-1 duration-300">
-        <div className="p-4 rounded-2xl bg-primary/10 text-primary">
-          <ShieldHalf className="w-8 h-8" />
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {FEATURES.map((f) => (
+            <div
+              key={f.title}
+              className="group flex flex-col gap-4 p-7 rounded-3xl border border-black/5 bg-[#f9fbf9] hover:bg-white hover:shadow-lg hover:shadow-black/5 hover:-translate-y-1 transition-all duration-300"
+            >
+              {/* Icon + emoji combo */}
+              <div className="flex items-center gap-3">
+                <div
+                  className={`w-11 h-11 rounded-2xl ${f.iconBg} flex items-center justify-center shrink-0`}
+                >
+                  <f.icon className={`w-5 h-5 ${f.iconColor}`} />
+                </div>
+                <span className="text-2xl">{f.emoji}</span>
+              </div>
+              <div className="space-y-1.5">
+                <h3 className="text-sm font-black text-primary tracking-tight">
+                  {f.title}
+                </h3>
+                <p className="text-xs text-foreground/55 leading-relaxed font-medium">
+                  {f.description}
+                </p>
+              </div>
+            </div>
+          ))}
         </div>
-        <h3 className="text-xl font-black text-[#173b27] tracking-tight">
-          Lab tested
-        </h3>
-        <p className="text-[#173b27]/70 max-w-xs text-sm leading-relaxed font-medium">
-          Every batch is rigorously third-party tested for quality, safety, and
-          effectiveness.
-        </p>
       </div>
-      <div className="flex flex-col items-center text-center space-y-6 p-10 bg-white/40 backdrop-blur-xl rounded-3xl ring-1 ring-black/5 transition-all hover:-translate-y-1 duration-300">
-        <div className="p-4 rounded-2xl bg-primary/10 text-primary">
-          <Truck className="w-8 h-8" />
-        </div>
-        <h3 className="text-xl font-black text-[#173b27] tracking-tight">
-          Free shipping
-        </h3>
-        <p className="text-[#173b27]/70 max-w-xs text-sm leading-relaxed font-medium">
-          Enjoy free, carbon-neutral shipping on all orders over $50 worldwide.
-        </p>
-      </div>
-    </div>
+    </section>
   );
 }

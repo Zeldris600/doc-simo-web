@@ -14,6 +14,8 @@ import {
   Loader2,
   AlertCircle,
   Play,
+  Leaf,
+  PackageCheck,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -225,192 +227,273 @@ export default function ProductDetailsPage() {
           </div>
 
           {/* Right: Product Info */}
-          <div className="lg:col-span-6 flex flex-col py-2">
-            <div className="space-y-6 mb-8">
-              <div className="flex items-center justify-between">
-                <Badge className="bg-black/5 text-black/60 rounded-full px-5 py-2 text-xs font-bold border-none">
-                  {product.category?.name || t("generalRegistry")}
-                </Badge>
-                <div className="flex items-center gap-2 bg-primary/5 px-4 py-2 rounded-2xl">
-                  <Star className="h-4 w-4 fill-primary text-primary" />
-                  <span className="text-sm font-bold text-primary">
-                    4.9 Specialist Rating
-                  </span>
-                </div>
-              </div>
-
-              <h1 className="text-2xl md:text-3xl font-black text-black leading-tight">
-                {product.name}
-              </h1>
-
-              <div className="flex items-center gap-3">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-black/40">
-                  {product.inventoryLevel && product.inventoryLevel > 0
-                    ? `In Stock: ${product.inventoryLevel} ${t("units")} Available`
-                    : "Currently Out of Stock: Restocking Active"}
+          <div className="lg:col-span-6 flex flex-col gap-6 py-2">
+            {/* ── Category + Rating ── */}
+            <div className="flex items-center justify-between flex-wrap gap-3">
+              <Badge className="bg-[#f5faf6] text-primary rounded-full px-4 py-1.5 text-[11px] font-bold border border-primary/10">
+                🌿 {product.category?.name || t("generalRegistry")}
+              </Badge>
+              <div className="flex items-center gap-1.5">
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    className="h-3.5 w-3.5 fill-[#f2c94c] text-[#f2c94c]"
+                  />
+                ))}
+                <span className="text-xs font-bold text-primary ml-1">4.9</span>
+                <span className="text-[11px] text-black/30 font-medium">
+                  (128 reviews)
                 </span>
               </div>
+            </div>
 
-              <div className="flex items-baseline gap-3">
-                <span className="text-4xl font-black text-black">
-                  {Number(product.price).toLocaleString()}
+            {/* ── Name ── */}
+            <h1 className="text-2xl md:text-3xl font-black text-primary leading-tight tracking-tight">
+              {product.name}
+            </h1>
+
+            {/* ── Stock status ── */}
+            <div className="flex items-center gap-2">
+              <span
+                className={`w-2 h-2 rounded-full ${product.inventoryLevel && product.inventoryLevel > 0 ? "bg-emerald-500" : "bg-red-400"}`}
+              />
+              <span className="text-xs font-bold text-black/50 uppercase tracking-wider">
+                {product.inventoryLevel && product.inventoryLevel > 0
+                  ? `In Stock — ${product.inventoryLevel} ${t("units")} available`
+                  : "Out of Stock — Restocking Active"}
+              </span>
+            </div>
+
+            {/* ── Price ── */}
+            <div className="flex items-baseline gap-3 bg-[#f5faf6] rounded-2xl px-5 py-4 border border-primary/8">
+              <span className="text-3xl font-black text-primary">
+                {Number(product.price).toLocaleString()}
+              </span>
+              <span className="text-sm font-black text-primary/40 uppercase tracking-widest">
+                {product.currency || "XAF"}
+              </span>
+              {product.isPromotion && (
+                <span className="text-sm text-black/25 line-through font-medium ml-1">
+                  {(Number(product.price) * 1.2).toLocaleString()} XAF
                 </span>
-                <div className="flex flex-col">
-                  <span className="text-[10px] font-black text-primary tracking-widest uppercase">
-                    {product.currency || "XAF"}
-                  </span>
-                  {product.isPromotion && (
-                    <span className="text-sm text-black/10 line-through font-black leading-none mt-1">
-                      {(Number(product.price) * 1.2).toLocaleString()}
-                    </span>
+              )}
+              {product.isPromotion && (
+                <span className="ml-auto text-[10px] font-black bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full uppercase tracking-wider">
+                  20% OFF
+                </span>
+              )}
+            </div>
+
+            {/* ── Short description ── */}
+            <p className="text-sm text-black/60 font-medium leading-relaxed">
+              {product.description}
+            </p>
+
+            {/* ── Delivery hint ── */}
+            <div className="flex items-start gap-3 bg-[#f5faf6] rounded-xl px-4 py-3 border border-primary/8">
+              <Truck className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+              <div className="text-xs font-medium text-black/60 leading-relaxed">
+                <span className="font-black text-primary">Fast delivery:</span>{" "}
+                2–4 days within Cameroon · 5–8 days across Africa · 7–14 days
+                international
+              </div>
+            </div>
+
+            {/* ── Quantity + Actions ── */}
+            <div className="space-y-3">
+              {/* Quantity selector */}
+              <div className="inline-flex items-center border border-black/10 rounded-xl overflow-hidden bg-white">
+                <button
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  disabled={quantity <= 1}
+                  className="h-11 w-11 flex items-center justify-center text-black/30 hover:text-primary hover:bg-primary/5 transition-all active:scale-90 disabled:opacity-30"
+                >
+                  <Minus className="h-4 w-4" />
+                </button>
+                <span className="w-12 text-center text-sm font-black text-primary border-x border-black/10 h-11 flex items-center justify-center">
+                  {quantity}
+                </span>
+                <button
+                  onClick={() => setQuantity(quantity + 1)}
+                  className="h-11 w-11 flex items-center justify-center text-black/30 hover:text-primary hover:bg-primary/5 transition-all active:scale-90"
+                >
+                  <Plus className="h-4 w-4" />
+                </button>
+              </div>
+
+              {/* Buy + Cart buttons */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <Button
+                  size="lg"
+                  onClick={handleOrder}
+                  disabled={
+                    createOrder.isPending ||
+                    initiatePayment.isPending ||
+                    (product.inventoryLevel !== undefined &&
+                      product.inventoryLevel === 0)
+                  }
+                  className="gap-2 font-bold bg-primary hover:bg-[#142c1b] rounded-xl h-12 shadow-lg shadow-primary/20"
+                >
+                  {createOrder.isPending || initiatePayment.isPending ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <ShoppingBag className="h-4 w-4" />
                   )}
-                </div>
+                  {createOrder.isPending
+                    ? "Processing…"
+                    : initiatePayment.isPending
+                      ? "Connecting…"
+                      : "Buy Now"}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  onClick={handleAddToCart}
+                  disabled={
+                    product.inventoryLevel !== undefined &&
+                    product.inventoryLevel === 0
+                  }
+                  className="gap-2 font-bold rounded-xl h-12 border-primary/20 text-primary hover:bg-primary/5"
+                >
+                  <Plus className="h-4 w-4" />
+                  Add to Cart
+                </Button>
               </div>
 
-              <p className="text-sm text-black/60 font-medium leading-relaxed">
-                {product.description}
-              </p>
-            </div>
-
-            {/* Interaction Matrix */}
-            <div className="space-y-8">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between bg-black/[0.02] border border-black/5 rounded-xl p-1 transition-all hover:bg-black/[0.03]">
-                  <div className="flex items-center">
-                    <button
-                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      className="h-10 w-10 flex items-center justify-center text-black/20 hover:text-black transition-all active:scale-90"
-                      disabled={quantity <= 1}
-                    >
-                      <Minus className="h-4 w-4" />
-                    </button>
-                    <span className="w-10 text-center text-lg font-bold text-black">
-                      {quantity}
-                    </span>
-                    <button
-                      onClick={() => setQuantity(quantity + 1)}
-                      className="h-10 w-10 flex items-center justify-center text-black/20 hover:text-black transition-all active:scale-95"
-                    >
-                      <Plus className="h-4 w-4 text-primary" />
-                    </button>
-                  </div>
-                  <span className="text-[9px] font-bold text-black/20 uppercase tracking-widest pr-4">
-                    Batch quantity
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <Button
-                    size="lg"
-                    onClick={handleOrder}
-                    disabled={
-                      createOrder.isPending ||
-                      initiatePayment.isPending ||
-                      (product.inventoryLevel !== undefined &&
-                        product.inventoryLevel === 0)
-                    }
-                    className="gap-2 font-bold"
-                  >
-                    {createOrder.isPending || initiatePayment.isPending ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <ShoppingBag className="h-4 w-4" />
-                    )}
-                    {createOrder.isPending
-                      ? "Processing..."
-                      : initiatePayment.isPending
-                        ? "Connecting to payment..."
-                        : "Initiate Checkout"}
-                  </Button>
-
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    onClick={handleAddToCart}
-                    disabled={
-                      product.inventoryLevel !== undefined &&
-                      product.inventoryLevel === 0
-                    }
-                    className="gap-2 font-bold"
-                  >
-                    <Plus className="h-4 w-4" />
-                    Add to Cart
-                  </Button>
-                </div>
-
-                <div className="flex justify-center">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-black/40 hover:text-black gap-2"
-                  >
-                    <Share2 className="h-4 w-4" /> Share Collection
-                  </Button>
-                </div>
-              </div>
-
-              {/* Specialist Trust Matrix */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 py-10 border-t border-black/5">
-                <div className="flex flex-col items-center text-center space-y-3">
-                  <div className="h-14 w-14 rounded-2xl bg-primary/5 flex items-center justify-center text-primary group hover:bg-primary transition-all">
-                    <ShieldCheck className="h-6 w-6 group-hover:text-white" />
-                  </div>
-                  <span className="text-[11px] font-bold text-black/60">
-                    Purchase Secure
-                  </span>
-                </div>
-                <div className="flex flex-col items-center text-center space-y-3">
-                  <div className="h-14 w-14 rounded-2xl bg-primary/5 flex items-center justify-center text-primary">
-                    <Truck className="h-6 w-6" />
-                  </div>
-                  <span className="text-[11px] font-bold text-black/60">
-                    Local Delivery
-                  </span>
-                </div>
-                <div className="flex flex-col items-center text-center space-y-3">
-                  <div className="h-14 w-14 rounded-2xl bg-primary/5 flex items-center justify-center text-primary">
-                    <RotateCcw className="h-6 w-6" />
-                  </div>
-                  <span className="text-[11px] font-bold text-black/60">
-                    Return Policy
-                  </span>
-                </div>
+              <div className="flex justify-center">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-black/30 hover:text-black gap-2 text-xs"
+                >
+                  <Share2 className="h-3.5 w-3.5" /> Share this product
+                </Button>
               </div>
             </div>
 
-            {/* Product Documentation */}
-            <div className="mt-12 pt-8 border-t border-black/5">
+            {/* ── Trust strip ── */}
+            <div className="grid grid-cols-3 gap-3 pt-4 border-t border-black/5">
+              {[
+                {
+                  icon: ShieldCheck,
+                  label: "Secure payment",
+                  sub: "256-bit SSL",
+                },
+                { icon: PackageCheck, label: "Authentic", sub: "Lab verified" },
+                { icon: RotateCcw, label: "Easy returns", sub: "7-day policy" },
+              ].map(({ icon: Icon, label, sub }) => (
+                <div
+                  key={label}
+                  className="flex flex-col items-center text-center gap-2 p-3 rounded-xl bg-[#f5faf6] hover:bg-[#eaf2e8] transition-colors"
+                >
+                  <Icon className="h-5 w-5 text-primary" />
+                  <div>
+                    <p className="text-[10px] font-black text-primary leading-tight">
+                      {label}
+                    </p>
+                    <p className="text-[10px] text-black/35 font-medium">
+                      {sub}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* ── Herbal credentials strip ── */}
+            <div className="flex flex-wrap gap-2">
+              {[
+                { emoji: "🌿", text: "100% Organic" },
+                { emoji: "🧪", text: "Lab Tested" },
+                { emoji: "🌍", text: "African Botanicals" },
+                { emoji: "⚕️", text: "Clinically Guided" },
+              ].map((t) => (
+                <span
+                  key={t.text}
+                  className="inline-flex items-center gap-1.5 text-[10px] font-bold bg-white border border-primary/10 text-primary/70 rounded-full px-3 py-1.5"
+                >
+                  <span>{t.emoji}</span>
+                  {t.text}
+                </span>
+              ))}
+              <button
+                onClick={() => setIsFavorite(!isFavorite)}
+                className={`inline-flex items-center gap-1.5 text-[10px] font-bold rounded-full px-3 py-1.5 border transition-colors ${isFavorite ? "bg-red-50 border-red-200 text-red-500" : "bg-white border-black/10 text-black/40 hover:text-red-400"}`}
+              >
+                <Heart
+                  className={`h-3 w-3 ${isFavorite ? "fill-current" : ""}`}
+                />
+                {isFavorite ? "Saved" : "Wishlist"}
+              </button>
+            </div>
+
+            {/* ── Product accordion ── */}
+            <div className="pt-2 border-t border-black/5">
               <Accordion type="single" collapsible className="w-full">
-                <AccordionItem value="description" className="border-none mb-4">
-                  <AccordionTrigger className="text-sm font-bold hover:no-underline py-6 data-[state=open]:text-primary transition-colors">
-                    Product Description
+                <AccordionItem
+                  value="description"
+                  className="border-b border-black/5"
+                >
+                  <AccordionTrigger className="text-sm font-bold hover:no-underline py-4 hover:text-primary transition-colors">
+                    Full Description
                   </AccordionTrigger>
-                  <AccordionContent className="text-base text-black/60 leading-relaxed font-medium pb-8 pl-6 border-l-2 border-primary/20 bg-black/[0.01] rounded-b-3xl mt-2 p-6">
-                    {product.description}
+                  <AccordionContent className="text-xs text-black/60 leading-relaxed font-medium pb-4 space-y-2">
+                    <div className="flex gap-2 items-start">
+                      <Leaf className="h-3.5 w-3.5 text-primary shrink-0 mt-0.5" />
+                      <p>{product.description}</p>
+                    </div>
                   </AccordionContent>
                 </AccordionItem>
-                <AccordionItem value="usage" className="border-none">
-                  <AccordionTrigger className="text-sm font-bold hover:no-underline py-6 data-[state=open]:text-primary transition-colors">
-                    Usage & Details
+                <AccordionItem
+                  value="usage"
+                  className="border-b border-black/5"
+                >
+                  <AccordionTrigger className="text-sm font-bold hover:no-underline py-4 hover:text-primary transition-colors">
+                    Usage &amp; Directions
                   </AccordionTrigger>
-                  <AccordionContent className="space-y-8 pb-10 pl-6 border-l-2 border-primary/20 bg-black/[0.01] rounded-b-3xl mt-2 p-6">
-                    <div className="space-y-3">
-                      <h4 className="text-sm font-bold text-black">
-                        Directions
-                      </h4>
-                      <p className="text-base text-black/60 font-medium leading-relaxed">
-                        {t("protocolDesc")}
-                      </p>
-                    </div>
-                    <div className="space-y-3">
-                      <h4 className="text-sm font-bold text-black">
-                        Composition
-                      </h4>
-                      <p className="text-base text-black/60 font-medium leading-relaxed">
-                        High-potency organic extract concentration. Primary
-                        active components: specialist-grade botanical essence.
-                      </p>
-                    </div>
+                  <AccordionContent className="text-xs text-black/60 leading-relaxed font-medium pb-4 space-y-3">
+                    <p>
+                      <span className="font-bold text-primary">
+                        Directions:{" "}
+                      </span>
+                      {t("protocolDesc")}
+                    </p>
+                    <p>
+                      <span className="font-bold text-primary">
+                        Composition:{" "}
+                      </span>
+                      High-potency organic extract — specialist-grade botanical
+                      essence, wild-harvested &amp; clinically processed.
+                    </p>
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="delivery" className="border-none">
+                  <AccordionTrigger className="text-sm font-bold hover:no-underline py-4 hover:text-primary transition-colors">
+                    Delivery &amp; Returns
+                  </AccordionTrigger>
+                  <AccordionContent className="text-xs text-black/60 leading-relaxed font-medium pb-4 space-y-2">
+                    <p>
+                      <span className="font-bold text-primary">
+                        Inbound (Cameroon):{" "}
+                      </span>
+                      2–4 business days — Yaoundé, Douala, Bafoussam &amp; all
+                      regions.
+                    </p>
+                    <p>
+                      <span className="font-bold text-primary">Africa: </span>
+                      5–8 business days — Nigeria, Côte d&apos;Ivoire, Senegal,
+                      Gabon, Congo &amp; more.
+                    </p>
+                    <p>
+                      <span className="font-bold text-primary">
+                        International:{" "}
+                      </span>
+                      7–14 business days — Europe, USA, Canada &amp; beyond.
+                    </p>
+                    <p className="pt-1">
+                      <span className="font-bold text-primary">Returns: </span>
+                      7-day return policy on unopened items. Contact support
+                      within 7 days of receipt.
+                    </p>
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
