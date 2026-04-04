@@ -83,7 +83,7 @@ export function CustomerReviews() {
           <p className="text-[10px] font-bold uppercase tracking-widest text-[#f2c94c]">
             Verified Patient Reviews
           </p>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-primary tracking-tight">
+          <h2 className="text-xl sm:text-2xl font-black text-primary tracking-tight">
             Real People, Real Healing
           </h2>
           {/* Aggregate rating */}

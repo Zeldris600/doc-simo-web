@@ -32,25 +32,28 @@ function thumb(p: Product) {
   return p.images?.[0] || p.image || "/forest-bg.jpg";
 }
 
-export function FeaturedProducts({ products, isLoading }: FeaturedProductsProps) {
+export function FeaturedProducts({
+  products,
+  isLoading,
+}: FeaturedProductsProps) {
   const [hero, ...rest] = products;
   const side = rest.slice(0, 3);
 
   return (
     <section className="px-4 sm:px-6 lg:px-12 py-20 bg-white">
       <div className="container max-w-7xl mx-auto">
-
         {/* Header */}
         <div className="flex items-end justify-between mb-10 gap-4">
           <div className="space-y-2">
             <p className="text-[10px] font-bold uppercase tracking-widest text-[#f2c94c]">
               🌿 Dr. Simo&apos;s Personal Selection
             </p>
-            <h2 className="text-3xl sm:text-4xl font-black text-primary tracking-tight leading-tight">
+            <h2 className="text-xl sm:text-2xl font-black text-primary tracking-tight leading-tight">
               Signature Remedies
             </h2>
             <p className="text-sm text-foreground/50 font-medium max-w-sm">
-              Hand-picked from our clinic dispensary — the formulations our patients ask for most.
+              Hand-picked from our clinic dispensary — the formulations our
+              patients ask for most.
             </p>
           </div>
           <Link
@@ -67,7 +70,6 @@ export function FeaturedProducts({ products, isLoading }: FeaturedProductsProps)
           <FeaturedSkeleton />
         ) : products.length === 0 ? null : (
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-
             {/* ── HERO PRODUCT ── */}
             {hero && (
               <Link
@@ -150,7 +152,9 @@ export function FeaturedProducts({ products, isLoading }: FeaturedProductsProps)
                       </p>
                     </div>
                     <div className="flex items-center justify-between mt-2">
-                      <span className="text-sm font-black text-primary">{price(p)}</span>
+                      <span className="text-sm font-black text-primary">
+                        {price(p)}
+                      </span>
                       <span className="text-[10px] font-black text-primary bg-primary/10 px-3 py-1 rounded-full group-hover:bg-primary group-hover:text-white transition-colors">
                         Shop →
                       </span>
@@ -168,7 +172,6 @@ export function FeaturedProducts({ products, isLoading }: FeaturedProductsProps)
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
-
           </div>
         )}
       </div>

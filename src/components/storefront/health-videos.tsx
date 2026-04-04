@@ -80,7 +80,7 @@ export function HealthVideos() {
           <p className="text-[10px] font-bold uppercase tracking-widest text-[#f2c94c]">
             🎥 Doctasimo Health Channel
           </p>
-          <h2 className="text-3xl sm:text-4xl font-black text-primary tracking-tight">
+          <h2 className="text-xl sm:text-2xl font-black text-primary tracking-tight">
             Watch &amp; Learn
           </h2>
           <p className="text-sm text-foreground/50 font-medium max-w-md mx-auto leading-relaxed">

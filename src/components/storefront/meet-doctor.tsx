@@ -43,7 +43,7 @@ export function MeetDoctor() {
             <p className="text-[10px] font-bold uppercase tracking-widest text-[#f2c94c]">
               The Visionary Behind Doctasimo
             </p>
-            <h2 className="text-3xl sm:text-4xl font-black text-primary leading-tight tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-black text-primary leading-tight tracking-tight">
               Meet Dr. Simo
             </h2>
           </div>

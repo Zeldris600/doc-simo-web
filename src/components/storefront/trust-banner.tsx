@@ -48,7 +48,7 @@ export function TrustBanner() {
             <p className="text-xs font-bold text-[#f2c94c] tracking-tight">
               Why trust Doctasimo
             </p>
-            <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight">
+            <h2 className="text-lg md:text-xl font-bold text-white tracking-tight">
               Numbers that speak for themselves
             </h2>
           </div>

@@ -72,7 +72,7 @@ export function Features() {
           <p className="text-[10px] font-bold uppercase tracking-widest text-[#f2c94c]">
             🇨🇲 Proudly Cameroonian
           </p>
-          <h2 className="text-3xl sm:text-4xl font-black text-primary tracking-tight">
+          <h2 className="text-xl sm:text-2xl font-black text-primary tracking-tight">
             Healing Rooted in Our Land
           </h2>
           <p className="text-sm text-foreground/50 font-medium max-w-lg mx-auto leading-relaxed">

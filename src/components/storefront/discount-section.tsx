@@ -11,7 +11,8 @@ const AFRICAN_PATTERN = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org
 const FALLBACK = {
   code: "FIRSTORDER",
   label: "First Order Discount",
-  description: "Get a special discount on your first order. Use this code at checkout and save on your first Doctasimo herbal formulation.",
+  description:
+    "Get a special discount on your first order. Use this code at checkout and save on your first Doctasimo herbal formulation.",
   badge: "Welcome Offer",
 };
 
@@ -44,13 +45,15 @@ export function DiscountSection() {
       <div className="container max-w-7xl mx-auto">
         <div
           className="relative overflow-hidden rounded-3xl bg-primary"
-          style={{ backgroundImage: AFRICAN_PATTERN, backgroundSize: "60px 60px" }}
+          style={{
+            backgroundImage: AFRICAN_PATTERN,
+            backgroundSize: "60px 60px",
+          }}
         >
           {/* Gold glow */}
           <div className="absolute top-0 right-0 w-80 h-80 rounded-full bg-[#f2c94c]/10 -translate-y-1/3 translate-x-1/4 blur-3xl pointer-events-none" />
 
           <div className="relative z-10 flex flex-col lg:flex-row items-center gap-10 px-8 md:px-14 py-14">
-
             {/* ── Left: Code display ── */}
             <div className="flex-1 space-y-5 text-center lg:text-left">
               {/* Badge */}
@@ -62,7 +65,7 @@ export function DiscountSection() {
               </div>
 
               <div className="space-y-2">
-                <h2 className="text-3xl sm:text-4xl font-black text-white leading-tight tracking-tight">
+                <h2 className="text-xl sm:text-2xl font-black text-white leading-tight tracking-tight">
                   {active ? saving : "Special Offer"}
                   <br />
                   <span className="text-[#f2c94c]">Just for You</span>
@@ -82,9 +85,15 @@ export function DiscountSection() {
                   onClick={copyCode}
                   className="ml-2 flex items-center gap-1.5 bg-[#f2c94c] hover:bg-[#f0c040] text-[#142c1b] text-[10px] font-black px-3 py-1.5 rounded-xl transition-colors"
                 >
-                  {copied
-                    ? <><Check className="w-3 h-3" /> Copied!</>
-                    : <><Copy className="w-3 h-3" /> Copy</>}
+                  {copied ? (
+                    <>
+                      <Check className="w-3 h-3" /> Copied!
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3 h-3" /> Copy
+                    </>
+                  )}
                 </button>
               </div>
 
@@ -118,7 +127,6 @@ export function DiscountSection() {
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </div>

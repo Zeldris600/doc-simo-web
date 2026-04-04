@@ -31,7 +31,7 @@ export function CategoryShowcase() {
           <span className="text-xs font-black text-primary bg-primary/10 px-4 py-1.5 rounded-full border border-primary/20 tracking-[0.1em] uppercase">
             {t("label")}
           </span>
-          <h2 className="text-3xl md:text-5xl font-black text-[#173b27] tracking-tighter leading-none">
+          <h2 className="text-xl md:text-2xl font-black text-[#173b27] tracking-tighter leading-none">
             {t("title")}
           </h2>
           <p className="text-base text-[#173b27]/80 max-w-lg mx-auto font-medium leading-relaxed">
@@ -58,22 +58,22 @@ export function CategoryShowcase() {
                   fill
                   className="object-cover transition-transform duration-1000 group-hover:scale-115"
                 />
-                
+
                 {/* Modern Gradient Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0a1a11]/95 via-[#0a1a11]/40 to-transparent opacity-80 transition-opacity duration-500" />
 
-                  <div className="absolute inset-x-0 bottom-0 p-8 pt-20 flex flex-col gap-3 z-10">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-[10px] text-white/80 font-black tracking-[0.2em] uppercase">
-                        {t("node")}
-                      </span>
-                    </div>
-                    <h3 className="text-2xl font-black text-white tracking-tight leading-tight group-hover:scale-105 transition-transform origin-left">
-                      {category.name}
-                    </h3>
-                    <p className="text-xs text-white/70 font-medium line-clamp-1 leading-relaxed opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-4 group-hover:translate-y-0">
-                      {category.description}
-                    </p>
+                <div className="absolute inset-x-0 bottom-0 p-8 pt-20 flex flex-col gap-3 z-10">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-[10px] text-white/80 font-black tracking-[0.2em] uppercase">
+                      {t("node")}
+                    </span>
+                  </div>
+                  <h3 className="text-base font-black text-white tracking-tight leading-tight group-hover:scale-105 transition-transform origin-left">
+                    {category.name}
+                  </h3>
+                  <p className="text-xs text-white/70 font-medium line-clamp-1 leading-relaxed opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-4 group-hover:translate-y-0">
+                    {category.description}
+                  </p>
                   <div className="flex items-center gap-2 text-white text-[10px] font-black tracking-widest mt-4 opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 transition-all duration-500 uppercase">
                     {t("access")}
                     <ArrowRight className="w-3.5 h-3.5" />

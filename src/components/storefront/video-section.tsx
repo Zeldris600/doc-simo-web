@@ -38,7 +38,7 @@ export function VideoSection() {
             <p className="text-[10px] font-bold uppercase tracking-widest text-[#f2c94c]">
               Inside Doctasimo
             </p>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white leading-tight tracking-tight">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-white leading-tight tracking-tight">
               See How We Combine Nature &amp; Clinical Science
             </h2>
             <p className="text-base text-white/60 font-medium leading-relaxed max-w-md mx-auto lg:mx-0">
@@ -62,7 +62,8 @@ export function VideoSection() {
 
           {/* Right — video thumbnail */}
           <div className="flex-1 relative w-full max-w-xl">
-            <div className="relative aspect-video rounded-3xl overflow-hidden shadow-2xl shadow-black/30 ring-1 ring-white/10 group cursor-pointer"
+            <div
+              className="relative aspect-video rounded-3xl overflow-hidden shadow-2xl shadow-black/30 ring-1 ring-white/10 group cursor-pointer"
               onClick={() => setOpen(true)}
             >
               <Image

@@ -40,7 +40,7 @@ export function FaqSection() {
           <p className="text-[10px] font-bold uppercase tracking-widest text-[#f2c94c]">
             Support Center
           </p>
-          <h2 className="text-2xl font-black text-primary tracking-tight">
+          <h2 className="text-lg font-black text-primary tracking-tight">
             Frequently Asked Questions
           </h2>
         </div>

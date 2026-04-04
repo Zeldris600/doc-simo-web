@@ -210,7 +210,7 @@ export default function ProductsPage() {
 
             {/* Grid */}
             {isLoadingProducts ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
+              <div className="grid grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-8">
                 {Array.from({ length: limit }).map((_, i) => (
                   <ProductCardSkeleton key={i} />
                 ))}
@@ -237,7 +237,7 @@ export default function ProductsPage() {
               <div
                 className={
                   viewMode === "grid"
-                    ? "grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8"
+                    ? "grid grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-8"
                     : "flex flex-col gap-8"
                 }
               >
