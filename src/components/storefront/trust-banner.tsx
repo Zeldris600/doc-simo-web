@@ -1,29 +1,29 @@
-import { Award, Users, Beaker, Globe } from "lucide-react";
+import { Award, Users, Beaker, MapPin } from "@/lib/icons";
 
 const STATS = [
   {
     icon: Users,
-    value: "1,200+",
-    label: "Patients Treated",
-    description: "In Cameroon since our founding",
+    value: "2,800+",
+    label: "Patients cared for",
+    description: "Yaoundé, Douala & follow-ups across Cameroon",
   },
   {
     icon: Beaker,
-    value: "18",
-    label: "Herbal Formulas",
-    description: "Developed at our Douala clinic",
+    value: "26",
+    label: "Herbal preparations",
+    description: "Compounded at our Douala (Akwa) dispensary",
   },
   {
     icon: Award,
-    value: "12 yrs",
-    label: "In Practice",
-    description: "Dr. Simo's clinical experience",
+    value: "17 yrs",
+    label: "MD-led practice",
+    description: "Dr. Simo — clinical herbal protocols since 2009",
   },
   {
-    icon: Globe,
-    value: "8",
-    label: "Towns Served",
-    description: "Delivering across Cameroon",
+    icon: MapPin,
+    value: "12+",
+    label: "Delivery routes",
+    description: "Courier coverage in all 10 regions",
   },
 ];
 

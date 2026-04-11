@@ -3,7 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/ui/data-table";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal, MapPin, Phone } from "lucide-react";
+import { MoreHorizontal, MapPin, Phone } from "@/lib/icons";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Paperclip, X, FileText, Loader2 } from "lucide-react";
+import { Paperclip, X, FileText, Loader2 } from "@/lib/icons";
 import { useUploadMultipleMedia } from "@/hooks/use-media";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";

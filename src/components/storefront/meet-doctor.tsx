@@ -6,7 +6,10 @@ import {
   GraduationCap,
   Stethoscope,
   FlaskConical,
-} from "lucide-react";
+  Users,
+  Star,
+  Award,
+} from "@/lib/icons";
 
 const CREDENTIALS = [
   { icon: GraduationCap, text: "MD, Internal Medicine — University of Paris" },
@@ -69,15 +72,48 @@ export function MeetDoctor() {
           {/* Stats */}
           <div className="grid grid-cols-2 gap-6 pt-2">
             {[
-              { value: "3,500+", label: "Patients Helped" },
-              { value: "15+", label: "Proprietary Formulations" },
-              { value: "98%", label: "Patient Satisfaction" },
-              { value: "25 yrs", label: "Research Experience" },
-            ].map((s) => (
-              <div key={s.label} className="bg-[#f5faf6] rounded-2xl px-4 py-4">
-                <p className="text-2xl font-black text-primary">{s.value}</p>
-                <p className="text-[10px] font-bold text-primary/40 uppercase tracking-wider mt-1">
-                  {s.label}
+              {
+                value: "2,800+",
+                label: "Patients helped",
+                sub: "Littoral to Centre & beyond",
+                Icon: Users,
+              },
+              {
+                value: "26",
+                label: "Clinic formulations",
+                sub: "Douala dispensary",
+                Icon: FlaskConical,
+              },
+              {
+                value: "98%",
+                label: "Satisfaction",
+                sub: "Post-consult surveys",
+                Icon: Star,
+              },
+              {
+                value: "17 yrs",
+                label: "MD-led practice",
+                sub: "Since 2009 in Cameroon",
+                Icon: Award,
+              },
+            ].map(({ value, label, sub, Icon }) => (
+              <div
+                key={label}
+                className="bg-[#f5faf6] rounded-2xl px-4 py-4 text-left space-y-2"
+              >
+                <div className="flex items-center gap-2">
+                  <div className="shrink-0 w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <Icon className="w-4 h-4 text-primary" />
+                  </div>
+                  <p className="text-2xl font-black text-primary leading-none">
+                    {value}
+                  </p>
+                </div>
+                <p className="text-[10px] font-bold text-primary/40 uppercase tracking-wider">
+                  {label}
+                </p>
+                <p className="text-[10px] text-foreground/45 font-medium leading-snug">
+                  {sub}
                 </p>
               </div>
             ))}

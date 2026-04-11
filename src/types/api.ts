@@ -35,6 +35,41 @@ export interface Product {
   createdAt: string;
   updatedAt: string;
   availability?: boolean; // Legacy fallback
+  /** From catalog API when product reviews are enabled */
+  reviewCount?: number;
+  averageRating?: number | null;
+}
+
+export interface ProductReviewUser {
+  id: string;
+  name: string;
+  image: string | null;
+}
+
+export interface ProductReview {
+  id: string;
+  productId: string;
+  rating: number;
+  comment: string | null;
+  createdAt: string;
+  updatedAt: string;
+  user: ProductReviewUser;
+}
+
+export interface ProductReviewStats {
+  reviewCount: number;
+  averageRating: number | null;
+}
+
+export interface CreateProductReviewDto {
+  rating: number;
+  comment?: string;
+}
+
+export interface UpdateProductReviewDto {
+  rating?: number;
+  /** Omit to leave unchanged; send "" to clear */
+  comment?: string;
 }
 
 export interface Category {
@@ -122,6 +157,8 @@ export interface Order {
   total?: number; // Legacy/fallback
   currency: string;
   status: OrderStatus;
+  assignedToUserId?: string | null;
+  shippingProofUrl?: string | null;
   deliveryAddress?: {
     address?: string;
     city?: string;
@@ -140,10 +177,12 @@ export interface Order {
 
 export type OrderStatus =
   | "PENDING"
+  | "PAID"
   | "PROCESSING"
   | "SHIPPED"
   | "DELIVERED"
-  | "CANCELLED";
+  | "CANCELLED"
+  | "REFUNDED";
 
 export interface OrderItem {
   id: string;
@@ -166,6 +205,14 @@ export interface CreateOrderDto {
 
 export interface UpdateOrderStatusDto {
   status: OrderStatus;
+}
+
+export interface AssignOrderDto {
+  assigneeUserId: string;
+}
+
+export interface ShippingProofDto {
+  proofUrl: string;
 }
 
 export interface PushOrderLocationDto {

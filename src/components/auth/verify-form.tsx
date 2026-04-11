@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { Loader2, Key } from "lucide-react";
+import { Loader2, Key } from "@/lib/icons";
 import Image from "next/image";
 
 import { useVerifyPhoneOtp, useSendOtp } from "@/hooks/use-auth-endpoints";

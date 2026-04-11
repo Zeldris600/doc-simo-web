@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { Link } from "@/i18n/routing";
-import { ShoppingBag, ArrowRight, Flame } from "lucide-react";
+import { ShoppingBag, ArrowRight, Flame } from "@/lib/icons";
 import { Product } from "@/types/api";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -155,8 +155,10 @@ export function FeaturedProducts({
                       <span className="text-sm font-black text-primary">
                         {price(p)}
                       </span>
-                      <span className="text-[10px] font-black text-primary bg-primary/10 px-3 py-1 rounded-full group-hover:bg-primary group-hover:text-white transition-colors">
-                        Shop →
+                      <span className="inline-flex items-center gap-1 text-[10px] font-black text-primary bg-primary/10 px-3 py-1.5 rounded-full group-hover:bg-primary group-hover:text-white transition-colors">
+                        <ShoppingBag className="w-3 h-3 shrink-0" aria-hidden />
+                        Shop
+                        <ArrowRight className="w-3 h-3 shrink-0" aria-hidden />
                       </span>
                     </div>
                   </div>

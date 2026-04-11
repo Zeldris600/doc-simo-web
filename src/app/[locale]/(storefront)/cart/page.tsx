@@ -10,7 +10,7 @@ import {
   Truck,
   RotateCcw,
   Lock,
-} from "lucide-react";
+} from "@/lib/icons";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";

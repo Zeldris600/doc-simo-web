@@ -13,8 +13,8 @@ import {
   ArrowRight,
   PhoneCall,
   Send,
-} from "lucide-react";
-import Link from "next/link";
+} from "@/lib/icons";
+import { Link } from "@/i18n/routing";
 
 const AFRICAN_PATTERN = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cg fill='none'%3E%3Cpolygon points='30,4 56,18 56,42 30,56 4,42 4,18' stroke='%23ffffff' stroke-width='0.6' fill='none' opacity='0.05'/%3E%3Cpolygon points='30,12 48,22 48,38 30,48 12,38 12,22' stroke='%23f2c94c' stroke-width='0.4' fill='none' opacity='0.04'/%3E%3C/g%3E%3C/svg%3E")`;
 
@@ -57,24 +57,6 @@ const SOCIALS = [
     href: "https://wa.me/237600000000",
     color: "hover:bg-[#25d366]",
   },
-];
-
-const DELIVERY_ZONES = [
-  "Yaoundé",
-  "Douala",
-  "Bafoussam",
-  "Bamenda",
-  "Garoua",
-  "Ngaoundéré",
-  "Bertoua",
-  "Maroua",
-  "Kribi",
-  "Limbe",
-];
-
-const PAYMENT_METHODS = [
-  { label: "MTN MoMo", emoji: "📱" },
-  { label: "Orange Money", emoji: "📱" },
 ];
 
 export function StorefrontFooter() {
@@ -267,23 +249,6 @@ export function StorefrontFooter() {
           </div>
         </div>
 
-        {/* ── Delivery zones strip ── */}
-        <div className="border-t border-white/8 px-4 sm:px-6 lg:px-12 py-5">
-          <div className="container max-w-7xl mx-auto flex flex-wrap items-center gap-3">
-            <span className="text-[10px] font-black uppercase tracking-widest text-white/25 shrink-0">
-              🚚 Delivers to:
-            </span>
-            {DELIVERY_ZONES.map((zone) => (
-              <span
-                key={zone}
-                className="text-[10px] font-bold text-white/35 bg-white/5 border border-white/8 px-2.5 py-1 rounded-full"
-              >
-                {zone}
-              </span>
-            ))}
-          </div>
-        </div>
-
         {/* ── Bottom bar ── */}
         <div className="border-t border-white/8 px-4 sm:px-6 lg:px-12 py-6">
           <div className="container max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-5">
@@ -311,19 +276,6 @@ export function StorefrontFooter() {
               >
                 FAQ
               </Link>
-            </div>
-
-            {/* Payment methods */}
-            <div className="flex items-center gap-2">
-              {PAYMENT_METHODS.map(({ label, emoji }) => (
-                <span
-                  key={label}
-                  className="flex items-center gap-1 text-[10px] font-black text-white/30 bg-white/5 border border-white/8 rounded-lg px-2.5 py-1.5"
-                >
-                  <span>{emoji}</span>
-                  {label}
-                </span>
-              ))}
             </div>
           </div>
         </div>

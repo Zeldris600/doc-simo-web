@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/form";
 import { ImageUploader } from "@/components/ui/image-uploader";
 import { toast } from "sonner";
-import { Loader2, User, MapPin, ShieldCheck } from "lucide-react";
+import { Loader2, User, MapPin, ShieldCheck } from "@/lib/icons";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ProfileSkeleton } from "@/components/skeletons/profile-skeleton";
 

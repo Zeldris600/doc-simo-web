@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Star } from "lucide-react";
+import { Star } from "@/lib/icons";
 
 const IMAGE_TESTIMONIALS = [
  {

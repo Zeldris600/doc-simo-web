@@ -1,10 +1,13 @@
 import { api } from "./api";
 import {
- CreateOrderDto,
- Order,
- PaginatedResponse,
- PushOrderLocationDto,  UpdateOrderStatusDto,
-  StandardResponse
+  AssignOrderDto,
+  CreateOrderDto,
+  Order,
+  PaginatedResponse,
+  PushOrderLocationDto,
+  ShippingProofDto,
+  StandardResponse,
+  UpdateOrderStatusDto,
 } from "../types/api";
 
 export const OrderService = {
@@ -31,6 +34,22 @@ export const OrderService = {
 
   updateStatus: async (id: string, data: UpdateOrderStatusDto) => {
     const response = await api.put<StandardResponse<Order>>(`/orders/${id}/status`, data);
+    return response.data.data;
+  },
+
+  assign: async (id: string, data: AssignOrderDto) => {
+    const response = await api.patch<StandardResponse<Order>>(
+      `/orders/${id}/assign`,
+      data,
+    );
+    return response.data.data;
+  },
+
+  submitShippingProof: async (id: string, data: ShippingProofDto) => {
+    const response = await api.post<StandardResponse<Order>>(
+      `/orders/${id}/shipping-proof`,
+      data,
+    );
     return response.data.data;
   },
 

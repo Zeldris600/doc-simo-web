@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Star, Quote } from "lucide-react";
+import { Star, Quote } from "@/lib/icons";
 import Image from "next/image";
 import {
   Carousel,

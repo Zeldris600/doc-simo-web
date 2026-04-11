@@ -1,4 +1,4 @@
-import { Star, Quote } from "lucide-react";
+import { Star, Quote } from "@/lib/icons";
 import Image from "next/image";
 
 const REVIEWS = [
@@ -97,7 +97,7 @@ export function CustomerReviews() {
               ))}
             </div>
             <span className="text-2xl font-black text-primary">{avg}</span>
-            <span className="text-sm text-foreground/40 font-medium">
+            <span className="text-sm text-foreground/65 font-medium">
               / 5 · {REVIEWS.length * 580}+ reviews
             </span>
           </div>
@@ -108,7 +108,7 @@ export function CustomerReviews() {
           {REVIEWS.map((r, i) => (
             <div
               key={r.id}
-              className={`relative bg-white rounded-3xl p-7 shadow-sm border border-black/5 hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col gap-5 ${i === 1 ? "lg:bg-primary lg:border-primary" : ""}`}
+              className={`relative bg-white rounded-3xl p-7 border border-black/5 hover:border-black/10 transition-colors duration-300 flex flex-col gap-5 ${i === 1 ? "lg:bg-primary lg:border-primary" : ""}`}
             >
               {/* Quote icon */}
               <div
@@ -138,7 +138,7 @@ export function CustomerReviews() {
 
               {/* Author */}
               <div className="flex items-center gap-3 pt-2 border-t border-black/5">
-                <div className="relative w-11 h-11 rounded-full overflow-hidden ring-2 ring-white shadow-sm shrink-0">
+                <div className="relative w-11 h-11 rounded-full overflow-hidden ring-2 ring-white shrink-0">
                   <Image
                     src={r.avatar}
                     alt={r.author}
@@ -153,7 +153,7 @@ export function CustomerReviews() {
                     {r.author}
                   </p>
                   <p
-                    className={`text-[11px] font-medium mt-0.5 ${i === 1 ? "text-white/50" : "text-foreground/40"}`}
+                    className={`text-[11px] font-medium mt-0.5 ${i === 1 ? "text-white/70" : "text-foreground/65"}`}
                   >
                     {r.role} · {r.location}
                   </p>

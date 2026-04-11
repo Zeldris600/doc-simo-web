@@ -1,6 +1,6 @@
 "use client";
 
-import { MessageSquare, Headphones } from "lucide-react";
+import { MessageSquare, Headphones } from "@/lib/icons";
 
 export default function AdminSupportDashboard() {
   return (

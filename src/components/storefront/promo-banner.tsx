@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { Link } from "@/i18n/routing";
-import { ArrowRight, Clock, Sparkles } from "lucide-react";
+import { ArrowRight, Clock, Sparkles } from "@/lib/icons";
 import { useDiscounts } from "@/hooks/use-discount";
 
 export function PromoBanner() {

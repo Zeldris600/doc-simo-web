@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useDropzone } from "react-dropzone";
-import { Loader2, Plus, X } from "lucide-react";
+import { Loader2, Plus, X } from "@/lib/icons";
 import Image from "next/image";
 import { useUploadMultipleMedia } from "@/hooks/use-media";
 import { toast } from "sonner";

@@ -27,6 +27,7 @@ export const ROLE_PERMISSIONS: RolePermissionsMapping = {
  [UserRole.DELIVERY]: [
  "orders:read", "orders:update_status",
  "documents:read",
+ "documents:write",
  "notifications:read",
  ],
  [UserRole.CUSTOMER]: [

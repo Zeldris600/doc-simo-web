@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { User as UserIcon, LogOut, ShieldCheck } from "lucide-react";
+import { User as UserIcon, LogOut, ShieldCheck } from "@/lib/icons";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";

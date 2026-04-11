@@ -5,18 +5,19 @@ import { Link } from "@/i18n/routing";
 import {
   User,
   LogOut,
-  Facebook,
-  Instagram,
   ShoppingBag,
   LayoutDashboard,
   Menu,
   MessageSquare,
-} from "lucide-react";
+  Globe,
+  ChevronDown,
+} from "@/lib/icons";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useCart } from "@/store/use-cart";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import ReactCountryFlag from "react-country-flag";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -68,53 +69,10 @@ export function StorefrontNavbar() {
       className={cn(
         "fixed top-0 z-50 w-full transition-all duration-500",
         headerActive
-          ? "translate-y-0 shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-black/5"
+          ? "translate-y-0 shadow-[0_3px_14px_rgba(0,0,0,0.028)] ring-1 ring-black/[0.05]"
           : "",
       )}
     >
-      {/* Top Bar */}
-      <div
-        className={cn(
-          "w-full transition-all duration-500 overflow-hidden",
-          headerActive
-            ? "h-0 opacity-0 py-0 border-none"
-            : "bg-black/5 backdrop-blur-sm text-primary/60 py-2 border-b border-primary/5",
-        )}
-      >
-        <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between text-[10px] font-bold">
-          <div className="flex items-center gap-5">
-            <Link href="#" className="hover:text-[#173b27] transition-colors">
-              <Facebook className="h-3.5 w-3.5 fill-current" />
-            </Link>
-            <Link href="#" className="hover:text-[#173b27] transition-colors">
-              <Instagram className="h-3.5 w-3.5" />
-            </Link>
-          </div>
-          <div className="flex items-center gap-8">
-            <div className="flex items-center gap-4">
-              <Link
-                href="/"
-                locale="en"
-                className="hover:text-[#173b27] transition-colors"
-              >
-                EN
-              </Link>
-              <span className="text-[#173b27]/20 font-normal">|</span>
-              <Link
-                href="/"
-                locale="fr"
-                className="hover:text-[#173b27] transition-colors"
-              >
-                FR
-              </Link>
-            </div>
-            <div className="flex items-center gap-1.5 hover:text-[#173b27] transition-colors">
-              <span>XAF</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Main Navbar */}
       <div
         className={cn(
@@ -202,6 +160,50 @@ export function StorefrontNavbar() {
 
           {/* Right Actions */}
           <div className="flex items-center gap-2 sm:gap-5">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  className={cn(
+                    "hidden sm:inline-flex items-center gap-2 rounded-full px-3 py-2 transition-colors",
+                    headerActive ? "hover:bg-black/5" : "hover:bg-white/10",
+                  )}
+                >
+                  <Globe className={cn("h-4 w-4", headerActive ? "text-foreground/60" : "text-white/80")} />
+                  <ReactCountryFlag
+                    svg
+                    countryCode={pathname?.startsWith("/fr") ? "FR" : "GB"}
+                    aria-label={pathname?.startsWith("/fr") ? "France" : "United Kingdom"}
+                    style={{
+                      width: "1.2em",
+                      height: "1.2em",
+                      borderRadius: "9999px",
+                    }}
+                  />
+                  <ChevronDown
+                    className={cn("h-4 w-4 opacity-70", headerActive ? "text-foreground/60" : "text-white/80")}
+                  />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="min-w-44">
+                <DropdownMenuLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                  Language
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/" locale="en" className="flex items-center gap-2 font-semibold">
+                    <ReactCountryFlag svg countryCode="GB" aria-label="United Kingdom" />
+                    English
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/" locale="fr" className="flex items-center gap-2 font-semibold">
+                    <ReactCountryFlag svg countryCode="FR" aria-label="France" />
+                    Français
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
             <Sheet>
               <SheetTrigger asChild>
                 <button className="md:hidden p-2.5 rounded-full bg-primary/5 hover:bg-primary/10 text-primary/80 transition-all">

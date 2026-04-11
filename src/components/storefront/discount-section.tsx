@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Tag, Copy, Check, ArrowRight, Zap } from "lucide-react";
+import { Tag, Copy, Check, ArrowRight, Zap } from "@/lib/icons";
 import { Link } from "@/i18n/routing";
 import { useDiscounts } from "@/hooks/use-discount";
 

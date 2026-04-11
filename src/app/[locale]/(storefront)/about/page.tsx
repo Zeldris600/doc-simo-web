@@ -1,6 +1,6 @@
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { ShieldCheck, Leaf, TestTube } from "lucide-react";
+import { ShieldCheck, Leaf, TestTube } from "@/lib/icons";
 
 export default function AboutPage() {
   const t = useTranslations("about");

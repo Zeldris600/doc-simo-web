@@ -10,7 +10,7 @@ import {
  ChevronRight,
  ShoppingCart,
  Loader2
-} from "lucide-react";
+} from "@/lib/icons";
 import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

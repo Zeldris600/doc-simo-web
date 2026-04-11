@@ -17,7 +17,7 @@ import {
   Clock,
   MapPin,
   AlertTriangle,
-} from "lucide-react";
+} from "@/lib/icons";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,7 +27,7 @@ import { Separator } from "@/components/ui/separator";
 import { ApiError, Discount, OrderItem } from "@/types/api";
 import { CheckoutSkeleton } from "@/components/skeletons/checkout-skeleton";
 import { useDiscounts } from "@/hooks/use-discount";
-import { Tag, X } from "lucide-react";
+import { Tag, X } from "@/lib/icons";
 
 export default function OrderCheckoutPage() {
   const t = useTranslations("checkout");
@@ -89,23 +89,17 @@ export default function OrderCheckoutPage() {
       return;
     }
 
+    if (!order) return;
+
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    const redirectUrl = `${origin}/account/orders?status=SUCCESSFUL`;
+
     initiatePayment(
+      { orderId, data: { email, redirectUrl } },
       {
-        orderId,
-        data: {
-          redirectUrl: process.env.NEXT_PUBLIC_APP_URL
-            ? `${process.env.NEXT_PUBLIC_APP_URL}/account/orders`
-            : "https://doctasimo.com/account/orders",
-          email,
-        },
-      },
-      {
-        onSuccess: (response) => {
-          if (response.link) {
-            window.location.href = response.link;
-          } else {
-            toast.success("Payment initiated. Please check your phone.");
-          }
+        onSuccess: (res) => {
+          if (res.link) window.location.href = res.link;
+          else toast.error("Payment link not returned.");
         },
         onError: (err: ApiError) => {
           const errorMessage =

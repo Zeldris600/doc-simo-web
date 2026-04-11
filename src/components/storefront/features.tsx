@@ -5,7 +5,7 @@ import {
   Stethoscope,
   PackageCheck,
   FlaskConical,
-} from "lucide-react";
+} from "@/lib/icons";
 
 const FEATURES = [
   {

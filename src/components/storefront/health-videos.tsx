@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Play, X, Clock, Eye } from "lucide-react";
+import { Play, X, Clock, Eye } from "@/lib/icons";
 import Image from "next/image";
 
 interface VideoItem {

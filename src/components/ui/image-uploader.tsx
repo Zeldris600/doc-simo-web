@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useDropzone } from "react-dropzone";
-import { Loader2, Upload, X, ImageIcon } from "lucide-react";
+import { Loader2, Upload, X, ImageIcon } from "@/lib/icons";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useUploadMedia } from "@/hooks/use-media"; // Switched to useUploadMedia for Cloudinary integration

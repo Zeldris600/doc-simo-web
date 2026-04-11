@@ -1,6 +1,6 @@
 "use client";
 
-import { MessageSquare } from "lucide-react";
+import { MessageSquare } from "@/lib/icons";
 import { Link } from "@/i18n/routing";
 import { motion } from "framer-motion";
 

@@ -1,13 +1,13 @@
 "use client";
 
 import * as React from "react";
-import { Play, X } from "lucide-react";
+import { Play, X } from "@/lib/icons";
 import Image from "next/image";
 
 const VIDEO_STATS = [
-  { value: "3,500+", label: "Patients Treated" },
-  { value: "25 yrs", label: "Clinical Experience" },
-  { value: "98%", label: "Satisfaction Rate" },
+  { value: "2,800+", label: "Patients (CMR)" },
+  { value: "17 yrs", label: "Clinical practice" },
+  { value: "98%", label: "Would recommend" },
 ];
 
 // Replace with your actual YouTube video ID

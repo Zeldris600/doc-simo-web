@@ -8,8 +8,10 @@ import {
 } from "@tanstack/react-query";
 import { OrderService } from "@/services/order.service";
 import {
+  AssignOrderDto,
   CreateOrderDto,
   Order,
+  ShippingProofDto,
   UpdateOrderStatusDto,
   ApiError,
 } from "@/types/api";
@@ -48,10 +50,11 @@ export function useOrders(params?: { page?: number; limit?: number }) {
   });
 }
 
-export function useMyOrders() {
+export function useMyOrders(options?: { enabled?: boolean }) {
   return useQuery({
     queryKey: ["orders", "me"],
     queryFn: () => OrderService.getMe(),
+    enabled: options?.enabled ?? true,
   });
 }
 
@@ -73,6 +76,36 @@ export function useUpdateOrderStatus<TError extends ApiError = ApiError>(
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, data }) => OrderService.updateStatus(id, data),
+    ...opt,
+    onSuccess: (data, ...rest) => {
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+      queryClient.invalidateQueries({ queryKey: ["order", data.id] });
+      opt?.onSuccess?.(data, ...rest);
+    },
+  });
+}
+
+export function useAssignOrder<TError extends ApiError = ApiError>(
+  opt?: UseMutationOptions<Order, TError, { id: string; data: AssignOrderDto }>,
+) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }) => OrderService.assign(id, data),
+    ...opt,
+    onSuccess: (data, ...rest) => {
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+      queryClient.invalidateQueries({ queryKey: ["order", data.id] });
+      opt?.onSuccess?.(data, ...rest);
+    },
+  });
+}
+
+export function useSubmitShippingProof<TError extends ApiError = ApiError>(
+  opt?: UseMutationOptions<Order, TError, { id: string; data: ShippingProofDto }>,
+) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }) => OrderService.submitShippingProof(id, data),
     ...opt,
     onSuccess: (data, ...rest) => {
       queryClient.invalidateQueries({ queryKey: ["orders"] });

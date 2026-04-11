@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/select";
 import { MultiImageUploader } from "@/components/ui/multi-image-uploader";
 import { Category, Product } from "@/types/api";
-import { Loader2 } from "lucide-react";
+import { Loader2 } from "@/lib/icons";
 
 const productSchema = z.object({
   name: z.string().min(2, "Product name must be at least 2 characters."),

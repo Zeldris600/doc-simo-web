@@ -5,7 +5,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/ui/data-table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal, ExternalLink } from "lucide-react";
+import { MoreHorizontal, ExternalLink } from "@/lib/icons";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -64,7 +64,15 @@ const OrderActions = ({ order }: { order: Order }) => {
                 </DropdownMenuSubTrigger>
                 <DropdownMenuPortal>
                   <DropdownMenuSubContent>
-                    {["PENDING", "PROCESSING", "SHIPPED", "DELIVERED", "CANCELLED"].map(status => (
+                    {[
+                      "PENDING",
+                      "PAID",
+                      "PROCESSING",
+                      "SHIPPED",
+                      "DELIVERED",
+                      "CANCELLED",
+                      "REFUNDED",
+                    ].map((status) => (
                        <DropdownMenuItem 
                           key={status} 
                           onClick={() => handleStatusChange(status as OrderStatus)}
@@ -134,13 +142,17 @@ const columns: ColumnDef<Order>[] = [
           className={`rounded px-3 py-0.5 text-[10px] font-bold uppercase border-none ${
             status === "DELIVERED"
               ? "bg-green-100 text-green-700"
-              : status === "PROCESSING"
-                ? "bg-blue-100 text-blue-700"
-                : status === "SHIPPED"
-                  ? "bg-purple-100 text-purple-700"
-                  : status === "CANCELLED"
-                    ? "bg-red-100 text-red-700"
-                    : "bg-gray-100 text-gray-700"
+              : status === "PAID"
+                ? "bg-amber-100 text-amber-900"
+                : status === "PROCESSING"
+                  ? "bg-blue-100 text-blue-700"
+                  : status === "SHIPPED"
+                    ? "bg-purple-100 text-purple-700"
+                    : status === "CANCELLED"
+                      ? "bg-red-100 text-red-700"
+                      : status === "REFUNDED"
+                        ? "bg-slate-100 text-slate-700"
+                        : "bg-gray-100 text-gray-700"
           }`}
         >
           {status}

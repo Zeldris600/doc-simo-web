@@ -10,7 +10,7 @@ import {
 import { useCan } from "@/hooks/use-can";
 import { getPusherClient } from "@/lib/pusher";
 import { SupportMessage, SupportAttachment } from "@/services/support.service";
-import { ShieldPlus, ChevronLeft } from "lucide-react";
+import { ShieldPlus, ChevronLeft } from "@/lib/icons";
 import { useQueryClient, InfiniteData } from "@tanstack/react-query";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -168,7 +168,7 @@ export default function ConsultationPage() {
       recorder.start();
       setMediaRecorder(recorder);
       setIsRecording(true);
-    } catch (err) {
+    } catch {
       toast.error("Microphone access denied");
     }
   };
@@ -242,7 +242,7 @@ export default function ConsultationPage() {
   }
 
   return (
-    <div className="fixed inset-0 bg-white flex overflow-hidden">
+    <div className="fixed inset-0 bg-[#f7faf7] flex overflow-hidden">
       {/* Sidebar Panel */}
       <div className={cn(!showThreadList && "hidden md:block")}>
         <ThreadRegistry
@@ -260,8 +260,13 @@ export default function ConsultationPage() {
       </div>
 
       {/* Main Support Panel */}
-      <main className={cn("flex-1 flex flex-col bg-white transition-all", showThreadList && "hidden md:flex")}>
-        <header className="flex items-center justify-between px-6 h-16 border-b border-black/5 bg-white shrink-0 z-20">
+      <main
+        className={cn(
+          "flex-1 flex flex-col bg-[#f7faf7] transition-all",
+          showThreadList && "hidden md:flex",
+        )}
+      >
+        <header className="flex items-center justify-between px-6 h-16 border-b border-black/5 bg-white/80 backdrop-blur shrink-0 z-20">
           <div className="flex items-center gap-4 min-w-0">
             <button
               onClick={() => setShowThreadList(true)}
@@ -269,19 +274,23 @@ export default function ConsultationPage() {
             >
               <ChevronLeft className="h-4 w-4" />
             </button>
-            <div className="h-8 w-8 rounded-full bg-black/[0.03] flex items-center justify-center border border-black/5">
+            <div className="h-8 w-8 rounded-full bg-black/3 flex items-center justify-center border border-black/5">
               <ShieldPlus className="h-4 w-4 text-black" />
             </div>
             <div className="min-w-0">
-              <h1 className="text-[11px] font-black text-black tracking-[0.1em] uppercase">Clinical Support Channel</h1>
+              <h1 className="text-[14px] font-semibold text-black tracking-tight">
+                Consultation
+              </h1>
               <div className="flex items-center gap-1.5 leading-none">
                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                <span className="text-[9px] font-black text-black/30 uppercase tracking-widest">Live session</span>
+                <span className="text-[12px] font-medium text-black/40">
+                  Live session
+                </span>
               </div>
             </div>
           </div>
           <div className="hidden sm:block">
-            <div className="px-3 py-1.5 bg-black/[0.02] text-[8px] font-black text-black/40 border border-black/5 rounded-sm uppercase tracking-widest">
+            <div className="px-3 py-1.5 bg-white text-[12px] font-medium text-black/50 border border-black/10 rounded-full">
               Secure Room
             </div>
           </div>
@@ -311,9 +320,9 @@ export default function ConsultationPage() {
           stopRecording={stopRecording}
         />
 
-        <div className="text-center pb-5 mt-auto">
-          <span className="text-[8px] font-black uppercase tracking-[0.6em] text-black/5">
-            Clinical Encrypted Recording Corridor Protocol
+        <div className="text-center pb-3">
+          <span className="text-[11px] text-black/25">
+            Encrypted clinical messaging
           </span>
         </div>
       </main>

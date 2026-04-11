@@ -17,7 +17,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "sonner";
 import { UserRole } from "@/lib/rbac/types";
-import { Loader2, Mail, Shield, User as UserIcon } from "lucide-react";
+import { Loader2, Mail, Shield, User as UserIcon } from "@/lib/icons";
 
 export default function AdminUsersPage() {
   const [params, setParams] = useState<{ page: number; limit: number; role?: UserRole }>({ page: 1, limit: 10 });

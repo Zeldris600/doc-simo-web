@@ -1,9 +1,12 @@
+"use client";
+
 import * as React from "react";
 import { Link } from "@/i18n/routing";
 import Image from "next/image";
-import { Star, Heart, ShoppingBag, Flame, Zap } from "lucide-react";
+import { Star, Heart, ShoppingBag, Flame, Zap } from "@/lib/icons";
 import { Product } from "@/types/api";
 import { Button } from "@/components/ui/button";
+import { StarRatingDisplay } from "@/components/storefront/star-rating-display";
 
 interface ProductCardProps {
   product: Product;
@@ -11,6 +14,24 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, layout = "grid" }: ProductCardProps) {
+  const ratingBlock =
+    product.reviewCount != null &&
+    product.reviewCount > 0 &&
+    product.averageRating != null ? (
+      <div className="flex items-center gap-1.5">
+        <StarRatingDisplay
+          value={product.averageRating}
+          starClassName="h-3 w-3"
+        />
+        <span className="text-xs font-bold text-primary tabular-nums">
+          {Number(product.averageRating).toFixed(1)}
+        </span>
+        <span className="text-[10px] text-black/40 font-medium">
+          ({product.reviewCount})
+        </span>
+      </div>
+    ) : null;
+
   if (layout === "list") {
     return (
       <div className="group relative flex flex-col md:flex-row gap-6 overflow-hidden rounded-2xl bg-white/40 backdrop-blur-xl p-4 transition-all duration-300 hover:shadow-xl hover:shadow-black/5 hover:-translate-y-1">
@@ -39,12 +60,14 @@ export function ProductCard({ product, layout = "grid" }: ProductCardProps) {
             <span className="text-[10px] font-black uppercase tracking-widest text-primary/40">
               {product.category?.name || "General Catalog"}
             </span>
-            <div className="flex items-center gap-1.5">
-              <Star className="h-3 w-3 fill-primary text-primary" />
-              <span className="text-xs font-bold text-primary">
-                Specialist Grade
-              </span>
-            </div>
+            {ratingBlock ?? (
+              <div className="flex items-center gap-1.5">
+                <Star className="h-3 w-3 fill-primary text-primary" />
+                <span className="text-xs font-bold text-primary">
+                  Specialist Grade
+                </span>
+              </div>
+            )}
           </div>
 
           <Link href={`/products/${product.id}`}>
@@ -142,12 +165,16 @@ export function ProductCard({ product, layout = "grid" }: ProductCardProps) {
           <span className="text-[9px] font-black uppercase tracking-widest text-primary/30">
             {product.category?.name || "General Catalog"}
           </span>
-          <div className="flex items-center gap-1">
-            <Star className="h-2.5 w-2.5 fill-primary text-primary" />
-            <span className="text-[10px] font-black text-primary">
-              SPECIALIST
-            </span>
-          </div>
+          {ratingBlock ? (
+            <div className="flex items-center gap-1 shrink-0">{ratingBlock}</div>
+          ) : (
+            <div className="flex items-center gap-1">
+              <Star className="h-2.5 w-2.5 fill-primary text-primary" />
+              <span className="text-[10px] font-black text-primary">
+                SPECIALIST
+              </span>
+            </div>
+          )}
         </div>
 
         <Link href={`/products/${product.id}`}>

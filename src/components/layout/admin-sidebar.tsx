@@ -24,8 +24,8 @@ import {
   Globe,
   LifeBuoy,
   MessageSquare,
-  type LucideIcon,
-} from "lucide-react";
+  type IconType,
+} from "@/lib/icons";
 
 import Image from "next/image";
 
@@ -48,13 +48,13 @@ import { Permission } from "@/lib/rbac/types";
 type NavItem = {
   title: string;
   url: string;
-  icon?: LucideIcon;
+  icon?: IconType;
   isActive?: boolean;
   permission?: Permission;
   items?: {
     title: string;
     url: string;
-    icon?: LucideIcon;
+    icon?: IconType;
     permission?: Permission;
   }[];
 };

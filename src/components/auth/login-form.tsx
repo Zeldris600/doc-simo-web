@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Eye, EyeOff, Loader2, Phone, Lock } from "lucide-react";
+import { Eye, EyeOff, Loader2, Phone, Lock } from "@/lib/icons";
 import Image from "next/image";
 import { signIn } from "next-auth/react";
 import { Link } from "@/i18n/routing";

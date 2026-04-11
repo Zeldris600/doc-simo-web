@@ -1,14 +1,14 @@
 "use client";
 
 import * as React from "react";
-import { 
-  Package, 
+import {
+  Package,
   ChevronRight,
   ShoppingBag,
   ArrowLeft,
   Search,
-  Calendar
-} from "lucide-react";
+  Calendar,
+} from "@/lib/icons";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -33,7 +33,9 @@ export default function OrdersPage() {
   useEffect(() => {
     if (status === "SUCCESSFUL") {
       toast.success("Payment Received!", {
-        description: `Your transaction ${transId} has been successfully processed.`,
+        description: transId
+          ? `Your transaction ${transId} has been successfully processed.`
+          : "Your payment has been successfully processed.",
       });
     } else if (status === "FAILED") {
       toast.error("Payment Failed", {

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { Link } from "@/i18n/routing";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight } from "@/lib/icons";
 import { useCategories } from "@/hooks/use-category";
 import { useTranslations } from "next-intl";
 import { CategorySkeleton } from "@/components/skeletons/category-skeleton";

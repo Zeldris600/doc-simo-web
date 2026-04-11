@@ -6,7 +6,7 @@ import {
   Settings2,
   SquareTerminal,
   Ticket,
-} from "lucide-react";
+} from "@/lib/icons";
 
 import Image from "next/image";
 

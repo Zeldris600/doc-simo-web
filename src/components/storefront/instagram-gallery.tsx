@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Instagram } from "lucide-react";
+import { Instagram } from "@/lib/icons";
 
 const GALLERY_IMAGES = [
  {

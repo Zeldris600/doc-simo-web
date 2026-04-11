@@ -4,7 +4,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/ui/data-table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal, Plus, PackagePlus } from "lucide-react";
+import { MoreHorizontal, Plus, PackagePlus } from "@/lib/icons";
 import Image from "next/image";
 import {
   DropdownMenu,

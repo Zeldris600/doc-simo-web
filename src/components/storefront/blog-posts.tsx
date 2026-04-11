@@ -1,6 +1,6 @@
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import Image from "next/image";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight } from "@/lib/icons";
 
 const BLOG_POSTS = [
   {
@@ -57,7 +57,7 @@ export function BlogPosts() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           {BLOG_POSTS.map((post, i) => (
             <article key={i} className="group cursor-pointer">
-              <div className="relative aspect-[16/10] rounded-lg overflow-hidden mb-6 transition-transform duration-500 group-hover:scale-[1.02]">
+              <div className="relative aspect-16/10 rounded-lg overflow-hidden mb-6 transition-transform duration-500 group-hover:scale-[1.02]">
                 <Image
                   src={post.image}
                   alt={post.title}

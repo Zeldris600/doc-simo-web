@@ -6,7 +6,7 @@ import { useSupportThreads } from "@/hooks/use-support";
 import { useParams, useRouter } from "next/navigation";
 import { Link } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
-import { MessageSquare, ArrowLeft, Search } from "lucide-react";
+import { MessageSquare, ArrowLeft, Search } from "@/lib/icons";
 import { getPusherClient } from "@/lib/pusher";
 import { useCan } from "@/hooks/use-can";
 import { useQueryClient } from "@tanstack/react-query";

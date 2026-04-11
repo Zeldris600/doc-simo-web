@@ -1,4 +1,4 @@
-import { Sprout, FlaskConical, Package, HeartPulse } from "lucide-react";
+import { Sprout, FlaskConical, Package, HeartPulse } from "@/lib/icons";
 
 const STEPS = [
   {

@@ -36,7 +36,7 @@ export function LogosStrip() {
     <section className="bg-white border-y border-[#f2c94c]/15 py-10 px-4 sm:px-6 lg:px-12 overflow-hidden">
       <div className="container max-w-7xl mx-auto space-y-8">
         {/* Heading */}
-        <p className="text-center text-[10px] font-bold uppercase tracking-widest text-foreground/30">
+        <p className="text-center text-[10px] font-bold uppercase tracking-widest text-primary/75">
           Rooted in African Botanical Traditions
         </p>
 
@@ -51,7 +51,7 @@ export function LogosStrip() {
               <p className="text-xs font-black text-primary leading-tight mt-1">
                 {label}
               </p>
-              <p className="text-[10px] text-foreground/40 font-medium">
+              <p className="text-[10px] text-foreground/70 font-medium leading-snug">
                 {sub}
               </p>
             </div>
@@ -61,7 +61,7 @@ export function LogosStrip() {
         {/* Divider */}
         <div className="flex items-center gap-4">
           <div className="flex-1 h-px bg-black/5" />
-          <p className="text-[10px] font-bold uppercase tracking-widest text-foreground/25 whitespace-nowrap">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-primary/70 whitespace-nowrap">
             Wild-harvested from
           </p>
           <div className="flex-1 h-px bg-black/5" />
@@ -72,7 +72,7 @@ export function LogosStrip() {
           {SOURCED_REGIONS.map((region) => (
             <span
               key={region}
-              className="text-sm font-black text-foreground/20 hover:text-primary/50 transition-colors cursor-default select-none tracking-tight"
+              className="text-sm font-black text-primary/85 hover:text-primary transition-colors cursor-default select-none tracking-tight"
             >
               {region}
             </span>

@@ -27,7 +27,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Loader2 } from "lucide-react";
+import { Loader2 } from "@/lib/icons";
 import { toast } from "sonner";
 
 const discountSchema = z.object({

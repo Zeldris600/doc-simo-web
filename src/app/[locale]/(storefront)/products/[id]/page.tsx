@@ -2,7 +2,6 @@
 
 import { Link } from "@/i18n/routing";
 import {
-  Star,
   ShoppingBag,
   Heart,
   Share2,
@@ -16,7 +15,7 @@ import {
   Play,
   Leaf,
   PackageCheck,
-} from "lucide-react";
+} from "@/lib/icons";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -30,6 +29,9 @@ import {
 } from "@/components/ui/accordion";
 import { useParams } from "next/navigation";
 import { useProduct } from "@/hooks/use-product";
+import { useReviewStats } from "@/hooks/use-product-reviews";
+import { StarRatingDisplay } from "@/components/storefront/star-rating-display";
+import { ProductReviewsSection } from "@/components/storefront/product-reviews-section";
 import { useCreateOrder } from "@/hooks/use-order";
 import { useInitiatePayment } from "@/hooks/use-payment";
 import { useCart } from "@/store/use-cart";
@@ -39,8 +41,10 @@ import { ProductDetailsSkeleton } from "@/components/skeletons/product-details-s
 
 export default function ProductDetailsPage() {
   const t = useTranslations("products");
+  const tRev = useTranslations("reviews");
   const { id } = useParams() as { id: string };
   const { data: product, isLoading, isError } = useProduct(id);
+  const { data: reviewStats } = useReviewStats(id);
   const [selectedMedia, setSelectedMedia] = useState({
     type: "image",
     index: 0,
@@ -55,7 +59,7 @@ export default function ProductDetailsPage() {
       window.location.href = res.link;
     },
     onError: () => {
-      toast.error("Failed to initiate clinical payment.");
+      toast.error("Failed to initiate payment.");
     },
   });
 
@@ -65,7 +69,7 @@ export default function ProductDetailsPage() {
         orderId: order.id,
         data: {
           email: session?.user?.email || "customer@doctasimo.com",
-          redirectUrl: `${window.location.origin}/orders/${order.id}/success`,
+          redirectUrl: `${window.location.origin}/account/orders?status=SUCCESSFUL`,
         },
       });
     },
@@ -125,6 +129,13 @@ export default function ProductDetailsPage() {
     media.push({ type: "image", url: "/placeholder.png" });
 
   const currentMedia = media[selectedMedia.index] || media[0];
+
+  const averageRating =
+    reviewStats?.averageRating !== undefined
+      ? reviewStats.averageRating
+      : (product.averageRating ?? null);
+  const reviewCount =
+    reviewStats?.reviewCount ?? product.reviewCount ?? 0;
 
   return (
     <div className="bg-white min-h-screen animate-in fade-in duration-700">
@@ -234,15 +245,14 @@ export default function ProductDetailsPage() {
                 🌿 {product.category?.name || t("generalRegistry")}
               </Badge>
               <div className="flex items-center gap-1.5">
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    className="h-3.5 w-3.5 fill-[#f2c94c] text-[#f2c94c]"
-                  />
-                ))}
-                <span className="text-xs font-bold text-primary ml-1">4.9</span>
+                <StarRatingDisplay value={averageRating} />
+                <span className="text-xs font-bold text-primary ml-1 tabular-nums">
+                  {averageRating != null
+                    ? Number(averageRating).toFixed(1)
+                    : "—"}
+                </span>
                 <span className="text-[11px] text-black/30 font-medium">
-                  (128 reviews)
+                  ({tRev("count", { count: reviewCount })})
                 </span>
               </div>
             </div>
@@ -328,7 +338,7 @@ export default function ProductDetailsPage() {
                   onClick={handleOrder}
                   disabled={
                     createOrder.isPending ||
-                    initiatePayment.isPending ||
+                      initiatePayment.isPending ||
                     (product.inventoryLevel !== undefined &&
                       product.inventoryLevel === 0)
                   }
@@ -343,7 +353,7 @@ export default function ProductDetailsPage() {
                     ? "Processing…"
                     : initiatePayment.isPending
                       ? "Connecting…"
-                      : "Buy Now"}
+                    : "Buy Now"}
                 </Button>
                 <Button
                   variant="outline"
@@ -500,6 +510,12 @@ export default function ProductDetailsPage() {
             </div>
           </div>
         </div>
+
+        <ProductReviewsSection
+          productId={product.id}
+          productReviewCount={product.reviewCount}
+          productAverageRating={product.averageRating}
+        />
       </div>
     </div>
   );

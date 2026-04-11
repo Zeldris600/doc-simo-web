@@ -1,6 +1,6 @@
 import * as React from "react";
 import { ProductCard } from "./product-card";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight } from "@/lib/icons";
 import { Product } from "@/types/api";
 import { Link } from "@/i18n/routing";
 import { ProductCardSkeleton } from "@/components/skeletons/product-card-skeleton";

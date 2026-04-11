@@ -25,7 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2 } from "lucide-react";
+import { Loader2 } from "@/lib/icons";
 
 const discountSchema = z.object({
   code: z.string().min(3, "Code must be at least 3 characters"),

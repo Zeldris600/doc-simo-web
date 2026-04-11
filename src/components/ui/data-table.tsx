@@ -25,7 +25,7 @@ import {
 import { Button } from "@/components/ui/button";
 import * as React from "react";
 import { Input } from "@/components/ui/input";
-import { SlidersHorizontal } from "lucide-react";
+import { SlidersHorizontal } from "@/lib/icons";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

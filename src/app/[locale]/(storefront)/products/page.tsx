@@ -2,8 +2,14 @@
 
 import * as React from "react";
 import { ProductCard } from "@/components/storefront/product-card";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Slider } from "@/components/ui/slider";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   LayoutGrid,
   List,
@@ -11,7 +17,7 @@ import {
   Search,
   ChevronLeft,
   ChevronRight,
-} from "lucide-react";
+} from "@/lib/icons";
 import { Link } from "@/i18n/routing";
 import { useProducts } from "@/hooks/use-product";
 import { useCategories } from "@/hooks/use-category";
@@ -42,12 +48,6 @@ export default function ProductsPage() {
   const products = productsRes?.data || [];
   const total = productsRes?.total || 0;
   const totalPages = Math.ceil(total / limit);
-
-  const handleCategoryToggle = (categorySlug: string) => {
-    setSelectedCategorySlug((prev) =>
-      prev === categorySlug ? null : categorySlug,
-    );
-  };
 
   React.useEffect(() => {
     setCurrentPage(1);
@@ -86,7 +86,8 @@ export default function ProductsPage() {
 
         <div className="flex flex-col lg:flex-row gap-12">
           {/* Sidebar */}
-          <aside className="w-full lg:w-72 space-y-12 shrink-0">
+          <aside className="w-full lg:w-72 shrink-0">
+            <div className="space-y-12 lg:sticky lg:top-28">
             {/* Classification */}
             <div className="space-y-6">
               <div className="flex items-center gap-2 mb-2">
@@ -95,29 +96,30 @@ export default function ProductsPage() {
                   {t("category")}
                 </h3>
               </div>
-              <div className="grid grid-cols-1 gap-3">
-                {categories.map((cat) => (
-                  <label
-                    key={cat.id}
-                    className="flex items-center justify-between p-3 rounded-xl bg-black/[0.02] border border-transparent hover:border-black/5 transition-all cursor-pointer group"
-                  >
-                    <div className="flex items-center gap-3">
-                      <Checkbox
-                        id={cat.id}
-                        checked={selectedCategorySlug === cat.slug}
-                        onCheckedChange={() => handleCategoryToggle(cat.slug)}
-                        className="h-4 w-4 rounded-md border-black/10 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
-                      />
-                      <span className="text-xs font-bold text-black group-hover:text-primary transition-colors">
-                        {cat.name}
-                      </span>
-                    </div>
-                    <span className="text-[10px] font-bold text-black/40">
-                      {cat._count?.products || 0}
-                    </span>
-                  </label>
-                ))}
-              </div>
+              <Select
+                value={selectedCategorySlug ?? "__all__"}
+                onValueChange={(v) =>
+                  setSelectedCategorySlug(v === "__all__" ? null : v)
+                }
+              >
+                <SelectTrigger className="h-11 w-full rounded-xl border-black/10 bg-black/[0.02] text-sm font-semibold">
+                  <SelectValue placeholder={t("category")} />
+                </SelectTrigger>
+                <SelectContent className="rounded-xl border-black/10">
+                  <SelectItem value="__all__" className="text-sm font-medium">
+                    {t("allCategories")}
+                  </SelectItem>
+                  {categories.map((cat) => (
+                    <SelectItem
+                      key={cat.id}
+                      value={cat.slug}
+                      className="text-sm font-medium"
+                    >
+                      {`${cat.name} (${cat._count?.products ?? 0})`}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Price Registry */}
@@ -153,6 +155,7 @@ export default function ProductsPage() {
                   </span>
                 </div>
               </div>
+            </div>
             </div>
           </aside>
 

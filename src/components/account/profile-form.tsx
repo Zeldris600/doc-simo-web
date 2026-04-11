@@ -23,7 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { Loader2 } from "lucide-react";
+import { Loader2 } from "@/lib/icons";
 import { User } from "@/types/auth";
 import { ImageUploader } from "@/components/ui/image-uploader";
 

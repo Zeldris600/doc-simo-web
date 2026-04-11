@@ -1,12 +1,11 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { Paperclip, Mic, Send, Square, Loader2 } from "lucide-react";
+import { Paperclip, Mic, Send, Square, Loader2 } from "@/lib/icons";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { SupportAttachment } from "@/services/support.service";
-import { UseMutationResult } from "@tanstack/react-query";
 
 interface ChatControlsProps {
   messageBody: string;
@@ -40,8 +39,6 @@ export function ChatControls({
     let interval: NodeJS.Timeout | null = null;
     if (isRecording) {
       interval = setInterval(() => setRecordingTime((prev) => prev + 1), 1000);
-    } else {
-      setRecordingTime(0);
     }
     return () => {
       if (interval) clearInterval(interval);
@@ -54,9 +51,15 @@ export function ChatControls({
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
+  const canSend =
+    !isRecording && !isSending && (messageBody.trim().length > 0 || attachments.length > 0);
+
   return (
-    <div className="px-4 md:px-8 py-6 border-t border-black/5 bg-white shrink-0">
-      <form onSubmit={onSend} className="max-w-4xl mx-auto flex items-end gap-2 md:gap-4">
+    <div className="px-4 md:px-8 py-4 border-t border-black/5 bg-white/80 backdrop-blur shrink-0">
+      <form
+        onSubmit={onSend}
+        className="max-w-4xl mx-auto flex items-end gap-2 md:gap-3"
+      >
         <input
           ref={fileInputRef}
           type="file"
@@ -66,24 +69,39 @@ export function ChatControls({
           className="hidden"
         />
 
-        <div className="flex items-center gap-1 md:gap-2">
+        <div className="flex items-center gap-1.5 md:gap-2 shrink-0">
           <Button
             type="button"
             variant="outline"
             onClick={() => fileInputRef.current?.click()}
-            className="h-11 w-11 p-0 rounded-sm bg-black/[0.01] border-black/10 text-black/40 shadow-none hover:bg-black/5"
+            className="h-10 w-10 p-0 rounded-full bg-white border-black/10 text-black/55 shadow-none hover:bg-black/5"
+            aria-label="Attach files"
           >
-            {uploadIsPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Paperclip className="h-5 w-5" />}
+            {uploadIsPending ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Paperclip className="h-5 w-5" />
+            )}
           </Button>
 
           <Button
             type="button"
             variant="outline"
-            onClick={isRecording ? stopRecording : startRecording}
+            onClick={() => {
+              if (isRecording) {
+                stopRecording();
+              } else {
+                setRecordingTime(0);
+                startRecording();
+              }
+            }}
             className={cn(
-              "h-11 w-11 p-0 rounded-sm border-black/10 shadow-none transition-all",
-              isRecording ? "bg-red-500 text-white border-red-500 animate-pulse" : "bg-black/[0.01] text-black/40 hover:bg-black/5"
+              "h-10 w-10 p-0 rounded-full border-black/10 shadow-none transition-all",
+              isRecording
+                ? "bg-red-500 text-white border-red-500 animate-pulse"
+                : "bg-white text-black/55 hover:bg-black/5",
             )}
+            aria-label={isRecording ? "Stop recording" : "Start recording"}
           >
             {isRecording ? <Square className="h-4 w-4 fill-current" /> : <Mic className="h-5 w-5" />}
           </Button>
@@ -91,11 +109,11 @@ export function ChatControls({
 
         <div className="relative flex-1">
           {isRecording ? (
-            <div className="h-11 flex items-center justify-between px-4 bg-red-50 rounded-sm border border-red-100 animate-in fade-in slide-in-from-bottom-2">
+            <div className="h-10 flex items-center justify-between px-4 bg-red-50 rounded-2xl border border-red-100 animate-in fade-in slide-in-from-bottom-2">
               <div className="flex items-center gap-3">
                 <div className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
-                <span className="text-[10px] font-black uppercase text-red-500 tracking-widest leading-none">
-                  Live Recording - {formatTime(recordingTime)}
+                <span className="text-[12px] font-semibold text-red-600 leading-none">
+                  Recording {formatTime(recordingTime)}
                 </span>
               </div>
               <div className="flex items-center gap-1">
@@ -114,34 +132,46 @@ export function ChatControls({
                 type="button"
                 onClick={stopRecording}
                 variant="ghost"
-                className="h-8 px-3 text-[9px] font-black uppercase text-red-500 hover:bg-red-100 rounded-none border border-red-200"
+                className="h-8 px-3 text-[11px] font-semibold text-red-600 hover:bg-red-100 rounded-full"
               >
-                Stop Protocol
+                Stop
               </Button>
             </div>
           ) : (
-            <Textarea
-              value={messageBody}
-              onChange={(e) => setMessageBody(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  onSend(e as unknown as React.FormEvent);
-                }
-              }}
-              placeholder="Type clinical inquiry..."
-              className="min-h-[44px] h-11 py-3 bg-black/[0.01] border-black/10 focus-visible:ring-0 rounded-sm text-[13px] font-bold shadow-none resize-none transition-all placeholder:text-black/20"
-            />
+            <div className="relative">
+              <Textarea
+                value={messageBody}
+                onChange={(e) => setMessageBody(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    onSend(e as unknown as React.FormEvent);
+                  }
+                }}
+                placeholder="Write a message…"
+                className={cn(
+                  "min-h-[40px] max-h-32 py-2.5 px-4 bg-white border-black/10 focus-visible:ring-0 rounded-2xl text-[14px] font-medium shadow-sm shadow-black/5 resize-none transition-all placeholder:text-black/30 pr-12",
+                  canSend ? "border-primary/20" : "",
+                )}
+              />
+
+              <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[11px] text-black/25 hidden md:block">
+                Enter
+              </div>
+            </div>
           )}
         </div>
 
         <Button
           type="submit"
-          disabled={(!messageBody.trim() && attachments.length === 0) || isSending || isRecording}
+          disabled={!canSend}
           className={cn(
-            "h-11 w-11 md:w-auto md:px-8 rounded-sm font-black text-[11px] uppercase tracking-widest shadow-none",
-            messageBody.trim() || attachments.length > 0 ? "bg-[#1f3d2b] text-white" : "bg-black/5 text-black/20"
+            "h-10 w-10 md:w-auto md:px-5 rounded-full font-semibold text-[13px] shadow-none shrink-0",
+            canSend
+              ? "bg-primary text-white hover:bg-primary/90"
+              : "bg-black/5 text-black/25 hover:bg-black/5",
           )}
+          aria-label="Send message"
         >
           {isSending ? (
             <Loader2 className="h-4 w-4 animate-spin" />

@@ -8,7 +8,7 @@ import { getPusherClient } from "@/lib/pusher";
 import { SupportMessage, SupportAttachment } from "@/services/support.service";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Send, Loader2, MessageSquare, LifeBuoy, Paperclip, X, FileText } from "lucide-react";
+import { Send, Loader2, MessageSquare, LifeBuoy, Paperclip, X, FileText } from "@/lib/icons";
 import { useQueryClient, InfiniteData } from "@tanstack/react-query";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";

@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { Loader2, Phone } from "lucide-react";
+import { Loader2, Phone } from "@/lib/icons";
 import Image from "next/image";
 import { Link, useRouter } from "@/i18n/routing";
 

@@ -6,7 +6,9 @@ import { FCMProvider } from "@/providers/fcm-provider";
 
 const fontSans = Plus_Jakarta_Sans({
   variable: "--font-sans",
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -23,9 +25,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${fontSans.variable} font-sans antialiased`}>
-        <QueryProvider> 
+        <QueryProvider>
           <FCMProvider />
-          {children} 
+          {children}
         </QueryProvider>
       </body>
     </html>
