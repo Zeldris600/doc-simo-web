@@ -7,7 +7,7 @@ import { routing } from "@/i18n/routing";
 import "../globals.css";
 import { QueryProvider } from "@/providers/query-provider";
 import { AppProviders } from "@/providers/app-providers";
-import { Toaster } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 
 const fontSans = Plus_Jakarta_Sans({
   variable: "--font-sans",

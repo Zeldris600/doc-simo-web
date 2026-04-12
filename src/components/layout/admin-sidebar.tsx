@@ -27,8 +27,6 @@ import {
   type IconType,
 } from "@/lib/icons";
 
-import Image from "next/image";
-
 import { NavMain } from "@/components/layout/nav-main";
 import { NavProjects } from "@/components/layout/nav-projects";
 import { NavUser } from "@/components/layout/nav-user";
@@ -194,7 +192,9 @@ export function AdminSidebar({
       .filter((item) => !item.permission || can(item.permission))
       .map((item) => ({
         ...item,
-        items: item.items?.filter((sub) => !sub.permission || can(sub.permission)),
+        items: item.items?.filter(
+          (sub) => !sub.permission || can(sub.permission),
+        ),
       }))
       .filter((item) => (item.items ? item.items.length > 0 : true));
   };
@@ -207,15 +207,6 @@ export function AdminSidebar({
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" className="hover:bg-transparent">
-              <div className="flex aspect-square size-10 items-center justify-center rounded-lg overflow-hidden">
-                <Image 
-                  src="/icon.png" 
-                  alt="Doctasimo" 
-                  width={40} 
-                  height={40} 
-                  className="object-contain scale-110"
-                />
-              </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-black uppercase text-primary tracking-tight">
                   DOCTASIMO

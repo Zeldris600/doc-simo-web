@@ -121,9 +121,6 @@ export function StorefrontFooter() {
             {/* Brand column */}
             <div className="lg:col-span-2 space-y-6">
               <Link href="/" className="inline-flex items-center gap-2 group">
-                <div className="p-1.5 rounded-xl bg-white/10 group-hover:bg-[#f2c94c] transition-colors">
-                  <Leaf className="h-5 w-5 text-white group-hover:text-[#142c1b] transition-colors" />
-                </div>
                 <span className="font-black text-xl tracking-tight text-white">
                   DOCTASIMO
                 </span>

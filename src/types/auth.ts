@@ -57,13 +57,20 @@ export interface VerifyPhoneOtpResponse extends AuthResponse {
  user: User;
 }
 
+/** Axios `response.data` for `POST .../phone-number/verify`. */
+export type PhoneSessionApiBody = VerifyPhoneOtpResponse;
+
 export interface SendOtpDto {
  phoneNumber: string;
 }
 
 export interface VerifyOtpDto {
- phoneNumber: string;
- code: string;
+  phoneNumber: string;
+  code: string;
+  /** Better Auth: verify only, no session */
+  disableSession?: boolean;
+  /** Better Auth: when logged in, verifying a new number */
+  updatePhoneNumber?: boolean;
 }
 
 export interface RequestPasswordResetDto {
@@ -77,10 +84,11 @@ export interface ResetPasswordPhoneDto {
 }
 
 export interface SignUpDto {
- name: string;
- email: string;
- password: string;
- phoneNumber: string;
- rememberMe?: boolean;
+  name: string;
+  email: string;
+  /** Omit for phone-first signup; backend should accept users without a password. */
+  password?: string;
+  phoneNumber: string;
+  rememberMe?: boolean;
 }
 

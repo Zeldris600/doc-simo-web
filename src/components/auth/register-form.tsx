@@ -1,14 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import * as z from "zod";
-import { Eye, EyeOff, Loader2, User, Phone, Mail, Lock } from "@/lib/icons";
-import Image from "next/image";
+import { Loader2, User, Phone } from "@/lib/icons";
 import { useSignUp, useSendOtp } from "@/hooks/use-auth-endpoints";
 import { Link, useRouter } from "@/i18n/routing";
+import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
+import { isAxiosError } from "axios";
+import { useLocale, useTranslations } from "next-intl";
+import { toE164PhoneNumber } from "@/lib/phone-e164";
+import { buildAuthPathWithCallback } from "@/lib/auth-callback-url";
+import { AuthLocaleSwitcher } from "@/components/auth/auth-locale-switcher";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -20,108 +25,189 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
-const registerSchema = z.object({
-  name: z.string().min(2, "Name is required"),
-  phoneNumber: z.string().min(9, "Phone number is required"),
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(4, "Password must be at least 4 characters."),
-  rememberMe: z.boolean().default(true).optional(),
-});
+
+type Step = "name" | "phone";
+
+function placeholderEmailForPhone(phoneE164: string): string {
+  const digits = phoneE164.replace(/\D/g, "") || "user";
+  return `${digits}@signup.phone.doctasimo`;
+}
+
 export function RegisterForm() {
-  const [showPassword, setShowPassword] = useState(false);
+  const locale = useLocale();
+  const t = useTranslations("auth.register");
+  const tc = useTranslations("auth.common");
+  const tv = useTranslations("auth.validation");
+  const tf = useTranslations("auth.form");
+
+  const [step, setStep] = useState<Step>("name");
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl");
+
+  const nameStepSchema = useMemo(
+    () =>
+      z.object({
+        name: z.string().min(2, tv("nameMin")),
+      }),
+    [tv],
+  );
+
+  const phoneStepSchema = useMemo(
+    () =>
+      z.object({
+        phoneNumber: z
+          .string()
+          .min(9, tv("phoneMin"))
+          .max(20, tv("phoneMax")),
+      }),
+    [tv],
+  );
+
   const { mutate: signUp, isPending: isSigningUp } = useSignUp();
   const { mutate: sendOtp, isPending: isSendingOtp } = useSendOtp();
 
-  const registerForm = useForm<z.infer<typeof registerSchema>>({
-    resolver: zodResolver(registerSchema),
-    defaultValues: { name: "", phoneNumber: "", email: "", password: "", rememberMe: true },
+  const nameForm = useForm<z.infer<typeof nameStepSchema>>({
+    resolver: zodResolver(nameStepSchema),
+    defaultValues: { name: "" },
   });
 
-  function onRegisterSubmit(values: z.infer<typeof registerSchema>) {
-    const formattedPhone = values.phoneNumber.startsWith("+237")
-      ? values.phoneNumber
-      : `+237${values.phoneNumber}`;
+  const phoneForm = useForm<z.infer<typeof phoneStepSchema>>({
+    resolver: zodResolver(phoneStepSchema),
+    defaultValues: { phoneNumber: "" },
+  });
 
-    signUp({
-      name: values.name,
-      email: values.email,
-      password: values.password,
-      phoneNumber: formattedPhone,
-      rememberMe: values.rememberMe,
-    }, {
-      onSuccess: () => {
-        sendOtp({ phoneNumber: formattedPhone }, {
-          onSuccess: () => {
-            toast.success("Verification code sent to your WhatsApp. Please verify.");
-            router.push(`/verify?phone=${encodeURIComponent(formattedPhone)}`);
-          },
-          onError: (err: unknown) => {
-            const errorMsg = err instanceof Error ? err.message : "Failed to send OTP.";
-            // @ts-expect-error - axios err
-            toast.error(err?.response?.data?.message || errorMsg);
-          }
-        });
-      },
-      onError: (err: unknown) => {
-        const errorMsg = err instanceof Error ? err.message : "Failed to create account.";
-        // @ts-expect-error - axios err
-        toast.error(err?.response?.data?.message || errorMsg);
-      }
-    });
+  const nameValue = useWatch({
+    control: nameForm.control,
+    name: "name",
+    defaultValue: "",
+  });
+
+  function onNameContinue() {
+    setStep("phone");
   }
+
+  function onPhoneSubmit(values: z.infer<typeof phoneStepSchema>) {
+    const formattedPhone = toE164PhoneNumber(values.phoneNumber);
+    const name = nameForm.getValues("name").trim();
+    const email = placeholderEmailForPhone(formattedPhone);
+
+    signUp(
+      {
+        name,
+        email,
+        phoneNumber: formattedPhone,
+        rememberMe: true,
+      },
+      {
+        onSuccess: () => {
+          sendOtp(
+            { phoneNumber: formattedPhone },
+            {
+              onSuccess: () => {
+                toast.success(t("toastCodeSent"));
+                const verifyQs = new URLSearchParams();
+                verifyQs.set("phone", formattedPhone);
+                verifyQs.set("intent", "register");
+                if (callbackUrl?.trim()) {
+                  verifyQs.set("callbackUrl", callbackUrl.trim());
+                }
+                router.push(`/verify?${verifyQs.toString()}`);
+              },
+              onError: (err: unknown) => {
+                const msg = isAxiosError(err)
+                  ? (err.response?.data as { message?: string } | undefined)
+                      ?.message
+                  : undefined;
+                toast.error(msg || t("errors.sendOtpFailed"));
+              },
+            },
+          );
+        },
+        onError: (err: unknown) => {
+          const msg = isAxiosError(err)
+            ? (err.response?.data as { message?: string } | undefined)?.message
+            : undefined;
+          toast.error(msg || t("errors.signUpFailed"));
+        },
+      },
+    );
+  }
+
+  const loginHref = buildAuthPathWithCallback("/login", callbackUrl);
 
   return (
     <div className="w-full max-w-sm mx-auto flex flex-col justify-center">
       <div className="mb-8 flex flex-col items-center gap-2">
-        <div className="mb-2">
-          <Image src="/icon.png" alt="Doctasimo" width={100} height={100} className="object-contain" />
-        </div>
         <h1 className="text-2xl font-bold tracking-tight text-center">
-          Create Account
+          {t("title")}
         </h1>
         <p className="text-sm text-black/60 text-center">
-          Enter your details to sign up
+          {step === "name" ? t("step1Subtitle") : t("step2Subtitle")}
         </p>
       </div>
 
-      <Form {...registerForm}>
-          <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className="space-y-4">
+      {step === "name" ? (
+        <Form {...nameForm}>
+          <form
+            key={`name-${locale}`}
+            onSubmit={nameForm.handleSubmit(onNameContinue)}
+            className="space-y-4"
+          >
             <FormField
-              control={registerForm.control}
+              control={nameForm.control}
               name="name"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center gap-2">
                     <User className="h-3.5 w-3.5" />
-                    Name
+                    {t("nameLabel")}
                   </FormLabel>
                   <FormControl>
-                    <Input placeholder="John Doe" className="rounded-md" {...field} />
+                    <Input
+                      placeholder={tf("fullNamePlaceholder")}
+                      className="rounded-md"
+                      autoCapitalize="words"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+            <Button type="submit" className="w-full rounded-md" size="default">
+              {t("continue")}
+            </Button>
+          </form>
+        </Form>
+      ) : (
+        <Form {...phoneForm}>
+          <form
+            key={`phone-${locale}`}
+            onSubmit={phoneForm.handleSubmit(onPhoneSubmit)}
+            className="space-y-4"
+          >
+            <p className="text-sm text-black/50 text-center rounded-md border border-input bg-muted/40 px-3 py-2">
+              {t("signingUpAs", { name: nameValue.trim() || "…" })}
+            </p>
             <FormField
-              control={registerForm.control}
+              control={phoneForm.control}
               name="phoneNumber"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center gap-2">
                     <Phone className="h-3.5 w-3.5" />
-                    Phone Number
+                    {tc("phoneLabel")}
                   </FormLabel>
                   <FormControl>
                     <div className="flex">
                       <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-input bg-muted text-black/60 text-sm">
                         +237
                       </span>
-                      <Input 
-                        placeholder="671381152" 
-                        className="rounded-l-none rounded-r-md" 
-                        {...field} 
+                      <Input
+                        placeholder={tc("phonePlaceholder")}
+                        className="rounded-l-none rounded-r-md"
+                        {...field}
                         onChange={(e) => {
                           const val = e.target.value.replace(/^\+237/, "");
                           field.onChange(val);
@@ -133,95 +219,41 @@ export function RegisterForm() {
                 </FormItem>
               )}
             />
-            <FormField
-              control={registerForm.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    <Mail className="h-3.5 w-3.5" />
-                    Email
-                  </FormLabel>
-                  <FormControl>
-                    <Input placeholder="m@example.com" type="email" className="rounded-md" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={registerForm.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    <Lock className="h-3.5 w-3.5" />
-                    Password
-                  </FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <Input 
-                        type={showPassword ? "text" : "password"} 
-                        placeholder="••••••••" 
-                        className="rounded-md pr-10" 
-                        {...field} 
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                      >
-                        {showPassword ? (
-                          <EyeOff className="h-4 w-4" />
-                        ) : (
-                          <Eye className="h-4 w-4" />
-                        )}
-                      </button>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={registerForm.control}
-              name="rememberMe"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center space-x-2 space-y-0">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                  <div className="leading-none">
-                    <FormLabel className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                      Remember me
-                    </FormLabel>
-                  </div>
-                </FormItem>
-              )}
-            />
-
-            <Button type="submit" className="w-full rounded-md" disabled={isSigningUp || isSendingOtp}>
-              {(isSigningUp || isSendingOtp) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Sign Up
-            </Button>
+            <div className="flex flex-col gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full rounded-md"
+                onClick={() => setStep("name")}
+              >
+                {t("back")}
+              </Button>
+              <Button
+                type="submit"
+                className="w-full rounded-md"
+                disabled={isSigningUp || isSendingOtp}
+              >
+                {(isSigningUp || isSendingOtp) && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                )}
+                {t("createAndSendCode")}
+              </Button>
+            </div>
           </form>
         </Form>
+      )}
 
       <div className="mt-6 text-center text-sm">
-        <span className="text-black/60">
-          Already have an account?{" "}
-        </span>
+        <span className="text-black/60">{t("hasAccount")} </span>
         <Link
-          href="/login"
+          href={loginHref}
           className="text-primary font-medium hover:underline underline-offset-4"
         >
-          Sign in
+          {t("signIn")}
         </Link>
       </div>
+
+      <AuthLocaleSwitcher className="mt-8" />
     </div>
   );
 }

@@ -1,162 +1,229 @@
 "use client";
 
-import { useEffect } from "react";
+import { useMemo, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Loader2, Key } from "@/lib/icons";
-import Image from "next/image";
+import { signIn } from "next-auth/react";
 
-import { useVerifyPhoneOtp, useSendOtp } from "@/hooks/use-auth-endpoints";
-import { useRouter, Link } from "@/i18n/routing";
+import { useSendOtp } from "@/hooks/use-auth-endpoints";
+import { Link } from "@/i18n/routing";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
+import { useLocale, useTranslations } from "next-intl";
+import { toE164PhoneNumber } from "@/lib/phone-e164";
+import {
+  buildAuthPathWithCallback,
+  resolveAuthCallbackUrl,
+} from "@/lib/auth-callback-url";
+import { AuthLocaleSwitcher } from "@/components/auth/auth-locale-switcher";
 
 import { Button } from "@/components/ui/button";
 import {
- Form,
- FormControl,
- FormField,
- FormItem,
- FormLabel,
- FormMessage,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import {
- InputOTP,
- InputOTPGroup,
- InputOTPSlot,
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
 } from "@/components/ui/input-otp";
 
-
-const otpSchema = z.object({
- otp: z.string().length(6, "OTP must be exactly 6 digits"),
-});
-
 export function VerifyForm() {
- const router = useRouter();
- const searchParams = useSearchParams();
- const phone = searchParams.get("phone");
+  const locale = useLocale();
+  const t = useTranslations("auth.verify");
+  const tv = useTranslations("auth.validation");
+  const searchParams = useSearchParams();
+  const phone = searchParams.get("phone");
+  const intent = searchParams.get("intent");
+  const isLoginFlow = intent === "login";
+  const callbackUrl = searchParams.get("callbackUrl");
 
- const { mutate: verifyOtp, isPending: isVerifyingOtp } = useVerifyPhoneOtp();
- const { mutate: sendOtp, isPending: isSendingOtp } = useSendOtp();
+  const otpSchema = useMemo(
+    () =>
+      z.object({
+        otp: z.string().length(6, tv("otpLength")),
+      }),
+    [tv],
+  );
 
- const otpForm = useForm<z.infer<typeof otpSchema>>({
- resolver: zodResolver(otpSchema),
- defaultValues: { otp: "" },
- });
+  const [isSigningIn, setIsSigningIn] = useState(false);
 
- useEffect(() => {
- if (!phone) {
- toast.error("Phone number missing in URL. Please sign up again.");
- router.push("/register");
- }
- }, [router, phone]);
+  const { mutate: sendOtp, isPending: isSendingOtp } = useSendOtp();
 
- function onVerifyPhoneSubmit(values: z.infer<typeof otpSchema>) {
- if (!phone) {
- toast.error("Phone number missing. Please go back to sign up.");
- return;
- }
+  const otpForm = useForm<z.infer<typeof otpSchema>>({
+    resolver: zodResolver(otpSchema),
+    defaultValues: { otp: "" },
+  });
 
- verifyOtp(
- { phoneNumber: phone, code: values.otp },
- {
- onSuccess: () => {
- toast.success("Verified successfully. Please log in.");
- setTimeout(() => {
- router.push("/login");
- }, 1000);
- },
- onError: (err: unknown) => {
- const errorMsg = err instanceof Error ? err.message : "Invalid OTP or verification failed.";
- // @ts-expect-error - axios err
- toast.error(err?.response?.data?.message || errorMsg);
- },
- }
- );
- }
+  async function onVerifyPhoneSubmit(values: z.infer<typeof otpSchema>) {
+    if (!phone) {
+      toast.error(
+        isLoginFlow ? t("phoneMissingLogin") : t("phoneMissingRegister"),
+      );
+      return;
+    }
 
- return (
- <div className="w-full max-w-sm mx-auto flex flex-col justify-center">
- <div className="mb-8 flex flex-col items-center gap-2">
- <div className="mb-2">
- <Image src="/icon.png" alt="Doctasimo" width={100} height={100} className="object-contain" />
- </div>
- <h1 className="text-2xl font-bold tracking-tight text-center">
- Verify Phone Number
- </h1>
- <p className="text-sm text-black/60 text-center">
- We sent a 6-digit code to {phone || "your phone"}
- </p>
- </div>
+    const phoneE164 = toE164PhoneNumber(phone);
+    const next = resolveAuthCallbackUrl(callbackUrl);
 
- <Form {...otpForm}>
- <form onSubmit={otpForm.handleSubmit(onVerifyPhoneSubmit)} className="space-y-6">
- <FormField
- control={otpForm.control}
- name="otp"
- render={({ field }) => (
- <FormItem className="flex flex-col items-center">
- <FormLabel className="flex items-center gap-2 mb-2">
- <Key className="h-3.5 w-3.5" />
- Enter Verification Code
- </FormLabel>
- <FormControl>
- <InputOTP maxLength={6} {...field}>
- <InputOTPGroup className="gap-2">
- <InputOTPSlot index={0} className="h-11 w-11 rounded-md border-gray-200" />
- <InputOTPSlot index={1} className="h-11 w-11 rounded-md border-gray-200" />
- <InputOTPSlot index={2} className="h-11 w-11 rounded-md border-gray-200" />
- <InputOTPSlot index={3} className="h-11 w-11 rounded-md border-gray-200" />
- <InputOTPSlot index={4} className="h-11 w-11 rounded-md border-gray-200" />
- <InputOTPSlot index={5} className="h-11 w-11 rounded-md border-gray-200" />
- </InputOTPGroup>
- </InputOTP>
- </FormControl>
- <FormMessage />
- </FormItem>
- )}
- />
+    setIsSigningIn(true);
+    try {
+      const res = await signIn("credentials", {
+        redirect: false,
+        phoneNumber: phoneE164,
+        code: values.otp,
+      });
 
- <Button type="submit" className="w-full rounded-md" disabled={isVerifyingOtp}>
- {isVerifyingOtp && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
- Verify & Login
- </Button>
- 
- <div className="flex flex-col gap-2 w-full">
- <Button
- type="button"
- variant="outline"
- className="w-full rounded-md h-10"
- disabled={isSendingOtp}
- onClick={() => {
- if (phone) {
- sendOtp({ phoneNumber: phone }, {
- onSuccess: () => toast.success("OTP sent to your WhatsApp."),
- onError: (err: unknown) => {
- const errorMsg = err instanceof Error ? err.message : "Failed to resend OTP.";
- // @ts-expect-error - axios err
- toast.error(err?.response?.data?.message || errorMsg);
- }
- });
- }
- }}
- >
- {isSendingOtp && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
- Resend OTP
- </Button>
+      if (res?.error) {
+        toast.error(t("invalidCode"));
+        return;
+      }
+      if (!res?.ok) return;
 
- <Button
- type="button"
- variant="ghost"
- asChild
- className="w-full text-black/60 font-medium hover:text-primary"
- >
- <Link href="/register">Back to Sign Up</Link>
- </Button>
- </div>
- </form>
- </Form>
- </div>
- );
+      toast.success(
+        isLoginFlow ? t("signedInSuccess") : t("welcomeSignedIn"),
+      );
+      setTimeout(() => {
+        window.location.href = next;
+      }, 600);
+    } catch {
+      toast.error(t("genericError"));
+    } finally {
+      setIsSigningIn(false);
+    }
+  }
+
+  const registerHref = buildAuthPathWithCallback("/register", callbackUrl);
+  const loginHref = buildAuthPathWithCallback("/login", callbackUrl);
+
+  const subtitleRegister = phone
+    ? t("subtitleRegister", { phone })
+    : t("subtitleRegister", { phone: t("yourPhone") });
+
+  return (
+    <div className="w-full max-w-sm mx-auto flex flex-col justify-center">
+      <div className="mb-8 flex flex-col items-center gap-2">
+        <h1 className="text-2xl font-bold tracking-tight text-center">
+          {isLoginFlow ? t("titleLogin") : t("titleRegister")}
+        </h1>
+        <p className="text-sm text-black/60 text-center">
+          {isLoginFlow ? t("subtitleLogin") : subtitleRegister}
+        </p>
+      </div>
+
+      <Form {...otpForm}>
+        <form
+          key={locale}
+          onSubmit={otpForm.handleSubmit(onVerifyPhoneSubmit)}
+          className="space-y-6"
+        >
+          <FormField
+            control={otpForm.control}
+            name="otp"
+            render={({ field }) => (
+              <FormItem className="flex flex-col items-center">
+                <FormLabel className="flex items-center gap-2 mb-2">
+                  <Key className="h-3.5 w-3.5" />
+                  {t("otpLabel")}
+                </FormLabel>
+                <FormControl>
+                  <InputOTP maxLength={6} {...field}>
+                    <InputOTPGroup className="gap-2">
+                      <InputOTPSlot
+                        index={0}
+                        className="h-11 w-11 rounded-md border-gray-200"
+                      />
+                      <InputOTPSlot
+                        index={1}
+                        className="h-11 w-11 rounded-md border-gray-200"
+                      />
+                      <InputOTPSlot
+                        index={2}
+                        className="h-11 w-11 rounded-md border-gray-200"
+                      />
+                      <InputOTPSlot
+                        index={3}
+                        className="h-11 w-11 rounded-md border-gray-200"
+                      />
+                      <InputOTPSlot
+                        index={4}
+                        className="h-11 w-11 rounded-md border-gray-200"
+                      />
+                      <InputOTPSlot
+                        index={5}
+                        className="h-11 w-11 rounded-md border-gray-200"
+                      />
+                    </InputOTPGroup>
+                  </InputOTP>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <Button
+            type="submit"
+            className="w-full rounded-md"
+            disabled={isSigningIn}
+          >
+            {isSigningIn && (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            )}
+            {t("verifySignIn")}
+          </Button>
+
+          <div className="flex flex-col gap-2 w-full">
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full rounded-md h-10"
+              disabled={isSendingOtp}
+              onClick={() => {
+                if (phone) {
+                  sendOtp(
+                    { phoneNumber: toE164PhoneNumber(phone) },
+                    {
+                      onSuccess: () => toast.success(t("toastResendSuccess")),
+                      onError: (err: unknown) => {
+                        const errorMsg =
+                          err instanceof Error
+                            ? err.message
+                            : t("errors.resendFailed");
+                        // @ts-expect-error - axios err
+                        toast.error(err?.response?.data?.message || errorMsg);
+                      },
+                    },
+                  );
+                }
+              }}
+            >
+              {isSendingOtp && (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              )}
+              {t("resendOtp")}
+            </Button>
+
+            <Button
+              type="button"
+              variant="ghost"
+              asChild
+              className="w-full text-black/60 font-medium hover:text-primary"
+            >
+              <Link href={isLoginFlow ? loginHref : registerHref}>
+                {isLoginFlow ? t("differentNumber") : t("backSignUp")}
+              </Link>
+            </Button>
+          </div>
+        </form>
+      </Form>
+
+      <AuthLocaleSwitcher className="mt-8" />
+    </div>
+  );
 }

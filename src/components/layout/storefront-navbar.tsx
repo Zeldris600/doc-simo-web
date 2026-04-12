@@ -12,7 +12,6 @@ import {
   Globe,
   ChevronDown,
 } from "@/lib/icons";
-import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useCart } from "@/store/use-cart";
 import { usePathname } from "next/navigation";
@@ -65,28 +64,22 @@ export function StorefrontNavbar() {
   const headerActive = isScrolled || !isHome;
 
   return (
-    <header className="fixed top-0 z-50 w-full px-3 sm:px-4 md:px-6 lg:px-8 pt-2 sm:pt-3 transition-all duration-500">
-      {/* Inset, rounded bar */}
+    <header className="fixed top-0 z-50 w-full px-2 sm:px-3 md:px-4 lg:px-5 pt-0.5 sm:pt-1 transition-all duration-500">
+      {/* Inset pill bar */}
       <div
         className={cn(
-          "mx-auto max-w-7xl w-full rounded-2xl sm:rounded-3xl transition-all duration-500 border",
+          "mx-auto max-w-7xl w-full rounded-full transition-all duration-500 border",
           headerActive
-            ? "bg-white/80 backdrop-blur-2xl border-black/[0.08] ring-1 ring-black/[0.04]"
+            ? "bg-white/80 backdrop-blur-2xl border-black/8 ring-1 ring-black/4"
             : "bg-white/10 backdrop-blur-md border-white/15 sm:border-white/10",
         )}
       >
-        <div className="flex h-[4.5rem] sm:h-20 items-center justify-between px-4 sm:px-5 lg:px-6">
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="p-1 rounded-xl bg-primary/5 transition-all group-hover:scale-110 active:scale-95 overflow-hidden">
-              <Image
-                src="/icon.png"
-                alt="Doctasimo"
-                width={36}
-                height={36}
-                className="object-contain"
-              />
-            </div>
-            <span className="font-black text-xl tracking-tighter text-primary">
+        <div className="flex h-11 sm:h-12 items-center justify-between px-2 sm:px-2.5 md:px-3">
+          <Link
+            href="/"
+            className="flex items-center gap-1.5 group shrink-0 min-w-0"
+          >
+            <span className="font-black text-base sm:text-lg tracking-tighter text-primary leading-none">
               Doctasimo
             </span>
           </Link>
@@ -94,12 +87,12 @@ export function StorefrontNavbar() {
           {/* Navigation */}
           <div className="hidden md:flex items-center">
             <NavigationMenu>
-              <NavigationMenuList className="gap-2">
+              <NavigationMenuList className="gap-0.5 sm:gap-1">
                 <NavigationMenuItem>
                   <NavigationMenuLink
                     asChild
                     className={cn(
-                      "px-5 py-2.5 text-xs font-bold transition-all rounded-full cursor-pointer",
+                      "px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs font-bold transition-all rounded-full cursor-pointer",
                       headerActive
                         ? "text-foreground hover:text-primary hover:bg-primary/5"
                         : "text-primary hover:bg-black/5",
@@ -112,7 +105,7 @@ export function StorefrontNavbar() {
                   <NavigationMenuLink
                     asChild
                     className={cn(
-                      "px-5 py-2.5 text-xs font-bold transition-all rounded-full cursor-pointer",
+                      "px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs font-bold transition-all rounded-full cursor-pointer",
                       headerActive
                         ? "text-foreground hover:text-primary hover:bg-primary/5"
                         : "text-primary hover:bg-black/5",
@@ -125,7 +118,7 @@ export function StorefrontNavbar() {
                   <NavigationMenuLink
                     asChild
                     className={cn(
-                      "px-5 py-2.5 text-xs font-bold transition-all rounded-full cursor-pointer",
+                      "px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs font-bold transition-all rounded-full cursor-pointer",
                       headerActive
                         ? "text-foreground hover:text-primary hover:bg-primary/5"
                         : "text-primary hover:bg-black/5",
@@ -138,7 +131,7 @@ export function StorefrontNavbar() {
                   <NavigationMenuLink
                     asChild
                     className={cn(
-                      "px-5 py-2.5 text-xs font-bold transition-all rounded-full cursor-pointer",
+                      "px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs font-bold transition-all rounded-full cursor-pointer",
                       headerActive
                         ? "text-foreground hover:text-primary hover:bg-primary/5"
                         : "text-primary hover:bg-black/5",
@@ -152,28 +145,38 @@ export function StorefrontNavbar() {
           </div>
 
           {/* Right Actions */}
-          <div className="flex items-center gap-2 sm:gap-5">
+          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
                   className={cn(
-                    "hidden sm:inline-flex items-center gap-2 rounded-full px-3 py-2 transition-colors",
+                    "hidden sm:inline-flex items-center gap-1 rounded-full px-2 py-1 transition-colors",
                     headerActive ? "hover:bg-black/5" : "hover:bg-white/10",
                   )}
                 >
-                  <Globe className={cn("h-4 w-4", headerActive ? "text-foreground/60" : "text-white/80")} />
+                  <Globe
+                    className={cn(
+                      "h-3.5 w-3.5",
+                      headerActive ? "text-foreground/60" : "text-white/80",
+                    )}
+                  />
                   <ReactCountryFlag
                     svg
                     countryCode={pathname?.startsWith("/fr") ? "FR" : "GB"}
-                    aria-label={pathname?.startsWith("/fr") ? "France" : "United Kingdom"}
+                    aria-label={
+                      pathname?.startsWith("/fr") ? "France" : "United Kingdom"
+                    }
                     style={{
-                      width: "1.2em",
-                      height: "1.2em",
+                      width: "1.05em",
+                      height: "1.05em",
                       borderRadius: "9999px",
                     }}
                   />
                   <ChevronDown
-                    className={cn("h-4 w-4 opacity-70", headerActive ? "text-foreground/60" : "text-white/80")}
+                    className={cn(
+                      "h-3.5 w-3.5 opacity-70",
+                      headerActive ? "text-foreground/60" : "text-white/80",
+                    )}
                   />
                 </button>
               </DropdownMenuTrigger>
@@ -183,14 +186,30 @@ export function StorefrontNavbar() {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link href="/" locale="en" className="flex items-center gap-2 font-semibold">
-                    <ReactCountryFlag svg countryCode="GB" aria-label="United Kingdom" />
+                  <Link
+                    href="/"
+                    locale="en"
+                    className="flex items-center gap-2 font-semibold"
+                  >
+                    <ReactCountryFlag
+                      svg
+                      countryCode="GB"
+                      aria-label="United Kingdom"
+                    />
                     English
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/" locale="fr" className="flex items-center gap-2 font-semibold">
-                    <ReactCountryFlag svg countryCode="FR" aria-label="France" />
+                  <Link
+                    href="/"
+                    locale="fr"
+                    className="flex items-center gap-2 font-semibold"
+                  >
+                    <ReactCountryFlag
+                      svg
+                      countryCode="FR"
+                      aria-label="France"
+                    />
                     Français
                   </Link>
                 </DropdownMenuItem>
@@ -199,25 +218,15 @@ export function StorefrontNavbar() {
 
             <Sheet>
               <SheetTrigger asChild>
-                <button className="md:hidden p-2.5 rounded-full bg-primary/5 hover:bg-primary/10 text-primary/80 transition-all">
-                  <Menu className="h-5 w-5" />
+                <button className="md:hidden p-1.5 rounded-full bg-primary/5 hover:bg-primary/10 text-primary/80 transition-all">
+                  <Menu className="h-3.5 w-3.5" />
                 </button>
               </SheetTrigger>
               <SheetContent side="left" className="bg-white border-black/5 p-0">
                 <SheetHeader className="p-6 border-b border-black/5 items-start">
-                  <div className="flex items-center gap-3">
-                    <div className="p-1 rounded-xl bg-primary/5 overflow-hidden">
-                      <Image
-                        src="/icon.png"
-                        alt="Doctasimo"
-                        width={32}
-                        height={32}
-                      />
-                    </div>
-                    <SheetTitle className="text-primary font-black tracking-tighter text-xl">
-                      Doctasimo
-                    </SheetTitle>
-                  </div>
+                  <SheetTitle className="text-primary font-black tracking-tighter text-xl">
+                    Doctasimo
+                  </SheetTitle>
                 </SheetHeader>
                 <div className="flex flex-col p-4 gap-2">
                   <Link
@@ -274,15 +283,15 @@ export function StorefrontNavbar() {
             <Link
               href="/cart"
               className={cn(
-                "relative p-2.5 rounded-full transition-all active:scale-90",
+                "relative p-1.5 rounded-full transition-all active:scale-90",
                 headerActive
                   ? "bg-primary/5 text-primary/80 hover:bg-primary/10"
                   : "bg-black/5 text-primary hover:bg-black/10",
               )}
             >
-              <ShoppingBag className="h-5 w-5" />
+              <ShoppingBag className="h-3.5 w-3.5" />
               {cartCount > 0 && (
-                <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center rounded-full p-0 text-[10px] font-bold border-2 border-white bg-primary text-white">
+                <Badge className="absolute -top-0.5 -right-0.5 min-h-4 min-w-4 h-4 px-0.5 flex items-center justify-center rounded-full p-0 text-[9px] font-bold border border-white bg-primary text-white leading-none">
                   {cartCount}
                 </Badge>
               )}
@@ -292,12 +301,12 @@ export function StorefrontNavbar() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button className="flex items-center gap-2 outline-none group">
-                    <Avatar className="h-10 w-10 border border-black/10 transition-all group-hover:border-primary/50 rounded-xl">
+                    <Avatar className="h-7 w-7 sm:h-8 sm:w-8 border border-black/10 transition-all group-hover:border-primary/50 rounded-md">
                       <AvatarImage
                         src={user.image || undefined}
                         alt={user.name || "User"}
                       />
-                      <AvatarFallback className="bg-primary/10 text-primary font-bold text-xs">
+                      <AvatarFallback className="bg-primary/10 text-primary font-bold text-[10px] sm:text-xs">
                         {user.name?.slice(0, 2) || "JD"}
                       </AvatarFallback>
                     </Avatar>
@@ -374,23 +383,23 @@ export function StorefrontNavbar() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <div className="hidden sm:flex items-center gap-3">
+              <div className="hidden sm:flex items-center gap-1.5">
                 <Link
                   href="/consultation"
-                  className="inline-flex items-center gap-1.5 px-5 py-2.5 text-xs font-bold text-primary/80 hover:text-primary transition-all rounded-full hover:bg-primary/5 border border-primary/20"
+                  className="inline-flex items-center gap-1 px-2.5 py-1 text-[10px] sm:text-[11px] font-bold text-primary/80 hover:text-primary transition-all rounded-full hover:bg-primary/5 border border-primary/20"
                 >
-                  <MessageSquare className="h-3.5 w-3.5" />
+                  <MessageSquare className="h-3 w-3 shrink-0" />
                   Consultation
                 </Link>
                 <Link
                   href="/login"
-                  className="px-5 py-2.5 text-xs font-bold text-primary/80 hover:text-primary transition-all rounded-full hover:bg-primary/5"
+                  className="px-2.5 py-1 text-[10px] sm:text-[11px] font-bold text-primary/80 hover:text-primary transition-all rounded-full hover:bg-primary/5"
                 >
                   {t("signIn")}
                 </Link>
                 <Link
                   href="/register"
-                  className="px-5 py-2.5 text-xs font-bold text-white bg-primary hover:bg-[#142c1b] transition-all rounded-full active:scale-95"
+                  className="px-2.5 py-1 text-[10px] sm:text-[11px] font-bold text-white bg-primary hover:bg-[#142c1b] transition-all rounded-full active:scale-95"
                 >
                   {t("signUp")}
                 </Link>

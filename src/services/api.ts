@@ -2,10 +2,12 @@ import axios from "axios";
 import { getSession } from "next-auth/react";
 
 export const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL, // Added the localhost fallback you're using for your API
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
   headers: {
     "Content-Type": "application/json",
   },
+  /** Better Auth cookie sessions need this on browser requests (with trusted CORS origins). */
+  withCredentials: true,
 });
 
 // Request interceptor to attach token
@@ -18,9 +20,6 @@ api.interceptors.request.use(
 
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
-        console.log("User Auth Token added to request:", token);
-      } else {
-        console.log("No User Auth Token found in session!");
       }
     }
     return config;

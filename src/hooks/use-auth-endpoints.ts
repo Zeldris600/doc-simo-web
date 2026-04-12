@@ -1,4 +1,9 @@
-import { useMutation, UseMutationOptions } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  UseMutationOptions,
+  UseQueryOptions,
+} from "@tanstack/react-query";
 import { AuthService } from "@/services/auth.service";
 import { 
  SendOtpDto, 
@@ -43,3 +48,19 @@ export const useSignUp = <TError = ApiError>(opt?: UseMutationOptions<Awaited<Re
  ...opt,
  });
 };
+
+type AuthSessionData = Awaited<ReturnType<typeof AuthService.getSession>>;
+
+/** GET `/api/auth/get-session` — Better Auth session (cookies or Bearer). */
+export function useBetterAuthGetSession(
+  options?: Omit<
+    UseQueryOptions<AuthSessionData, ApiError>,
+    "queryKey" | "queryFn"
+  >,
+) {
+  return useQuery<AuthSessionData, ApiError>({
+    queryKey: ["better-auth", "session"],
+    queryFn: () => AuthService.getSession() as Promise<AuthSessionData>,
+    ...options,
+  });
+}

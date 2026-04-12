@@ -50,7 +50,7 @@ export function Hero({ isLoading }: HeroProps) {
         <div className="absolute bottom-0 left-0 w-[350px] h-[350px] rounded-full bg-primary/4 translate-y-1/4 -translate-x-1/4 blur-3xl" />
       </div>
 
-      <div className="container relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-28 pb-16 lg:pt-36 lg:pb-20 flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+      <div className="container relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-24 pb-16 lg:pt-32 lg:pb-20 flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
         {/* ── LEFT CONTENT ── */}
         <div className="flex-1 max-w-2xl text-center lg:text-left space-y-7">
           {/* Clinic badge */}

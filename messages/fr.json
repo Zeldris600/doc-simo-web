@@ -43,29 +43,104 @@
     }
   },
   "auth": {
+    "validation": {
+      "phoneMin": "Saisissez un numéro de téléphone valide",
+      "phoneMax": "Numéro de téléphone trop long",
+      "phoneRequired": "Le numéro de téléphone est obligatoire",
+      "nameMin": "Le nom est obligatoire",
+      "emailInvalid": "Adresse e-mail invalide",
+      "passwordMin": "Le mot de passe doit contenir au moins 4 caractères.",
+      "otpLength": "Le code doit comporter exactement 6 chiffres",
+      "acceptTerms": "Veuillez accepter les Conditions d’utilisation et la Politique de confidentialité."
+    },
+    "common": {
+      "phoneLabel": "Numéro de téléphone",
+      "phonePlaceholder": "671381152",
+      "language": "Langue"
+    },
     "login": {
       "title": "Bon retour parmi nous",
-      "subtitle": "Connectez-vous pour accéder à votre tableau de bord bien-être.",
+      "subtitle": "Connexion par téléphone — nous vous envoyons un code à 6 chiffres.",
+      "phoneSubtitle": "Saisissez le numéro associé à votre compte Doctasimo (format E.164, ex. +237…).",
+      "otpSubtitle": "Saisissez le code reçu sur votre téléphone.",
+      "sendCode": "Envoyer le code",
+      "verifySignIn": "Vérifier et me connecter",
+      "changeNumber": "Changer de numéro",
+      "resendCode": "Renvoyer le code",
+      "codeSent": "Code de vérification envoyé. Consultez votre téléphone.",
       "submit": "Continuer",
       "noAccount": "Vous n'avez pas de compte ?",
-      "registerLink": "Rejoindre la communauté"
+      "registerLink": "Rejoindre la communauté",
+      "forgotPassword": "Mot de passe oublié ?",
+      "errors": {
+        "sendFailed": "Impossible d’envoyer le code. Vérifiez le numéro et réessayez."
+      }
     },
     "register": {
-      "title": "Rejoindre Doctasime",
-      "subtitle": "Commencez votre voyage vers une santé holistique dès aujourd'hui.",
-      "submit": "Créer un compte",
-      "hasAccount": "Déjà membre ?",
-      "loginLink": "Se connecter ici"
+      "title": "Créer un compte",
+      "step1Subtitle": "Étape 1 sur 2 — Comment devons-nous vous appeler ?",
+      "step2Subtitle": "Étape 2 sur 2 — Saisissez votre téléphone. Nous créons votre compte et envoyons un code.",
+      "continue": "Continuer",
+      "back": "Retour",
+      "createAndSendCode": "Créer le compte et envoyer le code",
+      "signingUpAs": "Inscription au nom de {name}",
+      "nameLabel": "Nom complet",
+      "hasAccount": "Vous avez déjà un compte ?",
+      "signIn": "Se connecter",
+      "toastCodeSent": "Code envoyé sur votre WhatsApp. Saisissez-le ci-dessous pour vous connecter.",
+      "errors": {
+        "sendOtpFailed": "Échec de l’envoi du code.",
+        "signUpFailed": "Échec de la création du compte."
+      }
     },
     "verify": {
-      "title": "Vérifiez votre identité",
-      "subtitle": "Nous avons envoyé un code à 6 chiffres à {identifier}.",
-      "submit": "Vérifier le code",
-      "resend": "Renvoyer le code"
+      "titleLogin": "Saisissez votre code",
+      "titleRegister": "Vérifiez votre téléphone",
+      "subtitleLogin": "Saisissez le code que nous avons envoyé sur votre téléphone.",
+      "subtitleRegister": "Nous avons envoyé un code à 6 chiffres au {phone}",
+      "yourPhone": "votre téléphone",
+      "otpLabel": "Code de vérification",
+      "verifySignIn": "Vérifier et me connecter",
+      "verifyContinue": "Vérifier et continuer",
+      "resendOtp": "Renvoyer le code",
+      "toastResendSuccess": "Code envoyé sur votre WhatsApp.",
+      "backSignUp": "Retour à l’inscription",
+      "differentNumber": "Utiliser un autre numéro",
+      "phoneMissingLogin": "Numéro de téléphone manquant. Recommencez depuis la connexion.",
+      "phoneMissingRegister": "Numéro de téléphone manquant. Retournez à l’inscription.",
+      "invalidCode": "Code invalide ou expiré. Réessayez ou renvoyez un code.",
+      "signedInSuccess": "Connexion réussie.",
+      "welcomeSignedIn": "Bienvenue ! Vous êtes connecté.",
+      "genericError": "Une erreur s’est produite.",
+      "errors": {
+        "resendFailed": "Échec du renvoi du code."
+      }
+    },
+    "forgotPassword": {
+      "title": "Mot de passe oublié",
+      "subtitle": "Saisissez votre numéro pour recevoir un code OTP de réinitialisation",
+      "submit": "Envoyer le lien",
+      "backToLogin": "Retour à la connexion",
+      "toastSuccess": "Si un compte correspond à {phone}, des instructions ont été envoyées.",
+      "errors": {
+        "generic": "Erreur lors de la demande de réinitialisation."
+      }
+    },
+    "resetPassword": {
+      "title": "Réinitialiser le mot de passe",
+      "subtitle": "Saisissez le code OTP et votre nouveau mot de passe",
+      "otpLabel": "Code OTP",
+      "newPasswordLabel": "Nouveau mot de passe",
+      "submit": "Réinitialiser le mot de passe",
+      "backToLogin": "Retour à la connexion",
+      "toastSuccess": "Mot de passe réinitialisé. Vous pouvez vous connecter.",
+      "errors": {
+        "generic": "Erreur lors de la réinitialisation du mot de passe."
+      }
     },
     "form": {
       "identifier": "Email ou Numéro de téléphone",
-      "identifierPlaceholder": "hello@doctasime.com ou +33...",
+      "identifierPlaceholder": "hello@doctasimo.com ou +33...",
       "fullName": "Nom complet",
       "fullNamePlaceholder": "Jean Dupont",
       "otp": "Mot de passe à usage unique"

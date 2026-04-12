@@ -43,29 +43,104 @@
     }
   },
   "auth": {
+    "validation": {
+      "phoneMin": "Enter a valid phone number",
+      "phoneMax": "Phone number is too long",
+      "phoneRequired": "Phone number is required",
+      "nameMin": "Name is required",
+      "emailInvalid": "Invalid email address",
+      "passwordMin": "Password must be at least 4 characters.",
+      "otpLength": "Code must be exactly 6 digits",
+      "acceptTerms": "Please accept the Terms of Service and Privacy Policy."
+    },
+    "common": {
+      "phoneLabel": "Phone number",
+      "phonePlaceholder": "671381152",
+      "language": "Language"
+    },
     "login": {
       "title": "Welcome Back",
-      "subtitle": "Sign in to access your clinical wellness dashboard.",
+      "subtitle": "Sign in with your phone — we’ll send a 6-digit code.",
+      "phoneSubtitle": "Enter the number you use with Doctasimo (E.164, e.g. +237…).",
+      "otpSubtitle": "Enter the code we sent to your phone.",
+      "sendCode": "Send code",
+      "verifySignIn": "Verify & sign in",
+      "changeNumber": "Use a different number",
+      "resendCode": "Resend code",
+      "codeSent": "Verification code sent. Check your phone.",
       "submit": "Continue",
       "noAccount": "Don't have an account?",
-      "registerLink": "Join the community"
+      "registerLink": "Join the community",
+      "forgotPassword": "Forgot password?",
+      "errors": {
+        "sendFailed": "Could not send code. Check the number and try again."
+      }
     },
     "register": {
-      "title": "Join Doctasime",
-      "subtitle": "Start your journey to holistic health today.",
-      "submit": "Create Account",
-      "hasAccount": "Already a member?",
-      "loginLink": "Sign in here"
+      "title": "Create Account",
+      "step1Subtitle": "Step 1 of 2 — What should we call you?",
+      "step2Subtitle": "Step 2 of 2 — Enter your phone. We’ll create your account and send a code.",
+      "continue": "Continue",
+      "back": "Back",
+      "createAndSendCode": "Create account & send code",
+      "signingUpAs": "Signing up as {name}",
+      "nameLabel": "Full name",
+      "hasAccount": "Already have an account?",
+      "signIn": "Sign in",
+      "toastCodeSent": "Verification code sent to your WhatsApp. Enter the code below to sign in.",
+      "errors": {
+        "sendOtpFailed": "Failed to send OTP.",
+        "signUpFailed": "Failed to create account."
+      }
     },
     "verify": {
-      "title": "Verify Your Identity",
-      "subtitle": "We've sent a 6-digit code to your {identifier}.",
-      "submit": "Verify Code",
-      "resend": "Resend code"
+      "titleLogin": "Enter your code",
+      "titleRegister": "Verify your phone",
+      "subtitleLogin": "Enter the code we sent to your phone.",
+      "subtitleRegister": "We sent a 6-digit code to {phone}",
+      "yourPhone": "your phone",
+      "otpLabel": "Enter Verification Code",
+      "verifySignIn": "Verify & sign in",
+      "verifyContinue": "Verify & continue",
+      "resendOtp": "Resend OTP",
+      "toastResendSuccess": "OTP sent to your WhatsApp.",
+      "backSignUp": "Back to Sign Up",
+      "differentNumber": "Use a different number",
+      "phoneMissingLogin": "Phone number missing. Please start again from login.",
+      "phoneMissingRegister": "Phone number missing. Please go back to sign up.",
+      "invalidCode": "Invalid or expired code. Try again or resend a new code.",
+      "signedInSuccess": "Signed in successfully.",
+      "welcomeSignedIn": "Welcome! You're signed in.",
+      "genericError": "Something went wrong.",
+      "errors": {
+        "resendFailed": "Failed to resend OTP."
+      }
+    },
+    "forgotPassword": {
+      "title": "Forgot Password",
+      "subtitle": "Enter your phone number to receive an OTP reset code",
+      "submit": "Send Reset Link",
+      "backToLogin": "Back to Login",
+      "toastSuccess": "If an account matches {phone}, reset instructions have been sent.",
+      "errors": {
+        "generic": "Error requesting password reset."
+      }
+    },
+    "resetPassword": {
+      "title": "Reset Password",
+      "subtitle": "Enter your OTP code and new password",
+      "otpLabel": "OTP Code",
+      "newPasswordLabel": "New Password",
+      "submit": "Reset Password",
+      "backToLogin": "Back to Login",
+      "toastSuccess": "Password reset successfully. You can now log in.",
+      "errors": {
+        "generic": "Error resetting password."
+      }
     },
     "form": {
       "identifier": "Email or Phone Number",
-      "identifierPlaceholder": "hello@doctasime.com or +1...",
+      "identifierPlaceholder": "hello@doctasimo.com or +1...",
       "fullName": "Full Name",
       "fullNamePlaceholder": "John Doe",
       "otp": "One-Time Password"
