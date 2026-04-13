@@ -42,6 +42,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { NotificationBell } from "@/components/layout/notification-bell";
 
 export function StorefrontNavbar() {
   const t = useTranslations("navigation");
@@ -64,7 +65,7 @@ export function StorefrontNavbar() {
   const headerActive = isScrolled || !isHome;
 
   return (
-    <header className="fixed top-0 z-50 w-full px-2 sm:px-3 md:px-4 lg:px-5 pt-0.5 sm:pt-1 transition-all duration-500">
+    <header className="fixed top-0 z-50 w-full px-4 sm:px-6 md:px-8 lg:px-12 pt-2 sm:pt-4 transition-all duration-500">
       {/* Inset pill bar */}
       <div
         className={cn(
@@ -79,7 +80,7 @@ export function StorefrontNavbar() {
             href="/"
             className="flex items-center gap-1.5 group shrink-0 min-w-0"
           >
-            <span className="font-black text-base sm:text-lg tracking-tighter text-primary leading-none">
+            <span className="font-medium text-base sm:text-lg text-primary leading-none">
               Doctasimo
             </span>
           </Link>
@@ -92,7 +93,7 @@ export function StorefrontNavbar() {
                   <NavigationMenuLink
                     asChild
                     className={cn(
-                      "px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs font-bold transition-all rounded-full cursor-pointer",
+                      "px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs font-medium transition-all rounded-full cursor-pointer",
                       headerActive
                         ? "text-foreground hover:text-primary hover:bg-primary/5"
                         : "text-primary hover:bg-black/5",
@@ -105,7 +106,7 @@ export function StorefrontNavbar() {
                   <NavigationMenuLink
                     asChild
                     className={cn(
-                      "px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs font-bold transition-all rounded-full cursor-pointer",
+                      "px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs font-medium transition-all rounded-full cursor-pointer",
                       headerActive
                         ? "text-foreground hover:text-primary hover:bg-primary/5"
                         : "text-primary hover:bg-black/5",
@@ -118,7 +119,7 @@ export function StorefrontNavbar() {
                   <NavigationMenuLink
                     asChild
                     className={cn(
-                      "px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs font-bold transition-all rounded-full cursor-pointer",
+                      "px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs font-medium transition-all rounded-full cursor-pointer",
                       headerActive
                         ? "text-foreground hover:text-primary hover:bg-primary/5"
                         : "text-primary hover:bg-black/5",
@@ -131,7 +132,7 @@ export function StorefrontNavbar() {
                   <NavigationMenuLink
                     asChild
                     className={cn(
-                      "px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs font-bold transition-all rounded-full cursor-pointer",
+                      "px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs font-medium transition-all rounded-full cursor-pointer",
                       headerActive
                         ? "text-foreground hover:text-primary hover:bg-primary/5"
                         : "text-primary hover:bg-black/5",
@@ -180,35 +181,46 @@ export function StorefrontNavbar() {
                   />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="min-w-44">
-                <DropdownMenuLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+              <DropdownMenuContent
+                align="end"
+                className="min-w-44 border-primary/10 shadow-2xl shadow-primary/5 rounded-2xl p-2 bg-white"
+              >
+                <DropdownMenuLabel className="text-[10px] font-black tracking-wider uppercase text-black/40 px-2 py-1.5">
                   Language
                 </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
+                <DropdownMenuSeparator className="bg-primary/5 mx-2" />
+                <DropdownMenuItem
+                  asChild
+                  className="cursor-pointer focus:bg-[#f5faf6] focus:text-primary rounded-xl mt-1 py-2 px-3 transition-colors"
+                >
                   <Link
                     href="/"
                     locale="en"
-                    className="flex items-center gap-2 font-semibold"
+                    className="flex items-center gap-3 font-bold text-sm text-black/70"
                   >
                     <ReactCountryFlag
                       svg
                       countryCode="GB"
                       aria-label="United Kingdom"
+                      className="rounded-sm"
                     />
                     English
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild>
+                <DropdownMenuItem
+                  asChild
+                  className="cursor-pointer focus:bg-[#f5faf6] focus:text-primary rounded-xl py-2 px-3 transition-colors"
+                >
                   <Link
                     href="/"
                     locale="fr"
-                    className="flex items-center gap-2 font-semibold"
+                    className="flex items-center gap-3 font-bold text-sm text-black/70"
                   >
                     <ReactCountryFlag
                       svg
                       countryCode="FR"
                       aria-label="France"
+                      className="rounded-sm"
                     />
                     Français
                   </Link>
@@ -224,41 +236,46 @@ export function StorefrontNavbar() {
               </SheetTrigger>
               <SheetContent side="left" className="bg-white border-black/5 p-0">
                 <SheetHeader className="p-6 border-b border-black/5 items-start">
-                  <SheetTitle className="text-primary font-black tracking-tighter text-xl">
+                  <SheetTitle className="text-primary font-medium text-xl">
                     Doctasimo
                   </SheetTitle>
                 </SheetHeader>
                 <div className="flex flex-col p-4 gap-2">
                   <Link
                     href="/"
-                    className="px-4 py-3 text-sm font-bold text-foreground/70 hover:text-primary hover:bg-primary/5 rounded-xl transition-all"
+                    className="px-4 py-3 text-sm font-medium text-foreground/70 hover:text-primary hover:bg-primary/5 rounded-xl transition-all"
                   >
                     {t("home")}
                   </Link>
                   <Link
                     href="/products"
-                    className="px-4 py-3 text-sm font-bold text-foreground/70 hover:text-primary hover:bg-primary/5 rounded-xl transition-all"
+                    className="px-4 py-3 text-sm font-medium text-foreground/70 hover:text-primary hover:bg-primary/5 rounded-xl transition-all"
                   >
                     {t("shop")}
                   </Link>
                   <Link
-                    href="/account/orders"
-                    className="px-4 py-3 text-sm font-bold text-foreground/70 hover:text-primary hover:bg-primary/5 rounded-xl transition-all"
-                  >
-                    {t("orders")}
-                  </Link>
-                  <Link
                     href="/about"
-                    className="px-4 py-3 text-sm font-bold text-foreground/70 hover:text-primary hover:bg-primary/5 rounded-xl transition-all"
+                    className="px-4 py-3 text-sm font-medium text-foreground/70 hover:text-primary hover:bg-primary/5 rounded-xl transition-all"
                   >
                     {t("about")}
                   </Link>
                   <Link
                     href="/contact"
-                    className="px-4 py-3 text-sm font-bold text-foreground/70 hover:text-primary hover:bg-primary/5 rounded-xl transition-all"
+                    className="px-4 py-3 text-sm font-medium text-foreground/70 hover:text-primary hover:bg-primary/5 rounded-xl transition-all"
                   >
                     {t("contact")}
                   </Link>
+
+                  {user && (
+                    <div className="mt-2 pt-2 border-t border-black/5 flex flex-col gap-1">
+                      <Link
+                        href="/account"
+                        className="px-4 py-3 text-sm font-medium text-foreground/70 hover:text-primary hover:bg-primary/5 rounded-xl transition-all"
+                      >
+                        {t("myAccount")}
+                      </Link>
+                    </div>
+                  )}
 
                   {!user && (
                     <div className="mt-4 pt-4 border-t border-black/5 flex flex-col gap-3">
@@ -291,11 +308,13 @@ export function StorefrontNavbar() {
             >
               <ShoppingBag className="h-3.5 w-3.5" />
               {cartCount > 0 && (
-                <Badge className="absolute -top-0.5 -right-0.5 min-h-4 min-w-4 h-4 px-0.5 flex items-center justify-center rounded-full p-0 text-[9px] font-bold border border-white bg-primary text-white leading-none">
+                <Badge className="absolute -top-0.5 -right-0.5 min-h-4 min-w-4 h-4 px-0.5 flex items-center justify-center rounded-full p-0 text-[9px] font-medium border border-white bg-primary text-white leading-none">
                   {cartCount}
                 </Badge>
               )}
             </Link>
+
+            {user ? <NotificationBell headerActive={headerActive} /> : null}
 
             {user ? (
               <DropdownMenu>
@@ -306,7 +325,7 @@ export function StorefrontNavbar() {
                         src={user.image || undefined}
                         alt={user.name || "User"}
                       />
-                      <AvatarFallback className="bg-primary/10 text-primary font-bold text-[10px] sm:text-xs">
+                      <AvatarFallback className="bg-primary/10 text-primary font-medium text-[10px] sm:text-xs">
                         {user.name?.slice(0, 2) || "JD"}
                       </AvatarFallback>
                     </Avatar>
@@ -314,71 +333,59 @@ export function StorefrontNavbar() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                   align="end"
-                  className="w-56 rounded-xl p-1 shadow-xl border-black/5 bg-white"
+                  sideOffset={6}
+                  className="w-53 rounded-lg border border-black/10 bg-white p-0.5 shadow-sm"
                 >
-                  <DropdownMenuLabel className="px-3 py-3">
-                    <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-semibold text-black leading-none">
+                  <DropdownMenuLabel className="px-2.5 py-2">
+                    <div className="flex flex-col gap-0.5">
+                      <p className="truncate text-xs font-semibold leading-tight text-black">
                         {user.name}
                       </p>
-                      <p className="text-xs font-medium text-black/40">
+                      <p className="truncate text-[11px] font-medium text-black/45">
                         {user.email || "Patient Member"}
                       </p>
                     </div>
                   </DropdownMenuLabel>
-                  <DropdownMenuSeparator className="bg-black/5" />
-                  <DropdownMenuGroup className="py-1">
+                  <DropdownMenuSeparator className="my-0 bg-black/5" />
+                  <DropdownMenuGroup className="py-0.5">
                     <DropdownMenuItem
                       asChild
-                      className="rounded-lg px-3 py-2 cursor-pointer focus:bg-primary/5 focus:text-primary transition-colors"
+                      className="cursor-pointer rounded-md px-2 py-1.5 text-xs focus:bg-primary/5 focus:text-primary"
                     >
                       <Link href="/account">
-                        <User className="mr-3 h-4 w-4" />
-                        <span className="font-medium text-sm">
-                          {t("account")}
-                        </span>
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      asChild
-                      className="rounded-lg px-3 py-2 cursor-pointer focus:bg-primary/5 focus:text-primary transition-colors"
-                    >
-                      <Link href="/account/orders">
-                        <ShoppingBag className="mr-3 h-4 w-4" />
-                        <span className="font-medium text-sm">
-                          {t("orders")}
-                        </span>
+                        <User className="mr-2 h-3.5 w-3.5" />
+                        <span className="font-medium">{t("account")}</span>
                       </Link>
                     </DropdownMenuItem>
 
                     <DropdownMenuItem
                       asChild
-                      className="rounded-lg px-3 py-2 cursor-pointer focus:bg-primary/5 focus:text-primary transition-colors text-primary bg-primary/5"
+                      className="cursor-pointer rounded-md bg-primary/5 px-2 py-1.5 text-xs text-primary focus:bg-primary/5 focus:text-primary"
                     >
                       <Link href="/consultation">
-                        <MessageSquare className="mr-3 h-4 w-4" />
-                        <span className="font-bold text-sm">Consultation</span>
+                        <MessageSquare className="mr-2 h-3.5 w-3.5" />
+                        <span className="font-semibold">Consultation</span>
                       </Link>
                     </DropdownMenuItem>
                     {user.role === "ADMIN" && (
                       <DropdownMenuItem
                         asChild
-                        className="rounded-lg px-3 py-2 cursor-pointer focus:bg-primary/5 focus:text-primary transition-colors"
+                        className="cursor-pointer rounded-md px-2 py-1.5 text-xs focus:bg-primary/5 focus:text-primary"
                       >
                         <Link href="/admin">
-                          <LayoutDashboard className="mr-3 h-4 w-4" />
-                          <span className="font-medium text-sm">Dashboard</span>
+                          <LayoutDashboard className="mr-2 h-3.5 w-3.5" />
+                          <span className="font-medium">Dashboard</span>
                         </Link>
                       </DropdownMenuItem>
                     )}
                   </DropdownMenuGroup>
-                  <DropdownMenuSeparator className="bg-black/5" />
+                  <DropdownMenuSeparator className="my-0 bg-black/5" />
                   <DropdownMenuItem
-                    className="text-primary focus:bg-primary/5 focus:text-primary cursor-pointer rounded-lg px-3 py-2 mt-0.5 transition-colors"
+                    className="mt-0 cursor-pointer rounded-md px-2 py-1.5 text-xs text-primary focus:bg-primary/5 focus:text-primary"
                     onClick={() => signOut({ callbackUrl: "/en/login" })}
                   >
-                    <LogOut className="mr-3 h-4 w-4" />
-                    <span className="font-medium text-sm">Log out</span>
+                    <LogOut className="mr-2 h-3.5 w-3.5" />
+                    <span className="font-medium">Log out</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -386,20 +393,20 @@ export function StorefrontNavbar() {
               <div className="hidden sm:flex items-center gap-1.5">
                 <Link
                   href="/consultation"
-                  className="inline-flex items-center gap-1 px-2.5 py-1 text-[10px] sm:text-[11px] font-bold text-primary/80 hover:text-primary transition-all rounded-full hover:bg-primary/5 border border-primary/20"
+                  className="inline-flex items-center gap-1 px-2.5 py-1 text-[10px] sm:text-[11px] font-medium text-primary/80 hover:text-primary transition-all rounded-full hover:bg-primary/5 border border-primary/20"
                 >
                   <MessageSquare className="h-3 w-3 shrink-0" />
                   Consultation
                 </Link>
                 <Link
                   href="/login"
-                  className="px-2.5 py-1 text-[10px] sm:text-[11px] font-bold text-primary/80 hover:text-primary transition-all rounded-full hover:bg-primary/5"
+                  className="px-2.5 py-1 text-[10px] sm:text-[11px] font-medium text-primary/80 hover:text-primary transition-all rounded-full hover:bg-primary/5"
                 >
                   {t("signIn")}
                 </Link>
                 <Link
                   href="/register"
-                  className="px-2.5 py-1 text-[10px] sm:text-[11px] font-bold text-white bg-primary hover:bg-[#142c1b] transition-all rounded-full active:scale-95"
+                  className="px-2.5 py-1 text-[10px] sm:text-[11px] font-medium text-white bg-primary hover:bg-[#142c1b] transition-all rounded-full active:scale-95"
                 >
                   {t("signUp")}
                 </Link>

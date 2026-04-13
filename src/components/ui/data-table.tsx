@@ -26,6 +26,8 @@ import { Button } from "@/components/ui/button";
 import * as React from "react";
 import { Input } from "@/components/ui/input";
 import { SlidersHorizontal } from "@/lib/icons";
+import { DataTablePagination } from "./data-table-pagination";
+import { TableSkeleton } from "../skeletons/table-skeleton";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -80,6 +82,10 @@ export function DataTable<TData, TValue>({
     },
   });
 
+  if (isLoading) {
+    return <TableSkeleton columnCount={columns.length} rowCount={10} />;
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-4 pb-4 pt-2">
@@ -106,7 +112,7 @@ export function DataTable<TData, TValue>({
         {action && <div className="flex items-center gap-2">{action}</div>}
       </div>
 
-      <div className="rounded-lg border border-gray-100 overflow-hidden bg-white">
+      <div className="rounded-xl border border-gray-100 overflow-hidden bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
         <Table>
           <TableHeader className="bg-gray-50/30 border-b border-gray-100">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -118,7 +124,7 @@ export function DataTable<TData, TValue>({
                   return (
                     <TableHead
                       key={header.id}
-                      className="text-base text-black py-2 px-6"
+                      className="text-xs font-medium text-black/60 py-2.5 px-6"
                     >
                       {header.isPlaceholder
                         ? null
@@ -141,7 +147,7 @@ export function DataTable<TData, TValue>({
                   className="border-gray-100 hover:bg-gray-50/30 transition-colors"
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="py-4 px-6 text-sm">
+                    <TableCell key={cell.id} className="py-4 px-6 text-xs">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext(),
@@ -154,7 +160,7 @@ export function DataTable<TData, TValue>({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-32 text-center text-gray-400 font-semibold capitalize text-sm"
+                  className="h-32 text-center text-gray-400 font-medium capitalize text-sm"
                 >
                   {isLoading ? "Loading..." : "No records found."}
                 </TableCell>
@@ -163,26 +169,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-          className="rounded px-6 h-10 font-bold uppercase text-[10px] border-gray-100 tracking-widest transition-all hover:bg-gray-50 active:scale-95"
-        >
-          Previous
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-          className="rounded px-6 h-10 font-bold uppercase text-[10px] border-gray-100 tracking-widest transition-all hover:bg-gray-50 active:scale-95"
-        >
-          Next
-        </Button>
-      </div>
+      <DataTablePagination table={table} />
     </div>
   );
 }

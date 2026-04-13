@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { AnalyticsService } from "@/services/analytics.service";
+import { AnalyticsService, type TimeSeriesParams } from "@/services/analytics.service";
 import { AnalyticsQueryDto } from "@/types/api";
 
 export function useAnalyticsOverview(params?: AnalyticsQueryDto) {
@@ -43,5 +43,29 @@ export function useMyOrdersAnalytics(params?: AnalyticsQueryDto) {
  return useQuery({
  queryKey: ["analytics", "me", "orders", params],
  queryFn: () => AnalyticsService.getMyOrdersAnalytics(params),
+ });
+}
+
+/** Combined time-series stats (revenue, orders, delivery) */
+export function useAnalyticsTimeSeries(params: TimeSeriesParams) {
+ return useQuery({
+ queryKey: ["analytics", "timeseries", params],
+ queryFn: () => AnalyticsService.getTimeSeries(params),
+ });
+}
+
+/** Revenue time series by granularity */
+export function useRevenueSeries(params: TimeSeriesParams) {
+ return useQuery({
+ queryKey: ["analytics", "revenue-series", params],
+ queryFn: () => AnalyticsService.getRevenueSeries(params),
+ });
+}
+
+/** Delivery stats time series by granularity */
+export function useDeliveriesSeries(params: TimeSeriesParams) {
+ return useQuery({
+ queryKey: ["analytics", "deliveries-series", params],
+ queryFn: () => AnalyticsService.getDeliveriesSeries(params),
  });
 }

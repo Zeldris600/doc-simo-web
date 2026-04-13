@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import {
   BookOpen,
   Frame,
@@ -202,16 +203,16 @@ export function AdminSidebar({
   const filteredNavMain = filterNavItems(navMain);
 
   return (
-    <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader>
+    <Sidebar collapsible="icon" className="border-r-0" {...props}>
+      <SidebarHeader className="bg-[#1A4D2E] text-white">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" className="hover:bg-transparent">
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-black uppercase text-primary tracking-tight">
+                <span className="truncate font-medium text-white">
                   DOCTASIMO
                 </span>
-                <span className="truncate text-[10px] font-bold text-muted-foreground uppercase">
+                <span className="truncate text-[10px] font-medium text-white/50">
                   Management
                 </span>
               </div>
@@ -219,11 +220,11 @@ export function AdminSidebar({
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="bg-[#1A4D2E] text-white/70">
         <NavMain items={filteredNavMain} />
         <NavProjects projects={projects} />
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter className="bg-[#1A4D2E] border-t border-white/5">
         <NavUser user={navUser} />
       </SidebarFooter>
       <SidebarRail />

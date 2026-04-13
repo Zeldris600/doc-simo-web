@@ -15,6 +15,13 @@ interface MessageListProps {
   getDateLabel: (date: string) => string;
 }
 
+/** Subtle tile like WhatsApp Web chat wallpaper */
+function chatWallpaperStyle(): React.CSSProperties {
+  return {
+    backgroundColor: "#F5F7F5",
+  };
+}
+
 export function MessageList({
   messages,
   user,
@@ -34,7 +41,8 @@ export function MessageList({
   return (
     <div
       ref={scrollRef}
-      className="flex-1 overflow-y-auto px-4 md:px-10 py-6 flex flex-col gap-6 bg-[#f7faf7]"
+      style={chatWallpaperStyle()}
+      className="flex flex-1 flex-col gap-1 overflow-y-auto px-3 py-2 md:px-6 md:py-3"
     >
       {hasNextPage && (
         <Button
@@ -42,13 +50,13 @@ export function MessageList({
           size="sm"
           onClick={onFetchNextPage}
           disabled={isFetchingNextPage}
-          className="text-[10px] font-semibold uppercase tracking-wider self-center text-black/40 mb-4 hover:bg-black/5"
+          className="mb-2 self-center rounded-full bg-[#FFFFFF]/90 px-4 py-1 text-[12px] font-medium text-[#54656F] shadow-sm hover:bg-white"
         >
-          {isFetchingNextPage ? "Accessing Records..." : "Load Earlier Communication"}
+          {isFetchingNextPage ? "Loading…" : "Load older messages"}
         </Button>
       )}
 
-      <div className="space-y-2 max-w-4xl mx-auto w-full">
+      <div className="mx-auto w-full max-w-3xl space-y-1">
         {messages.map((msg, index) => {
           const isMe = msg.senderUserId === user?.id;
           const prevMsg = messages[index - 1];
@@ -61,8 +69,8 @@ export function MessageList({
           return (
             <React.Fragment key={msg.id}>
               {showDateSep && (
-                <div className="flex justify-center py-5">
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-black/45 bg-white/70 backdrop-blur px-4 py-1.5 border border-black/5 rounded-full shadow-sm">
+                <div className="flex justify-center py-3">
+                  <span className="rounded-lg bg-[#FFFFFF]/95 px-3 py-1 text-[12px] font-medium text-[#54656F] shadow-sm">
                     {getDateLabel(msg.createdAt)}
                   </span>
                 </div>

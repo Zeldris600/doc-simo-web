@@ -1,227 +1,159 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  TrendingUp,
-  Package,
-  ShoppingBag,
-  ArrowUpRight,
-  ArrowDownRight,
-  Bell,
-} from "@/lib/icons";
-import { DataTable } from "@/components/ui/data-table";
-import { ColumnDef } from "@tanstack/react-table";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
 import DashboardHeader from "@/components/dashboard-header";
-import { useAnalyticsOverview, useTopProducts } from "@/hooks/use-analytics";
-import { useOrders } from "@/hooks/use-order";
-import { Order, TopProduct } from "@/types/api";
-import { Skeleton } from "@/components/ui/skeleton";
-
-const columns: ColumnDef<TopProduct>[] = [
-  {
-    accessorKey: "name",
-    header: "Top Product",
-    cell: ({ row }) => (
-      <span className="font-bold text-black">{row.getValue("name")}</span>
-    ),
-  },
-  {
-    accessorKey: "category",
-    header: "Category",
-    cell: ({ row }) => {
-      const cat = row.original.category;
-      return <span>{typeof cat === 'object' ? cat.name : cat}</span>;
-    }
-  },
-  {
-    accessorKey: "salesCount",
-    header: "Units Sold",
-  },
-  {
-    accessorKey: "totalRevenue",
-    header: "Revenue",
-    cell: ({ row }) => (
-      <span className="font-bold text-black">
-        {(row.getValue("totalRevenue") as number).toLocaleString()} XAF
-      </span>
-    ),
-  },
-];
+import { useAnalyticsOverview } from "@/hooks/use-analytics";
+import { useCustomers } from "@/hooks/use-customers";
+import { usePayments } from "@/hooks/use-payment";
+import { PageSkeleton } from "@/components/skeletons/page-skeleton";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { 
+  ShoppingBag, 
+  Users, 
+  CreditCard,
+  ArrowUpRight,
+  TrendingUp,
+  CheckCircle2,
+  Bell,
+  ArrowRight,
+  AlertCircle
+} from "@/lib/icons";
+import { RecentOrdersTable } from "@/components/analytics/recent-orders-table";
+import { RecentCustomersTable } from "@/components/analytics/recent-customers-table";
+import { RecentPaymentsTable } from "@/components/analytics/recent-payments-table";
+import { TopProductsTable } from "@/components/analytics/top-products-table";
+import { Button } from "@/components/ui/button";
+import { Link } from "@/i18n/routing";
+import { Payment } from "@/types/api";
 
 export default function AdminDashboard() {
-  const { data: overview, isLoading: isLoadingOverview } = useAnalyticsOverview();
-  const { data: topProductsData, isLoading: isLoadingTop } = useTopProducts({ limit: 5 });
-  const { data: ordersResponse } = useOrders({ limit: 4 });
+  const { data: overviewResp, isLoading: isLoadingAnalytics } = useAnalyticsOverview();
+  const { data: customersResp, isLoading: isLoadingCustomers } = useCustomers({ limit: 1 });
+  const { data: paymentsResp, isLoading: isLoadingPayments } = usePayments({ limit: 5 });
+  
+  if (isLoadingAnalytics || isLoadingCustomers || isLoadingPayments) {
+    return <PageSkeleton />;
+  }
+
+  const overview = overviewResp?.data?.data;
+  const totalCustomers = customersResp?.data?.total || 0;
+
+  // Calculate payment success rate
+  const totalPayments = (overview?.paymentsByStatus?.success ?? 0) + 
+                        (overview?.paymentsByStatus?.pending ?? 0) + 
+                        (overview?.paymentsByStatus?.failed ?? 0);
+  const successRate = totalPayments > 0 
+    ? Math.round(((overview?.paymentsByStatus?.success ?? 0) / totalPayments) * 100) 
+    : 0;
 
   const stats = [
     {
       title: "Total Revenue",
-      value: `${(overview?.data?.revenue || 0).toLocaleString()} XAF`,
-      trend: "+20.1%",
-      up: true,
-      icon: TrendingUp,
+      value: `XAF ${(overview?.totalRevenue ?? 0).toLocaleString()}`,
+      description: "Direct sales volume",
+      icon: CreditCard,
       color: "text-emerald-600",
       bg: "bg-emerald-50",
+      href: "/admin/analytics"
     },
     {
-      title: "Total Orders",
-      value: overview?.data?.total_orders || 0,
-      trend: "+12.5%",
-      up: true,
-      icon: ShoppingBag,
+      title: "Registered Users",
+      value: totalCustomers.toLocaleString(),
+      description: "Customer accounts",
+      icon: Users,
       color: "text-blue-600",
       bg: "bg-blue-50",
+      href: "/admin/customers"
     },
     {
-      title: "Stock Alerts",
-      value: "Low",
-      trend: "3 items",
-      up: false,
-      icon: Package,
-      color: "text-orange-600",
-      bg: "bg-orange-50",
+      title: "Active Orders",
+      value: (overview?.ordersByStatus?.PENDING ?? 0) + (overview?.ordersByStatus?.PROCESSING ?? 0),
+      description: "Awaiting fulfillment",
+      icon: ShoppingBag,
+      color: "text-amber-600",
+      bg: "bg-amber-50",
+      href: "/admin/orders"
     },
     {
-      title: "System Notifications",
-      value: overview?.data?.notifications_count || 0,
-      trend: "Fresh",
-      up: true,
-      icon: Bell,
-      color: "text-purple-600",
-      bg: "bg-purple-50",
-    },
+      title: "System Health",
+      value: `${successRate}%`,
+      description: "Payment success rate",
+      icon: CheckCircle2,
+      color: "text-indigo-600",
+      bg: "bg-indigo-50",
+      href: "/admin/analytics"
+    }
   ];
 
-  const topProducts = topProductsData?.data || [];
-  const recentOrders = ordersResponse?.data || [];
-
-  if (isLoadingOverview || isLoadingTop) {
-    return (
-      <div className="space-y-8 pb-12">
-        <div className="space-y-2">
-          <Skeleton className="h-8 w-64" />
-          <Skeleton className="h-4 w-96" />
-        </div>
-        
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {[...Array(4)].map((_, i) => (
-            <Card key={i} className="border-none bg-white rounded-xl shadow-sm p-6 space-y-4">
-              <div className="flex justify-between items-center">
-                <Skeleton className="h-4 w-24" />
-                <Skeleton className="h-8 w-8 rounded-lg" />
-              </div>
-              <Skeleton className="h-8 w-32" />
-              <div className="flex gap-2">
-                <Skeleton className="h-4 w-8" />
-                <Skeleton className="h-4 w-24" />
-              </div>
-            </Card>
-          ))}
-        </div>
-
-        <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
-          <div className="lg:col-span-2 space-y-4">
-             <Skeleton className="h-6 w-48" />
-             <Skeleton className="h-[300px] w-full rounded-xl" />
-          </div>
-          <div className="space-y-4">
-             <Skeleton className="h-6 w-48" />
-             <Skeleton className="h-[300px] w-full rounded-xl" />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="space-y-8 pb-12">
+    <div className="space-y-6 pb-12 overflow-x-hidden">
       <DashboardHeader
-        title="Commerce Overview"
-        description="Real-time performance metrics and synchronization."
-        action={<Button variant="outline" size="sm" className="font-bold uppercase text-[10px] tracking-widest border-black/10">Export Report</Button>}
+        title="Admin Command Center"
+        description="Unified hub for clinical herbal extraction operations."
+        action={
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="icon" className="rounded-xl text-gray-400">
+               <Bell className="h-5 w-5" />
+            </Button>
+            <Link href="/admin/analytics">
+               <Button className="font-medium rounded-xl h-9 px-4 text-xs">Analyze Performance</Button>
+            </Link>
+          </div>
+        }
       />
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        {stats.map((stat) => (
-          <Card
-            key={stat.title}
-            className="border-none bg-white rounded-xl shadow-sm overflow-hidden"
-          >
-            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-              <CardTitle className="text-[10px] font-bold uppercase text-black/30 tracking-widest">
-                {stat.title}
-              </CardTitle>
-              <div className={`${stat.bg} p-2 rounded-lg`}>
-                <stat.icon className={`h-4 w-4 ${stat.color}`} />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-black text-black">{stat.value}</div>
-              <div className="flex items-center gap-1 mt-2">
-                {stat.up ? (
-                  <ArrowUpRight className="w-3 h-3 text-green-500" />
-                ) : (
-                  <ArrowDownRight className="w-3 h-3 text-red-500" />
-                )}
-                <span
-                  className={`text-[10px] font-bold ${stat.up ? "text-green-500" : "text-red-500"}`}
-                >
-                  {stat.trend}
-                </span>
-                <span className="text-[10px] text-black/20 font-bold uppercase ml-1">
-                  from last period
-                </span>
-              </div>
-            </CardContent>
-          </Card>
+      {/* Hero Stats Grid */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {stats.map((stat, i) => (
+          <Link key={i} href={stat.href}>
+             <Card className="border-none bg-white rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.02)] overflow-hidden group hover:shadow-md transition-all duration-300 h-full">
+               <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+                 <CardTitle className="text-[10px] font-medium text-gray-400">
+                   {stat.title}
+                 </CardTitle>
+                 <div className={`p-2 rounded-xl ${stat.bg} ${stat.color} transition-colors group-hover:scale-110 duration-300`}>
+                   <stat.icon className="h-4 w-4" />
+                 </div>
+               </CardHeader>
+               <CardContent>
+                 <div className="text-2xl font-medium text-black">{stat.value}</div>
+                 <p className="text-[10px] font-medium text-gray-400 mt-1 flex items-center gap-1">
+                   {stat.description}
+                   <ArrowUpRight className="h-2 w-2 text-emerald-500" />
+                 </p>
+               </CardContent>
+             </Card>
+          </Link>
         ))}
       </div>
 
       <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
-        <div className="lg:col-span-2 space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-black text-black uppercase tracking-widest">
-              Top Performing Products
-            </h3>
-          </div>
-          <DataTable columns={columns} data={topProducts} />
+        {/* Activity Stream */}
+        <div className="lg:col-span-2 space-y-6">
+           <RecentOrdersTable />
         </div>
 
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-black text-black uppercase tracking-widest">
-              Recent Fulfillment
-            </h3>
-          </div>
-          <div className="bg-white rounded-xl p-6 space-y-6 shadow-sm border-none">
-            {recentOrders.length > 0 ? recentOrders.map((order: Order) => (
-              <div key={order.id} className="flex items-center gap-4 group">
-                <div className="h-10 w-10 rounded-lg bg-black/[0.02] border border-black/5 flex items-center justify-center text-[10px] font-black text-black/40 group-hover:bg-primary/5 transition-colors uppercase">
-                  ID: {order.id.substring(0, 4)}
-                </div>
-                <div className="flex-1">
-                  <p className="text-xs font-black text-black uppercase tracking-tight">Order #{order.id.substring(0, 8)}</p>
-                  <p className="text-[10px] font-bold text-black/40 capitalize">
-                    {order.deliveryAddress?.phone || "No contact"}
-                  </p>
-                </div>
-                <Badge className={`border-none font-bold text-[8px] uppercase rounded-md px-2 py-0.5 ${
-                  order.status === 'DELIVERED' ? 'bg-emerald-50 text-emerald-700' : 'bg-blue-50 text-blue-700'
-                }`}>
-                  {order.status}
-                </Badge>
-              </div>
-            )) : (
-              <div className="text-center py-8">
-                <p className="text-[10px] font-black uppercase text-black/20">No recent orders</p>
-              </div>
-            )}
-            <Button variant="ghost" className="w-full text-[10px] font-black uppercase tracking-widest text-black/40 hover:text-black hover:bg-black/5" onClick={() => window.location.href='/admin/orders'}>
-              View All Orders
-            </Button>
-          </div>
+        {/* Performance, Customer & Financial side panels */}
+        <div className="space-y-6">
+           <TopProductsTable />
+           <RecentPaymentsTable />
+           <RecentCustomersTable />
+
+           {/* Direct Analytics Link Card */}
+           <Link href="/admin/analytics">
+              <Card className="border-none bg-[#166534] text-white rounded-xl p-6 shadow-xl shadow-[#166534]/10 relative overflow-hidden group">
+                 <div className="relative z-10">
+                    <h4 className="text-[10px] font-medium opacity-60">Full Performance Analytics</h4>
+                    <p className="text-sm font-medium mt-2 leading-relaxed">
+                       View deep-dive metrics on revenue streams, delivery logistics, and product movers.
+                    </p>
+                    <ArrowUpRight className="h-5 w-5 mt-4 text-white p-1 rounded-full bg-white/20" />
+                 </div>
+                 <div className="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform duration-500">
+                    <TrendingUp className="h-32 w-32" />
+                 </div>
+              </Card>
+           </Link>
         </div>
       </div>
     </div>

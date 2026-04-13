@@ -106,6 +106,7 @@ import {
   DashboardSquare01Icon,
   Call02Icon,
   Globe02Icon,
+  FingerPrintIcon,
   // HugeIcons doesn't expose "chevrons" like lucide; use arrows.
 } from "@hugeicons/core-free-icons";
 
@@ -245,6 +246,7 @@ export const SlidersHorizontal = createIcon(Settings04Icon);
 export const LayoutGrid = createIcon(GridIcon);
 export const List = createIcon(ListViewIcon);
 export const ShoppingBagAdd = createIcon(ShoppingBagAddIcon);
+export const Fingerprint = createIcon(FingerPrintIcon);
 
 // Admin sidebar mappings
 export const BookOpen = createIcon(BookOpen01Icon);

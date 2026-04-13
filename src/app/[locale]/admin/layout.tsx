@@ -1,4 +1,5 @@
 import { AdminSidebar } from "@/components/layout/admin-sidebar";
+import { AdminPermissionShell } from "@/components/rbac/admin-permission-shell";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -13,6 +14,8 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { AdminNotifications } from "@/components/layout/admin-notifications";
+import { User } from "@/lib/icons";
 
 export default function AdminLayout({
   children,
@@ -23,7 +26,7 @@ export default function AdminLayout({
     <SidebarProvider>
       <AdminSidebar />
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center justify-between gap-2 border-none bg-white px-6 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+        <header className="flex h-16 shrink-0 items-center justify-between gap-2 border-none bg-white px-6">
           <div className="flex items-center gap-2">
             <SidebarTrigger className="-ml-1 text-muted-foreground hover:text-black transition-colors" />
             <Separator
@@ -35,7 +38,7 @@ export default function AdminLayout({
                 <BreadcrumbItem className="hidden md:block">
                   <BreadcrumbLink
                     href="/admin"
-                    className="text-xs font-bold uppercase tracking-wider text-muted-foreground hover:text-primary transition-colors"
+                    className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors"
                   >
                     Admin
                   </BreadcrumbLink>
@@ -44,16 +47,30 @@ export default function AdminLayout({
                   <span className="text-gray-300">/</span>
                 </BreadcrumbSeparator>
                 <BreadcrumbItem>
-                  <BreadcrumbPage className="text-xs font-bold uppercase tracking-wider text-black">
+                  <BreadcrumbPage className="text-xs font-medium text-black">
                     Management
                   </BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
           </div>
-          <div>{/* ntification and users roles here */}</div>
+          <div className="flex items-center gap-4">
+            <AdminNotifications />
+            <div className="hidden h-8 w-px bg-gray-100 md:block" />
+            <div className="flex items-center gap-3">
+              <div className="flex flex-col text-right">
+                <span className="text-xs font-medium text-black">System Admin</span>
+                <span className="text-[10px] font-medium text-green-500">Online</span>
+              </div>
+              <div className="h-9 w-9 rounded-full bg-gray-50 flex items-center justify-center border border-gray-100">
+                <User className="h-5 w-5 text-gray-400" />
+              </div>
+            </div>
+          </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">{children}</div>
+        <div className="flex flex-1 flex-col gap-8 p-8 pt-6 bg-[#F5F7F5] min-h-[calc(100vh-4rem)]">
+          <AdminPermissionShell>{children}</AdminPermissionShell>
+        </div>
       </SidebarInset>
     </SidebarProvider>
   );

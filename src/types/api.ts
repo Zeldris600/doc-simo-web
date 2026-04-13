@@ -1,5 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { AxiosError } from "axios";
+
+export interface WrappedData<T> {
+  data: T;
+}
 
 export interface StandardResponse<T> {
   status: boolean;
@@ -88,13 +93,13 @@ export interface Category {
 export interface CustomerProfile {
   id: string;
   userId: string;
-  firstName?: string;
-  lastName?: string;
-  phoneNumber?: string;
-  email?: string;
+  firstName?: string | null;
+  lastName?: string | null;
+  phoneNumber?: string | null;
+  email?: string | null;
   address?: string | null;
-  city?: string;
-  region?: string;
+  city?: string | null;
+  region?: string | null;
   otpChannelPreference?: "whatsapp" | "sms";
   fcmTokens?: string[];
   metadata?: Record<string, unknown> | null;
@@ -150,9 +155,19 @@ export interface UpdateDiscountDto extends Partial<CreateDiscountDto> {
   active?: boolean;
 }
 
+export interface OrderLocation {
+  id: string;
+  lat: number;
+  lng: number;
+  source?: string;
+  timestamp: string;
+}
+
 export interface Order {
   id: string;
   orderNumber?: string;
+  userId: string;
+  customerId?: string | null;
   amount: string | number;
   total?: number; // Legacy/fallback
   currency: string;
@@ -165,12 +180,17 @@ export interface Order {
     region?: string;
     phone?: string;
   };
+  discountId?: string | null;
+  discountAmount?: string | number | null;
+  metadata?: Record<string, unknown> | null;
   items: OrderItem[];
   user?: {
     id: string;
     name: string;
     email: string;
   };
+  customer?: CustomerProfile | null;
+  locations?: OrderLocation[];
   createdAt: string;
   updatedAt: string;
 }
@@ -186,9 +206,11 @@ export type OrderStatus =
 
 export interface OrderItem {
   id: string;
+  orderId: string;
   productId: string;
   quantity: number;
-  price: number;
+  price: number | string;
+  metadata?: Record<string, unknown> | null;
   product?: Product;
 }
 
@@ -234,33 +256,104 @@ export interface Document {
 export interface AnalyticsQueryDto {
   from?: string;
   to?: string;
+  limit?: number;
 }
 
 export interface AnalyticsOverview {
-  revenue: number;
-  total_orders: number;
-  notifications_count: number;
+  totalOrders: number;
+  totalRevenue?: number;
+  totalSpent?: number;
+  currency: string;
+  ordersByStatus: Record<string, number>;
+  paymentsByStatus?: Record<string, number>;
+  notificationsCount: number;
 }
 
 export interface TopProduct {
-  id: string;
-  name: string;
-  category: { name: string } | string;
-  salesCount: number;
+  productId: string;
+  productName: string;
+  productSlug?: string;
+  quantitySold: number;
+  revenue: number;
+}
+
+export interface RevenueAnalytics {
   totalRevenue: number;
+  currency: string;
+  paidOrdersCount: number;
 }
 
-export interface ApiResponse<T> {
-  status: boolean;
-  statusCode: number;
-  message: string;
-  data: T;
-  timestamp: string;
+export interface OrdersAnalytics {
+  totalOrders: number;
+  ordersByStatus: Record<string, number>;
 }
 
-export type ApiError = AxiosError<{
-  status: boolean;
-  statusCode: number;
-  message: string;
-  timestamp: string;
-}>;
+export interface RevenueBucket {
+  period: string;
+  revenue: number;
+  paidOrders: number;
+}
+
+export interface DeliveryBucket {
+  period: string;
+  processing: number;
+  shipped: number;
+  delivered: number;
+  gpsUpdates: number;
+}
+
+export interface UnifiedBucket {
+  period: string;
+  orders: number;
+  revenue: number;
+  paidOrders: number;
+  delivery: {
+    processing: number;
+    shipped: number;
+    delivered: number;
+    gpsUpdates: number;
+  };
+}
+
+export interface TimeSeriesResponse<T> {
+  granularity: string;
+  currency?: string;
+  from: string;
+  to: string;
+  buckets: T[];
+  totals: {
+    orders?: number;
+    revenue?: number;
+    paidOrders?: number;
+    delivery?: {
+      processing: number;
+      shipped: number;
+      delivered: number;
+      gpsUpdates: number;
+    };
+    [key: string]: any;
+  };
+}
+
+export interface Payment {
+  id: string;
+  orderId: string;
+  orderNumber: string;
+  status: "pending" | "success" | "failed";
+  amount: number | string;
+  currency: string;
+  provider: string;
+  transId: string;
+  metadata?: {
+    link?: string;
+    dateInitiated?: string;
+    [key: string]: unknown;
+  } | null;
+  createdAt: string;
+  updatedAt: string;
+  orderStatus: OrderStatus;
+}
+
+export type ApiResponse<T> = StandardResponse<T>;
+
+export type ApiError = AxiosError<StandardResponse<never>>;

@@ -10,20 +10,19 @@ import {
 import { useCan } from "@/hooks/use-can";
 import { getPusherClient } from "@/lib/pusher";
 import { SupportMessage, SupportAttachment } from "@/services/support.service";
-import { ShieldPlus, ChevronLeft } from "@/lib/icons";
+import { ChevronLeft } from "@/lib/icons";
 import { useQueryClient, InfiniteData } from "@tanstack/react-query";
-import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { MessagesResponse } from "@/services/support.service";
-import { useUploadMultipleMedia } from "@/hooks/use-media";
 import { useRouter, useParams } from "next/navigation";
 import { ConsultationSkeleton } from "@/components/skeletons/consultation-skeleton";
 
-// Sub-components
 import { ThreadRegistry } from "@/components/consultation/thread-registry";
 import { MessageList } from "@/components/consultation/message-list";
 import { ChatControls } from "@/components/consultation/chat-controls";
 import { AttachmentPreview } from "@/components/consultation/attachment-preview";
+import { cn } from "@/lib/utils";
+import { useUploadMultipleMedia } from "@/hooks/use-media";
 
 export default function ConsultationPage() {
   const { user, isLoading: isLoadingAuth } = useCan();
@@ -34,7 +33,6 @@ export default function ConsultationPage() {
   const [attachments, setAttachments] = useState<SupportAttachment[]>([]);
   const uploadMutation = useUploadMultipleMedia();
 
-  // Voice recording states
   const [isRecording, setIsRecording] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
@@ -45,16 +43,16 @@ export default function ConsultationPage() {
   const [activeThreadId, setActiveThreadId] = useState<string | null>(null);
   const [showThreadList, setShowThreadList] = useState(true);
 
-  // Auth Redirect
   useEffect(() => {
     if (!user && !isLoadingAuth) {
       router.push(`/${locale}/login`);
     }
   }, [user, isLoadingAuth, router, locale]);
 
-  const { data: threadsData, isLoading: isLoadingThreads } = useSupportThreads({ limit: 50 });
+  const { data: threadsData, isLoading: isLoadingThreads } = useSupportThreads({
+    limit: 50,
+  });
 
-  // Set initial active thread when records arrive
   useEffect(() => {
     if (threadsData?.length && !activeThreadId) {
       const defaultId = threadsData[0].id;
@@ -64,17 +62,18 @@ export default function ConsultationPage() {
     }
   }, [threadsData, activeThreadId]);
 
-  const activeThread = threadsData?.find((t) => t.id === activeThreadId) || threadsData?.[0];
+  const activeThread =
+    threadsData?.find((t) => t.id === activeThreadId) || threadsData?.[0];
   const threadId = activeThread?.id;
 
   const createThreadMutation = useCreateSupportThread({
     onSuccess: (newThread) => {
-      toast.success("Consultation successfully started.");
+      toast.success("Chat started.");
       setActiveThreadId(newThread.thread.id);
       setShowThreadList(false);
     },
     onError: () => {
-      toast.error("Failed to start consultation.");
+      toast.error("Could not start chat.");
     },
   });
 
@@ -102,10 +101,9 @@ export default function ConsultationPage() {
     threadsData?.filter(
       (t) =>
         t.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        t.customerUserId.toLowerCase().includes(searchQuery.toLowerCase())
+        t.customerUserId.toLowerCase().includes(searchQuery.toLowerCase()),
     ) || [];
 
-  // File upload handler
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     if (!files.length) return;
@@ -125,11 +123,10 @@ export default function ConsultationPage() {
           toast.success("Attachment ready");
         },
         onError: () => toast.error("Upload failed"),
-      }
+      },
     );
   };
 
-  // Voice recording handlers
   const startRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -141,7 +138,9 @@ export default function ConsultationPage() {
       };
 
       recorder.onstop = async () => {
-        const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
+        const audioBlob = new Blob(audioChunksRef.current, {
+          type: "audio/webm",
+        });
         const file = new File([audioBlob], `recording-${Date.now()}.webm`, {
           type: "audio/webm",
         });
@@ -161,7 +160,7 @@ export default function ConsultationPage() {
               toast.success("Audio recorded");
             },
             onError: () => toast.error("Audio upload failed"),
-          }
+          },
         );
       };
 
@@ -204,11 +203,11 @@ export default function ConsultationPage() {
               return page;
             }),
           };
-        }
+        },
       );
       queryClient.invalidateQueries({ queryKey: ["support-messages", threadId] });
       if (newMessage.senderUserId !== user?.id) {
-        toast.info("Clinical update received");
+        toast.info("New message");
       }
     });
 
@@ -220,7 +219,11 @@ export default function ConsultationPage() {
 
   const handleSend = (e: React.FormEvent) => {
     e.preventDefault();
-    if ((!messageBody.trim() && attachments.length === 0) || sendMessageMutation.isPending) return;
+    if (
+      (!messageBody.trim() && attachments.length === 0) ||
+      sendMessageMutation.isPending
+    )
+      return;
     sendMessageMutation.mutate({
       body: messageBody,
       attachments: attachments.length > 0 ? attachments : undefined,
@@ -241,91 +244,86 @@ export default function ConsultationPage() {
     return <ConsultationSkeleton />;
   }
 
-  return (
-    <div className="fixed inset-0 bg-[#f7faf7] flex overflow-hidden">
-      {/* Sidebar Panel */}
-      <div className={cn(!showThreadList && "hidden md:block")}>
-        <ThreadRegistry
-          threads={filteredThreads}
-          activeThreadId={activeThreadId}
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          onThreadSelect={(id) => {
-            setActiveThreadId(id);
-            setShowThreadList(false);
-          }}
-          createMutation={createThreadMutation}
-          getDateLabel={getDateLabel}
-        />
-      </div>
+  const chatTitle = activeThread
+    ? `Chat #${activeThread.id.slice(-4)}`
+    : "Consultation";
 
-      {/* Main Support Panel */}
-      <main
+  return (
+    <div className="fixed inset-0 z-40 flex overflow-hidden bg-[#F5F7F5]">
+      <div
         className={cn(
-          "flex-1 flex flex-col bg-[#f7faf7] transition-all",
-          showThreadList && "hidden md:flex",
+          "flex h-full min-h-0 w-full max-w-[1600px] flex-1 overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.05)] md:mx-auto md:my-4 md:max-h-[calc(100vh-2rem)] md:rounded-2xl md:border md:border-black/5",
         )}
       >
-        <header className="flex items-center justify-between px-6 h-16 border-b border-black/5 bg-white/80 backdrop-blur shrink-0 z-20">
-          <div className="flex items-center gap-4 min-w-0">
-            <button
-              onClick={() => setShowThreadList(true)}
-              className="md:hidden h-8 w-8 flex items-center justify-center rounded-sm hover:bg-black/5 text-black/40"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </button>
-            <div className="h-8 w-8 rounded-full bg-black/3 flex items-center justify-center border border-black/5">
-              <ShieldPlus className="h-4 w-4 text-black" />
-            </div>
-            <div className="min-w-0">
-              <h1 className="text-[14px] font-semibold text-black tracking-tight">
-                Consultation
-              </h1>
-              <div className="flex items-center gap-1.5 leading-none">
-                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                <span className="text-[12px] font-medium text-black/40">
-                  Live session
-                </span>
-              </div>
-            </div>
-          </div>
-          <div className="hidden sm:block">
-            <div className="px-3 py-1.5 bg-white text-[12px] font-medium text-black/50 border border-black/10 rounded-full">
-              Secure Room
-            </div>
-          </div>
-        </header>
-
-        <MessageList
-          messages={messages}
-          user={user}
-          hasNextPage={hasNextPage}
-          isFetchingNextPage={isFetchingNextPage}
-          onFetchNextPage={fetchNextPage}
-          getDateLabel={getDateLabel}
-        />
-
-        <AttachmentPreview attachments={attachments} onRemove={removeAttachment} />
-
-        <ChatControls
-          messageBody={messageBody}
-          setMessageBody={setMessageBody}
-          attachments={attachments}
-          onFileSelect={handleFileSelect}
-          onSend={handleSend}
-          isSending={sendMessageMutation.isPending}
-          uploadIsPending={uploadMutation.isPending}
-          isRecording={isRecording}
-          startRecording={startRecording}
-          stopRecording={stopRecording}
-        />
-
-        <div className="text-center pb-3">
-          <span className="text-[11px] text-black/25">
-            Encrypted clinical messaging
-          </span>
+        <div className={cn(!showThreadList && "hidden md:flex md:min-h-0")}>
+          <ThreadRegistry
+            threads={filteredThreads}
+            activeThreadId={activeThreadId}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            onThreadSelect={(id) => {
+              setActiveThreadId(id);
+              setShowThreadList(false);
+            }}
+            createMutation={createThreadMutation}
+            getDateLabel={getDateLabel}
+          />
         </div>
-      </main>
+
+        <main
+          className={cn(
+            "flex min-h-0 min-w-0 flex-1 flex-col bg-white",
+            showThreadList && "hidden md:flex",
+          )}
+        >
+          <header className="flex h-[60px] shrink-0 items-center gap-3 border-b border-[#D1D7DB] bg-[#F0F2F5] px-2 md:px-4">
+            <button
+              type="button"
+              onClick={() => setShowThreadList(true)}
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-[#54656F] hover:bg-[#D9DDE1] md:hidden"
+              aria-label="Back to chats"
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-[14px] font-bold text-primary">
+              {activeThread ? activeThread.id.slice(-2).toUpperCase() : "?"}
+            </div>
+            <div className="min-w-0 flex-1">
+              <h1 className="truncate text-sm font-bold text-foreground">
+                {chatTitle}
+              </h1>
+              <p className="truncate text-[11px] font-medium text-emerald-600">online</p>
+            </div>
+          </header>
+
+          <MessageList
+            messages={messages}
+            user={user}
+            hasNextPage={hasNextPage}
+            isFetchingNextPage={isFetchingNextPage}
+            onFetchNextPage={fetchNextPage}
+            getDateLabel={getDateLabel}
+          />
+
+          <AttachmentPreview
+            attachments={attachments}
+            onRemove={removeAttachment}
+          />
+
+          <ChatControls
+            messageBody={messageBody}
+            setMessageBody={setMessageBody}
+            attachments={attachments}
+            onFileSelect={handleFileSelect}
+            onSend={handleSend}
+            isSending={sendMessageMutation.isPending}
+            uploadIsPending={uploadMutation.isPending}
+            isRecording={isRecording}
+            startRecording={startRecording}
+            stopRecording={stopRecording}
+          />
+        </main>
+      </div>
     </div>
   );
 }

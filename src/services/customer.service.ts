@@ -26,7 +26,7 @@ export const CustomerService = {
     const response = await api.get<
       ApiResponse<PaginatedResponse<CustomerProfile>>
     >("/customers", { params });
-    return response.data.data;
+    return response.data;
   },
 
   getById: async (id: string) => {

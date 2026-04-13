@@ -3,49 +3,51 @@
 import { useCan } from "@/hooks/use-can";
 import { Permission } from "@/lib/rbac/types";
 
-interface CanProps {
- /**
- * Required permission(s) to show the children.
- */
- perform?: Permission | Permission[];
- 
- /**
- * If true, user must have ALL specified permissions.
- * If false, user must have at least ONE of the specified permissions.
- * Only applicable when perform is an array.
- */
- all?: boolean;
- 
- /**
- * Content to show if user has the required permissions.
- */
- children: React.ReactNode;
- 
- /**
- * Optional placeholder to show if user DOES NOT have the required permissions.
- */
- fallback?: React.ReactNode;
+export interface CanProps {
+  /** Required permission(s) to show the children. */
+  perform?: Permission | Permission[];
+  /**
+   * If true, user must have ALL specified permissions.
+   * If false, user must have at least ONE of the specified permissions.
+   * Only applicable when perform is an array.
+   */
+  all?: boolean;
+  children: React.ReactNode;
+  /** Shown while the session is loading. Defaults to nothing. */
+  loadingFallback?: React.ReactNode;
+  /** Shown when the user lacks the required permission(s). */
+  fallback?: React.ReactNode;
 }
 
 /**
- * Component for conditional rendering based on RBAC permissions.
+ * Conditional render from RBAC permissions.
  */
-export function Can({ perform, all = false, children, fallback = null }: CanProps) {
- const { can, canAll, canAny, isLoading } = useCan();
+export function Can({
+  perform,
+  all = false,
+  children,
+  loadingFallback = null,
+  fallback = null,
+}: CanProps) {
+  const { can, canAll, canAny, isLoading } = useCan();
 
- // Handle loading state - usually we hide then show children once loading is complete
- if (isLoading) return null;
+  if (isLoading) {
+    return <>{loadingFallback}</>;
+  }
 
- // No permissions specified - show children (acting as a pass-through)
- if (!perform) return <>{children}</>;
+  if (!perform) {
+    return <>{children}</>;
+  }
 
- const hasAccess = Array.isArray(perform)
- ? all ? canAll(perform) : canAny(perform)
- : can(perform);
+  const hasAccess = Array.isArray(perform)
+    ? all
+      ? canAll(perform)
+      : canAny(perform)
+    : can(perform);
 
- if (hasAccess) {
- return <>{children}</>;
- }
+  if (hasAccess) {
+    return <>{children}</>;
+  }
 
- return <>{fallback}</>;
+  return <>{fallback}</>;
 }

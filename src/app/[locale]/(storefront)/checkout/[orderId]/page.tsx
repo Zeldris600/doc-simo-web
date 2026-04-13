@@ -28,6 +28,7 @@ import { ApiError, Discount, OrderItem } from "@/types/api";
 import { CheckoutSkeleton } from "@/components/skeletons/checkout-skeleton";
 import { useDiscounts } from "@/hooks/use-discount";
 import { Tag, X } from "@/lib/icons";
+import { DELIVERY_TIMELINES, DELIVERY_CITIES } from "@/lib/delivery-config";
 
 export default function OrderCheckoutPage() {
   const t = useTranslations("checkout");
@@ -92,7 +93,7 @@ export default function OrderCheckoutPage() {
     if (!order) return;
 
     const origin = typeof window !== "undefined" ? window.location.origin : "";
-    const redirectUrl = `${origin}/account/orders?status=SUCCESSFUL`;
+    const redirectUrl = `${origin}/checkout/success`;
 
     initiatePayment(
       { orderId, data: { email, redirectUrl } },
@@ -128,7 +129,7 @@ export default function OrderCheckoutPage() {
   }
 
   return (
-    <div className="container mx-auto max-w-5xl px-4 pt-24 md:pt-32 pb-8 md:pb-16">
+    <div className="container mx-auto max-w-6xl px-4 pt-24 md:pt-32 pb-8 md:pb-16">
       <div className="flex items-center gap-2 mb-8 group">
         <Link
           href="/cart"
@@ -193,60 +194,24 @@ export default function OrderCheckoutPage() {
               </p>
             </div>
             <div className="space-y-3">
-              {/* Inbound */}
-              <div className="flex items-start gap-3">
-                <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
-                  <Clock className="h-3.5 w-3.5 text-primary" />
+              {DELIVERY_TIMELINES.map((timeline, idx) => (
+                <div key={idx} className="flex items-start gap-3">
+                  <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                    <Clock className="h-3.5 w-3.5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-black text-primary">
+                      {timeline.title}
+                    </p>
+                    <p className="text-xs text-black/50 font-medium mt-0.5">
+                      <span className={`font-bold ${timeline.colorClass}`}>
+                        {timeline.duration}
+                      </span>{" "}
+                      · {timeline.locations}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-xs font-black text-primary">
-                    Inbound — Within Cameroon
-                  </p>
-                  <p className="text-xs text-black/50 font-medium mt-0.5">
-                    <span className="font-bold text-emerald-700">
-                      2–4 business days
-                    </span>{" "}
-                    · Yaoundé, Douala, Bafoussam, Bamenda, Garoua, Ngaoundéré,
-                    Bertoua
-                  </p>
-                </div>
-              </div>
-              {/* Africa */}
-              <div className="flex items-start gap-3">
-                <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
-                  <Clock className="h-3.5 w-3.5 text-primary" />
-                </div>
-                <div>
-                  <p className="text-xs font-black text-primary">
-                    Outbound — West &amp; Central Africa
-                  </p>
-                  <p className="text-xs text-black/50 font-medium mt-0.5">
-                    <span className="font-bold text-amber-700">
-                      5–8 business days
-                    </span>{" "}
-                    · Nigeria, Gabon, Congo, Côte d&apos;Ivoire, Senegal, Ghana,
-                    Burkina Faso
-                  </p>
-                </div>
-              </div>
-              {/* International */}
-              <div className="flex items-start gap-3">
-                <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
-                  <Clock className="h-3.5 w-3.5 text-primary" />
-                </div>
-                <div>
-                  <p className="text-xs font-black text-primary">
-                    International — Worldwide
-                  </p>
-                  <p className="text-xs text-black/50 font-medium mt-0.5">
-                    <span className="font-bold text-black/50">
-                      7–14 business days
-                    </span>{" "}
-                    · Europe, USA, Canada, UK, Asia &amp; more — subject to
-                    customs clearance
-                  </p>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
 
@@ -259,27 +224,7 @@ export default function OrderCheckoutPage() {
               </p>
             </div>
             <div className="flex flex-wrap gap-2">
-              {[
-                "Yaoundé",
-                "Douala",
-                "Bafoussam",
-                "Bamenda",
-                "Garoua",
-                "Ngaoundéré",
-                "Bertoua",
-                "Kribi",
-                "Limbe",
-                "Maroua",
-                "Lagos",
-                "Abidjan",
-                "Dakar",
-                "Libreville",
-                "Brazzaville",
-                "Paris",
-                "London",
-                "New York",
-                "Montréal",
-              ].map((city) => (
+              {DELIVERY_CITIES.map((city) => (
                 <span
                   key={city}
                   className="text-[10px] font-bold bg-[#f5faf6] text-primary/70 border border-primary/10 rounded-full px-2.5 py-1"
@@ -336,37 +281,42 @@ export default function OrderCheckoutPage() {
         <aside className="lg:col-span-5">
           <Card className="border-black/5 rounded-xl bg-black/[0.02] shadow-none overflow-hidden sticky top-24">
             <div className="p-8 space-y-6">
-              <div className="flex justify-between items-start">
-                <h3 className="text-sm font-medium text-black/60">
+              <div className="flex justify-between items-start gap-4">
+                <h3 className="text-sm font-medium text-black/60 shrink-0">
                   Procurement Registry
                 </h3>
                 {order.orderNumber && (
-                  <span className="text-sm font-bold ">
+                  <span className="text-sm font-bold text-black text-right whitespace-nowrap">
                     {order.orderNumber}
                   </span>
                 )}
               </div>
 
+              <Separator className="bg-black/5" />
+
               <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
                 {order.items.map((item: OrderItem) => (
                   <div
                     key={item.id}
-                    className="flex justify-between items-center text-sm font-bold"
+                    className="flex justify-between items-start text-sm font-bold py-2 border-b border-black/5 last:border-0"
                   >
-                    <div className="flex flex-col">
-                      <span className="text-black">
+                    <div className="flex flex-col gap-1 pr-4">
+                      <span className="text-black leading-snug">
                         {item.product?.name || "Formulation"}
                       </span>
-                      <span className="text-sm text-black/70">
+                      <span className="text-[11px] text-black/50 uppercase tracking-widest">
                         Qty: {item.quantity}
                       </span>
                     </div>
-                    <span className="text-black">
-                      {(item.price * item.quantity).toLocaleString()} XAF
+                    <span className="text-primary whitespace-nowrap font-black">
+                      {(Number(item.price) * item.quantity).toLocaleString()}{" "}
+                      XAF
                     </span>
                   </div>
                 ))}
               </div>
+
+              <Separator className="bg-black/5" />
 
               {/* ── Coupon code input ── */}
               <div className="space-y-2">
@@ -411,14 +361,14 @@ export default function OrderCheckoutPage() {
                         onKeyDown={(e) =>
                           e.key === "Enter" && handleApplyCoupon()
                         }
-                        className="h-10 text-xs font-bold uppercase tracking-wider border-black/10 focus:border-primary/30 rounded-xl"
+                        className="h-8 text-[11px] font-bold uppercase tracking-wider border-black/10 focus:border-primary/30 rounded-lg"
                       />
                       <Button
                         size="sm"
                         variant="outline"
                         onClick={handleApplyCoupon}
                         disabled={isValidating || !couponInput.trim()}
-                        className="h-10 px-4 text-xs font-black border-primary/20 text-primary hover:bg-primary/5 rounded-xl shrink-0"
+                        className="h-8 px-4 text-[11px] font-black border-primary/20 text-primary hover:bg-primary/5 rounded-lg shrink-0"
                       >
                         {isValidating ? (
                           <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -445,10 +395,6 @@ export default function OrderCheckoutPage() {
                     {Number(order.amount).toLocaleString()}{" "}
                     {order.currency || "XAF"}
                   </span>
-                </div>
-                <div className="flex justify-between text-sm font-bold text-black/40">
-                  <span>Shipping</span>
-                  <span className="text-emerald-500">FREE</span>
                 </div>
                 {appliedDiscount && discountAmount > 0 && (
                   <div className="flex justify-between text-sm font-bold text-emerald-600">

@@ -35,6 +35,7 @@ export const ROLE_PERMISSIONS: RolePermissionsMapping = {
  "categories:read",
  "orders:read",
  "orders:write",
+ "payments:read",
  "customers:read", "customers:write",
  "documents:read", "documents:write",
  "notifications:read",

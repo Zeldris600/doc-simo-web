@@ -68,8 +68,7 @@ export function ProductForm({ initialData, onSuccess }: ProductFormProps) {
   const categories = categoriesResponse?.data || [];
 
   const form = useForm<ProductFormValues>({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolver: zodResolver(productSchema) as any,
+    resolver: zodResolver(productSchema),
     defaultValues: {
       name: initialData?.name || "",
       slug: initialData?.slug || "",
@@ -127,8 +126,7 @@ export function ProductForm({ initialData, onSuccess }: ProductFormProps) {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
               <div className="lg:col-span-4">
                 <FormField
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  control={form.control as any}
+                  control={form.control}
                   name="image"
                   render={({ field }) => (
                     <FormItem>
@@ -152,8 +150,7 @@ export function ProductForm({ initialData, onSuccess }: ProductFormProps) {
               <div className="lg:col-span-8 space-y-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <FormField
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    control={form.control as any}
+                    control={form.control}
                     name="name"
                     render={({ field }) => (
                       <FormItem>
@@ -173,8 +170,7 @@ export function ProductForm({ initialData, onSuccess }: ProductFormProps) {
                   />
 
                   <FormField
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    control={form.control as any}
+                    control={form.control}
                     name="slug"
                     render={({ field }) => (
                       <FormItem>
@@ -196,8 +192,7 @@ export function ProductForm({ initialData, onSuccess }: ProductFormProps) {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <FormField
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    control={form.control as any}
+                    control={form.control}
                     name="price"
                     render={({ field }) => (
                       <FormItem>
@@ -353,8 +348,7 @@ export function ProductForm({ initialData, onSuccess }: ProductFormProps) {
             </div>
 
             <FormField
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              control={form.control as any}
+              control={form.control}
               name="images"
               render={({ field }) => (
                 <FormItem>

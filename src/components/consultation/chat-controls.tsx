@@ -36,7 +36,7 @@ export function ChatControls({
   const [recordingTime, setRecordingTime] = useState(0);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout | null = null;
+    let interval: ReturnType<typeof setInterval> | null = null;
     if (isRecording) {
       interval = setInterval(() => setRecordingTime((prev) => prev + 1), 1000);
     }
@@ -52,13 +52,15 @@ export function ChatControls({
   };
 
   const canSend =
-    !isRecording && !isSending && (messageBody.trim().length > 0 || attachments.length > 0);
+    !isRecording &&
+    !isSending &&
+    (messageBody.trim().length > 0 || attachments.length > 0);
 
   return (
-    <div className="px-4 md:px-8 py-4 border-t border-black/5 bg-white/80 backdrop-blur shrink-0">
+    <div className="shrink-0 border-t border-black/5 bg-[#F0F2F5] px-2 py-2 md:px-4 md:py-2">
       <form
         onSubmit={onSend}
-        className="max-w-4xl mx-auto flex items-end gap-2 md:gap-3"
+        className="mx-auto flex max-w-3xl items-end gap-2"
       >
         <input
           ref={fileInputRef}
@@ -69,24 +71,24 @@ export function ChatControls({
           className="hidden"
         />
 
-        <div className="flex items-center gap-1.5 md:gap-2 shrink-0">
+        <div className="flex shrink-0 items-center gap-0.5 pb-1">
           <Button
             type="button"
-            variant="outline"
+            variant="ghost"
             onClick={() => fileInputRef.current?.click()}
-            className="h-10 w-10 p-0 rounded-full bg-white border-black/10 text-black/55 shadow-none hover:bg-black/5"
+            className="h-10 w-10 rounded-full p-0 text-[#54656F] hover:bg-[#D9DDE1]"
             aria-label="Attach files"
           >
             {uploadIsPending ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <Loader2 className="h-5 w-5 animate-spin" />
             ) : (
-              <Paperclip className="h-5 w-5" />
+              <Paperclip className="h-6 w-6" />
             )}
           </Button>
 
           <Button
             type="button"
-            variant="outline"
+            variant="ghost"
             onClick={() => {
               if (isRecording) {
                 stopRecording();
@@ -96,92 +98,80 @@ export function ChatControls({
               }
             }}
             className={cn(
-              "h-10 w-10 p-0 rounded-full border-black/10 shadow-none transition-all",
+              "h-10 w-10 rounded-full p-0 transition-colors",
               isRecording
-                ? "bg-red-500 text-white border-red-500 animate-pulse"
-                : "bg-white text-black/55 hover:bg-black/5",
+                ? "bg-[#FF3B30] text-white hover:bg-[#E6352B]"
+                : "text-[#54656F] hover:bg-[#D9DDE1]",
             )}
             aria-label={isRecording ? "Stop recording" : "Start recording"}
           >
-            {isRecording ? <Square className="h-4 w-4 fill-current" /> : <Mic className="h-5 w-5" />}
+            {isRecording ? (
+              <Square className="h-4 w-4 fill-current" />
+            ) : (
+              <Mic className="h-6 w-6" />
+            )}
           </Button>
         </div>
 
-        <div className="relative flex-1">
+        <div className="relative min-w-0 flex-1 pb-1">
           {isRecording ? (
-            <div className="h-10 flex items-center justify-between px-4 bg-red-50 rounded-2xl border border-red-100 animate-in fade-in slide-in-from-bottom-2">
-              <div className="flex items-center gap-3">
-                <div className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
-                <span className="text-[12px] font-semibold text-red-600 leading-none">
+            <div className="flex h-11 items-center justify-between rounded-lg border border-[#D1D7DB] bg-white px-3">
+              <div className="flex items-center gap-2">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-red-500" />
+                </span>
+                <span className="text-[13px] font-medium text-[#111B21]">
                   Recording {formatTime(recordingTime)}
                 </span>
-              </div>
-              <div className="flex items-center gap-1">
-                {[...Array(8)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="w-1 bg-red-500/40 rounded-full animate-pulse"
-                    style={{
-                      height: `${[4, 12, 16, 8, 14, 6, 12, 10][i % 8]}px`,
-                      animationDelay: `${i * 0.1}s`,
-                    }}
-                  />
-                ))}
               </div>
               <Button
                 type="button"
                 onClick={stopRecording}
                 variant="ghost"
-                className="h-8 px-3 text-[11px] font-semibold text-red-600 hover:bg-red-100 rounded-full"
+                className="h-8 rounded-full px-3 text-[12px] font-semibold text-red-600 hover:bg-red-50"
               >
                 Stop
               </Button>
             </div>
           ) : (
-            <div className="relative">
-              <Textarea
-                value={messageBody}
-                onChange={(e) => setMessageBody(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault();
-                    onSend(e as unknown as React.FormEvent);
-                  }
-                }}
-                placeholder="Write a message…"
-                className={cn(
-                  "min-h-[40px] max-h-32 py-2.5 px-4 bg-white border-black/10 focus-visible:ring-0 rounded-2xl text-[14px] font-medium shadow-sm shadow-black/5 resize-none transition-all placeholder:text-black/30 pr-12",
-                  canSend ? "border-primary/20" : "",
-                )}
-              />
-
-              <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[11px] text-black/25 hidden md:block">
-                Enter
-              </div>
-            </div>
+            <Textarea
+              value={messageBody}
+              onChange={(e) => setMessageBody(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  onSend(e as unknown as React.FormEvent);
+                }
+              }}
+              placeholder="Type a message"
+              rows={1}
+              className={cn(
+                "max-h-32 min-h-[42px] resize-none rounded-lg border-0 bg-white py-2.5 pl-4 pr-3 text-[14px] text-[#111B21] shadow-none placeholder:text-[#54656F] focus-visible:ring-1 focus-visible:ring-primary/40",
+              )}
+            />
           )}
         </div>
 
-        <Button
-          type="submit"
-          disabled={!canSend}
-          className={cn(
-            "h-10 w-10 md:w-auto md:px-5 rounded-full font-semibold text-[13px] shadow-none shrink-0",
-            canSend
-              ? "bg-primary text-white hover:bg-primary/90"
-              : "bg-black/5 text-black/25 hover:bg-black/5",
-          )}
-          aria-label="Send message"
-        >
-          {isSending ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            <div className="flex items-center gap-2">
-              <span className="hidden md:inline">Send</span>
-              <Send className="h-4 w-4" />
-            </div>
-          )}
-        </Button>
+        <div className="shrink-0 pb-1">
+          <Button
+            type="submit"
+            disabled={!canSend}
+            className={cn(
+              "h-11 w-11 rounded-full p-0 shadow-none md:h-11 md:w-11",
+              canSend
+                ? "bg-primary text-white hover:bg-primary/90"
+                : "bg-black/10 text-white hover:bg-black/10",
+            )}
+            aria-label="Send message"
+          >
+            {isSending ? (
+              <Loader2 className="h-5 w-5 animate-spin" />
+            ) : (
+              <Send className="h-5 w-5" />
+            )}
+          </Button>
+        </div>
       </form>
     </div>
   );

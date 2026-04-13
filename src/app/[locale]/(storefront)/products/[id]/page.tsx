@@ -32,12 +32,14 @@ import { useProduct } from "@/hooks/use-product";
 import { useReviewStats } from "@/hooks/use-product-reviews";
 import { StarRatingDisplay } from "@/components/storefront/star-rating-display";
 import { ProductReviewsSection } from "@/components/storefront/product-reviews-section";
+import { ReviewPrompt } from "@/components/storefront/review-prompt";
 import { useCreateOrder } from "@/hooks/use-order";
 import { useInitiatePayment } from "@/hooks/use-payment";
 import { useCart } from "@/store/use-cart";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
 import { ProductDetailsSkeleton } from "@/components/skeletons/product-details-skeleton";
+import { useFavouriteIds } from "@/hooks/use-favourites";
 
 export default function ProductDetailsPage() {
   const t = useTranslations("products");
@@ -50,7 +52,8 @@ export default function ProductDetailsPage() {
     index: 0,
   });
   const [quantity, setQuantity] = useState(1);
-  const [isFavorite, setIsFavorite] = useState(false);
+  const { toggle: toggleFavourite, isFavourite } = useFavouriteIds();
+  const isFavorite = isFavourite(id);
   const { data: session } = useSession();
   const { addItem } = useCart();
 
@@ -193,7 +196,7 @@ export default function ProductDetailsPage() {
               </div>
 
               <button
-                onClick={() => setIsFavorite(!isFavorite)}
+                onClick={() => toggleFavourite(id)}
                 className="absolute top-8 right-8 p-5 rounded-3xl bg-white/80 backdrop-blur-xl hover:bg-white transition-all border border-black/5 shadow-xl active:scale-90 group"
               >
                 <Heart
@@ -426,7 +429,7 @@ export default function ProductDetailsPage() {
                 </span>
               ))}
               <button
-                onClick={() => setIsFavorite(!isFavorite)}
+                onClick={() => toggleFavourite(id)}
                 className={`inline-flex items-center gap-1.5 text-[10px] font-bold rounded-full px-3 py-1.5 border transition-colors ${isFavorite ? "bg-red-50 border-red-200 text-red-500" : "bg-white border-black/10 text-black/40 hover:text-red-400"}`}
               >
                 <Heart
@@ -508,14 +511,24 @@ export default function ProductDetailsPage() {
                 </AccordionItem>
               </Accordion>
             </div>
+
+            {/* ── Review prompt ── */}
+            <ReviewPrompt
+              session={session}
+              sessionStatus={session ? "authenticated" : "unauthenticated"}
+              reviewCount={reviewCount}
+              averageRating={averageRating}
+            />
           </div>
         </div>
 
-        <ProductReviewsSection
-          productId={product.id}
-          productReviewCount={product.reviewCount}
-          productAverageRating={product.averageRating}
-        />
+        <div id="customer-reviews">
+          <ProductReviewsSection
+            productId={product.id}
+            productReviewCount={product.reviewCount}
+            productAverageRating={product.averageRating}
+          />
+        </div>
       </div>
     </div>
   );

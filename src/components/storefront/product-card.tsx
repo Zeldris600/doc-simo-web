@@ -7,6 +7,7 @@ import { Star, Heart, ShoppingBag, Flame, Zap } from "@/lib/icons";
 import { Product } from "@/types/api";
 import { Button } from "@/components/ui/button";
 import { StarRatingDisplay } from "@/components/storefront/star-rating-display";
+import { useFavouriteIds } from "@/hooks/use-favourites";
 
 interface ProductCardProps {
   product: Product;
@@ -14,6 +15,9 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, layout = "grid" }: ProductCardProps) {
+  const { toggle, isFavourite } = useFavouriteIds();
+  const saved = isFavourite(product.id);
+
   const ratingBlock =
     product.reviewCount != null &&
     product.reviewCount > 0 &&
@@ -49,8 +53,13 @@ export function ProductCard({ product, layout = "grid" }: ProductCardProps) {
               sizes="(max-width: 640px) 100vw, 256px"
             />
           </Link>
-          <button className="absolute top-3 right-3 z-10 p-2.5 rounded-xl bg-white/80 backdrop-blur-md text-foreground/40 hover:text-red-500 hover:bg-white transition-all border border-black/5 opacity-0 group-hover:opacity-100">
-            <Heart className="h-4 w-4" />
+          <button
+            onClick={(e) => { e.preventDefault(); toggle(product.id); }}
+            className={`absolute top-3 right-3 z-10 p-2.5 rounded-xl backdrop-blur-md transition-all border border-black/5 opacity-0 group-hover:opacity-100 ${
+              saved ? "bg-red-50 text-red-500" : "bg-white/80 text-foreground/40 hover:text-red-500 hover:bg-white"
+            }`}
+          >
+            <Heart className={`h-4 w-4 ${saved ? "fill-current" : ""}`} />
           </button>
         </div>
 
@@ -143,8 +152,13 @@ export function ProductCard({ product, layout = "grid" }: ProductCardProps) {
         </div>
 
         {/* Wishlist */}
-        <button className="absolute top-4 right-4 z-10 p-3 rounded-2xl bg-white/70 backdrop-blur-xl text-primary/40 hover:text-red-500 hover:bg-white transition-all opacity-0 group-hover:opacity-100 active:scale-90 border border-black/5">
-          <Heart className="h-4 w-4" />
+        <button
+          onClick={(e) => { e.preventDefault(); toggle(product.id); }}
+          className={`absolute top-4 right-4 z-10 p-3 rounded-2xl backdrop-blur-xl transition-all opacity-0 group-hover:opacity-100 active:scale-90 border border-black/5 ${
+            saved ? "bg-red-50 text-red-500" : "bg-white/70 text-primary/40 hover:text-red-500 hover:bg-white"
+          }`}
+        >
+          <Heart className={`h-4 w-4 ${saved ? "fill-current" : ""}`} />
         </button>
 
         {/* Product Image */}

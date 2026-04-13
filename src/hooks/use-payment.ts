@@ -1,6 +1,6 @@
 "use client";
 
-import { useMutation, UseMutationOptions } from "@tanstack/react-query";
+import { useMutation, useQuery, UseMutationOptions } from "@tanstack/react-query";
 import {
   PaymentService,
   InitiatePaymentDto,
@@ -18,5 +18,12 @@ export function useInitiatePayment<TError = ApiError>(
   return useMutation({
     mutationFn: ({ orderId, data }) => PaymentService.initiate(orderId, data),
     ...opt,
+  });
+}
+
+export function usePayments(params?: { page?: number; limit?: number }) {
+  return useQuery({
+    queryKey: ["payments", params],
+    queryFn: () => PaymentService.list(params),
   });
 }

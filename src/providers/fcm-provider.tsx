@@ -1,91 +1,109 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 import { getMessagingInstance, VAPID_KEY } from "@/lib/firebase";
 import { getToken, onMessage } from "firebase/messaging";
-import { toast } from "sonner"; // Using sonner as from package.json
+import { toast } from "sonner";
 import { api } from "@/services/api";
 
+const FCM_REGISTER_PATH = "/notifications/fcm/register";
+
+async function unregisterFcmToken(token: string) {
+  await api.delete(FCM_REGISTER_PATH, { data: { token } });
+}
+
 export function FCMProvider() {
+  const queryClient = useQueryClient();
+  const { data: session, status } = useSession();
+  const lastTokenRef = useRef<string | null>(null);
+
   useEffect(() => {
-    const requestPermission = async () => {
-      try {
-        console.log("Requesting notification permission...");
-        const permission = await Notification.requestPermission();
-        if (permission === "granted") {
-          console.log("Notification permission granted.");
-          const firebaseConfig = {
-            apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-            authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-            projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-            storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-            messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-            appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-          };
+    if (status === "loading") return;
 
-          const swUrl = `/firebase-messaging-sw.js?firebaseConfig=${encodeURIComponent(
-            JSON.stringify(firebaseConfig)
-          )}`;
-
-          // Register service worker with config
-          let registration;
-          if ("serviceWorker" in navigator) {
-            registration = await navigator.serviceWorker.register(swUrl);
-            console.log("Service Worker registered with scope:", registration.scope);
-          }
-
-          const messaging = await getMessagingInstance();
-
-          if (messaging) {
-            const currentToken = await getToken(messaging, {
-              vapidKey: VAPID_KEY,
-              serviceWorkerRegistration: registration,
-            });
-            if (currentToken) {
-              console.log("FCM Token:", currentToken);
-              try {
-                await api.post("/notifications/fcm/register", { token: currentToken });
-                console.log("Token registered with the backend.");
-              } catch (registerError) {
-                console.error("Failed to register token with backend:", registerError);
-              }
-            } else {
-              console.log("No registration token available. Request permission to generate one.");
-            }
-          }
-        } else {
-          console.log("Unable to get permission to notify.");
-        }
-      } catch (error) {
-        console.error("An error occurred while retrieving token. ", error);
+    if (status === "unauthenticated") {
+      const t = lastTokenRef.current;
+      if (t) {
+        unregisterFcmToken(t).catch(() => {
+          /* backend may already have removed token */
+        });
+        lastTokenRef.current = null;
       }
-    };
+      return;
+    }
 
-    requestPermission();
+    if (status !== "authenticated" || !session?.user?.token) {
+      return;
+    }
 
-    // Listen for foreground messages
-    const setupForegroundListener = async () => {
-      const messaging = await getMessagingInstance();
-      if (messaging) {
-        const unsubscribe = onMessage(messaging, (payload) => {
-          console.log("Message received in foreground: ", payload);
+    let cancelled = false;
 
-          // Show toast notification for foreground messages
-          toast(payload.notification?.title || "New Notification", {
-            description: payload.notification?.body,
-          });
+    async function registerDevice() {
+      try {
+        const permission = await Notification.requestPermission();
+        if (permission !== "granted" || cancelled) return;
+
+        const firebaseConfig = {
+          apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+          authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+          projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+          storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+          messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+          appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+        };
+
+        const swUrl = `/firebase-messaging-sw.js?firebaseConfig=${encodeURIComponent(
+          JSON.stringify(firebaseConfig),
+        )}`;
+
+        let registration: ServiceWorkerRegistration | undefined;
+        if ("serviceWorker" in navigator) {
+          registration = await navigator.serviceWorker.register(swUrl);
+        }
+
+        const messaging = await getMessagingInstance();
+        if (!messaging || cancelled) return;
+
+        const currentToken = await getToken(messaging, {
+          vapidKey: VAPID_KEY,
+          serviceWorkerRegistration: registration,
         });
 
-        // returning unsubscribe for this local scope. It's tricky to handle clean up of async
-        // so we just rely on standard Next.js lifecycle, which usually is fine for global singletons.
-        // If we really want to return it:
-        return unsubscribe;
-      }
-    };
-    
-    // We cannot easily return a promise from useEffect, so we just run it
-    setupForegroundListener();
-  }, []);
+        if (!currentToken || cancelled) return;
 
-  return null; // This is a logic-only component provider
+        await api.post(FCM_REGISTER_PATH, { token: currentToken });
+        lastTokenRef.current = currentToken;
+      } catch {
+        /* permission denied, unsupported env, or network */
+      }
+    }
+
+    void registerDevice();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [status, session?.user?.id, session?.user?.token]);
+
+  useEffect(() => {
+    let unsubscribe: (() => void) | undefined;
+
+    void (async () => {
+      const messaging = await getMessagingInstance();
+      if (!messaging) return;
+      unsubscribe = onMessage(messaging, (payload) => {
+        void queryClient.invalidateQueries({ queryKey: ["notifications"] });
+        toast(payload.notification?.title || "Notification", {
+          description: payload.notification?.body,
+        });
+      });
+    })();
+
+    return () => {
+      unsubscribe?.();
+    };
+  }, [queryClient]);
+
+  return null;
 }
