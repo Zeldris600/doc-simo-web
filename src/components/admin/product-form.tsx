@@ -44,13 +44,13 @@ const productSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   slug: z.string().min(2, "Slug must be at least 2 characters"),
   description: z.string().min(10, "Description must be at least 10 characters"),
-  price: z.coerce.number().min(0, "Price must be a positive number"),
+  price: z.number().min(0, "Price must be a positive number"),
   categoryId: z.string().min(1, "Please select a category"),
-  availability: z.boolean().default(true),
-  isHot: z.boolean().default(false),
-  isPromotion: z.boolean().default(false),
+  availability: z.boolean(),
+  isHot: z.boolean(),
+  isPromotion: z.boolean(),
   image: z.string().min(1, "Hero image is required"),
-  images: z.array(z.string()).default([]),
+  images: z.array(z.string()),
 });
 
 type ProductFormValues = z.infer<typeof productSchema>;
@@ -70,16 +70,16 @@ export function ProductForm({ initialData, onSuccess }: ProductFormProps) {
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
     defaultValues: {
-      name: initialData?.name || "",
-      slug: initialData?.slug || "",
+      name: initialData?.name ?? "",
+      slug: initialData?.slug ?? "",
       description: initialData?.description || "",
-      price: initialData?.price ? Number(initialData.price) : 0,
-      categoryId: initialData?.categoryId || "",
+      price: initialData?.price ? Number(initialData.price) : undefined,
+      categoryId: initialData?.categoryId ?? "",
       availability: initialData?.availability !== false,
-      isHot: initialData?.isHot || false,
-      isPromotion: initialData?.isPromotion || false,
-      image: initialData?.image || "",
-      images: initialData?.images || [],
+      isHot: initialData?.isHot ?? false,
+      isPromotion: initialData?.isPromotion ?? false,
+      image: initialData?.image ?? "",
+      images: initialData?.images ?? [],
     },
   });
 
@@ -209,6 +209,7 @@ export function ProductForm({ initialData, onSuccess }: ProductFormProps) {
                               step="0.01"
                               placeholder="0.00"
                               {...field}
+                              onChange={(e) => field.onChange(e.target.valueAsNumber || 0)}
                               className="bg-black/[0.02] border-black/10 focus:border-black rounded-xl pl-12 py-6 h-auto transition-all font-bold"
                             />
                           </div>
