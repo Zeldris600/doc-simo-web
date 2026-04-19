@@ -122,7 +122,12 @@ export function StorefrontFooter() {
  {/* Brand column */}
  <div className="lg:col-span-2 space-y-6">
  <Link href="/" className="inline-flex items-center gap-2 group">
- <span className="font-medium text-xl text-white">
+ <img 
+   src="/logo-minimized.png" 
+   alt="Doctasimo Logo" 
+   className="h-8 w-auto object-contain bg-white rounded-full p-0.5"
+ />
+ <span className="font-bold text-xl tracking-tight text-white">
  DOCTASIMO
  </span>
  </Link>

@@ -80,8 +80,13 @@ export function StorefrontNavbar() {
             href="/"
             className="flex items-center gap-1.5 group shrink-0 min-w-0"
           >
-            <span className="font-medium text-base sm:text-lg text-primary leading-none">
-              Doctasimo
+            <img 
+              src="/logo-minimized.png" 
+              alt="Doctasimo Logo" 
+              className="h-7 sm:h-8 w-auto object-contain"
+            />
+            <span className="font-bold text-[17px] sm:text-xl text-primary leading-none ml-1 tracking-tight">
+              DOCTASIMO
             </span>
           </Link>
 

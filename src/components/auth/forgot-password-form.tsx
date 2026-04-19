@@ -73,6 +73,15 @@ export function ForgotPasswordForm() {
 
   return (
     <div className="w-full max-w-sm mx-auto flex flex-col justify-center">
+      <div className="mb-6 flex justify-center">
+        <Link href="/">
+          <img
+            src="/logo-minimized.png"
+            alt="Doctasimo Logo"
+            className="h-12 w-auto object-contain"
+          />
+        </Link>
+      </div>
       <div className="mb-8 flex flex-col items-center gap-2">
         <h1 className="text-2xl font-bold tracking-tight text-center">
           {t("title")}
