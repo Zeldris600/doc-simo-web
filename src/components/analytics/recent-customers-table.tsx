@@ -26,8 +26,12 @@ const columns: ColumnDef<CustomerProfile>[] = [
             <User className="h-3 w-3 text-primary" />
           </div>
           <div className="flex flex-col min-w-0">
-            <span className="font-medium text-black text-[10px] truncate max-w-[110px]">{fullName}</span>
-            <span className="text-[9px] text-gray-400 truncate max-w-[110px]">{email || "No email"}</span>
+            <span className="font-medium text-black text-[10px] truncate max-w-[min(100%,280px)]">
+              {fullName}
+            </span>
+            <span className="text-[9px] text-gray-400 truncate max-w-[min(100%,280px)]">
+              {email || "No email"}
+            </span>
           </div>
         </div>
       );
@@ -62,8 +66,12 @@ const columns: ColumnDef<CustomerProfile>[] = [
   },
 ];
 
+const DASHBOARD_TABLE_LIMIT = 100;
+
 export function RecentCustomersTable() {
-  const { data: response, isLoading } = useCustomers({ limit: 5 });
+  const { data: response, isLoading } = useCustomers({
+    limit: DASHBOARD_TABLE_LIMIT,
+  });
   const customers = response?.data?.data ?? [];
 
   if (isLoading) {
@@ -93,6 +101,7 @@ export function RecentCustomersTable() {
           columns={columns}
           data={customers}
           isLoading={isLoading}
+          initialPageSize={DASHBOARD_TABLE_LIMIT}
         />
       </CardContent>
     </Card>

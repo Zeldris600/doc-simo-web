@@ -16,9 +16,16 @@ import { HealthVideos } from "@/components/storefront/health-videos";
 import { FaqSection } from "@/components/storefront/faq-section";
 import { useProducts } from "@/hooks/use-product";
 import { useCategories } from "@/hooks/use-category";
+import { useBlogPosts } from "@/hooks/use-blog";
 import { Category } from "@/types/api";
 
 export default function HomePage() {
+  const { data: blogList, isLoading: isLoadingBlog } = useBlogPosts({
+    page: 1,
+    limit: 12,
+  });
+  const blogPosts = blogList?.data ?? [];
+
   const { data: hotProductsRes, isLoading: isLoadingHot } = useProducts({
     isHot: true,
     limit: 6,
@@ -49,8 +56,8 @@ export default function HomePage() {
       {/* 4. Meet the Doctor — Human authority & connection */}
       <MeetDoctor />
 
-      {/* 5. Clinic Video — See what we do */}
-      <VideoSection />
+      {/* 5. Featured blog video / story */}
+      <VideoSection posts={blogPosts} isLoading={isLoadingBlog} />
 
       {/* 5. Why Doctasimo — 6-feature trust grid */}
       <Features />
@@ -86,8 +93,8 @@ export default function HomePage() {
       {/* 12. Stats Banner */}
       <TrustBanner />
 
-      {/* 13. Health Videos */}
-      <HealthVideos />
+      {/* 13. Blog highlights (replaces static video grid) */}
+      <HealthVideos posts={blogPosts} isLoading={isLoadingBlog} />
 
       {/* 15. FAQ */}
       <FaqSection />

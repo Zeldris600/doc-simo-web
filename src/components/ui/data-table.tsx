@@ -41,6 +41,8 @@ interface DataTableProps<TData, TValue> {
   };
   onPaginationChange?: (updater: Updater<PaginationState>) => void;
   isLoading?: boolean;
+  /** Default page size for client-side pagination (default 10). */
+  initialPageSize?: number;
 }
 
 export function DataTable<TData, TValue>({
@@ -52,6 +54,7 @@ export function DataTable<TData, TValue>({
   pagination,
   onPaginationChange,
   isLoading,
+  initialPageSize = 10,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -75,6 +78,12 @@ export function DataTable<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
+    initialState: {
+      pagination: {
+        pageIndex: 0,
+        pageSize: initialPageSize,
+      },
+    },
     state: {
       sorting,
       columnFilters,

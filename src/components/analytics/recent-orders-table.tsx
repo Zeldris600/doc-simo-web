@@ -35,7 +35,7 @@ const columns: ColumnDef<Order>[] = [
             <User className="h-3 w-3 text-primary" />
           </div>
           <div className="flex flex-col">
-            <span className="font-medium text-black text-[10px] truncate max-w-[120px]">
+            <span className="font-medium text-black text-[10px] truncate max-w-[min(100%,280px)]">
               {user?.name || "Guest Checkout"}
             </span>
             <span className="text-[9px] text-gray-400">
@@ -92,8 +92,12 @@ const columns: ColumnDef<Order>[] = [
   },
 ];
 
+const DASHBOARD_TABLE_LIMIT = 100;
+
 export function RecentOrdersTable() {
-  const { data: response, isLoading } = useOrders({ limit: 5 });
+  const { data: response, isLoading } = useOrders({
+    limit: DASHBOARD_TABLE_LIMIT,
+  });
   const orders = response?.data ?? [];
 
   return (
@@ -115,7 +119,12 @@ export function RecentOrdersTable() {
         </Link>
       </CardHeader>
       <CardContent className="p-6">
-        <DataTable columns={columns} data={orders} isLoading={isLoading} />
+        <DataTable
+          columns={columns}
+          data={orders}
+          isLoading={isLoading}
+          initialPageSize={DASHBOARD_TABLE_LIMIT}
+        />
       </CardContent>
     </Card>
   );

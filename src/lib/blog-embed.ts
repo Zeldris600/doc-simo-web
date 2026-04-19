@@ -25,3 +25,17 @@ export function toBlogEmbedSrc(url: string): string {
   }
   return trimmed;
 }
+
+/** Best-effort preview image for a blog post (cover, or YouTube thumb from embed URL). */
+export function blogPostPreviewImage(post: {
+  coverImageUrl: string | null;
+  embedUrl: string | null;
+}): string | null {
+  if (post.coverImageUrl) return post.coverImageUrl;
+  const u = post.embedUrl?.trim();
+  if (!u) return null;
+  const embed = toBlogEmbedSrc(u);
+  const m = embed.match(/\/embed\/([^?&/]+)/);
+  if (m?.[1]) return `https://img.youtube.com/vi/${m[1]}/hqdefault.jpg`;
+  return null;
+}

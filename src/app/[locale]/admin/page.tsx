@@ -1,10 +1,8 @@
 "use client";
 
-import { useState } from "react";
 import DashboardHeader from "@/components/dashboard-header";
 import { useAnalyticsOverview } from "@/hooks/use-analytics";
 import { useCustomers } from "@/hooks/use-customers";
-import { usePayments } from "@/hooks/use-payment";
 import { PageSkeleton } from "@/components/skeletons/page-skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -15,8 +13,6 @@ import {
   TrendingUp,
   CheckCircle2,
   Bell,
-  ArrowRight,
-  AlertCircle,
 } from "@/lib/icons";
 import { RecentOrdersTable } from "@/components/analytics/recent-orders-table";
 import { RecentCustomersTable } from "@/components/analytics/recent-customers-table";
@@ -24,7 +20,6 @@ import { RecentPaymentsTable } from "@/components/analytics/recent-payments-tabl
 import { TopProductsTable } from "@/components/analytics/top-products-table";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/routing";
-import { Payment } from "@/types/api";
 
 export default function AdminDashboard() {
   const { data: overviewResp, isLoading: isLoadingAnalytics } =
@@ -32,11 +27,8 @@ export default function AdminDashboard() {
   const { data: customersResp, isLoading: isLoadingCustomers } = useCustomers({
     limit: 1,
   });
-  const { data: paymentsResp, isLoading: isLoadingPayments } = usePayments({
-    limit: 5,
-  });
 
-  if (isLoadingAnalytics || isLoadingCustomers || isLoadingPayments) {
+  if (isLoadingAnalytics || isLoadingCustomers) {
     return <PageSkeleton />;
   }
 
@@ -148,37 +140,29 @@ export default function AdminDashboard() {
         ))}
       </div>
 
-      <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
-        {/* Activity Stream */}
-        <div className="lg:col-span-2 space-y-6">
-          <RecentOrdersTable />
-        </div>
+      <div className="space-y-6">
+        <RecentOrdersTable />
+        <TopProductsTable />
+        <RecentPaymentsTable />
+        <RecentCustomersTable />
 
-        {/* Performance, Customer & Financial side panels */}
-        <div className="space-y-6">
-          <TopProductsTable />
-          <RecentPaymentsTable />
-          <RecentCustomersTable />
-
-          {/* Direct Analytics Link Card */}
-          <Link href="/admin/analytics">
-            <Card className="border-none bg-[#166534] text-white rounded-xl p-6 shadow-xl shadow-[#166534]/10 relative overflow-hidden group">
-              <div className="relative z-10">
-                <h4 className="text-[10px] font-medium opacity-60">
-                  Full Performance Analytics
-                </h4>
-                <p className="text-sm font-medium mt-2 leading-relaxed">
-                  View deep-dive metrics on revenue streams, delivery logistics,
-                  and product movers.
-                </p>
-                <ArrowUpRight className="h-5 w-5 mt-4 text-white p-1 rounded-full bg-white/20" />
-              </div>
-              <div className="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform duration-500">
-                <TrendingUp className="h-32 w-32" />
-              </div>
-            </Card>
-          </Link>
-        </div>
+        <Link href="/admin/analytics">
+          <Card className="border-none bg-[#166534] text-white rounded-xl p-6 shadow-xl shadow-[#166534]/10 relative overflow-hidden group">
+            <div className="relative z-10">
+              <h4 className="text-[10px] font-medium opacity-60">
+                Full Performance Analytics
+              </h4>
+              <p className="text-sm font-medium mt-2 leading-relaxed">
+                View deep-dive metrics on revenue streams, delivery logistics,
+                and product movers.
+              </p>
+              <ArrowUpRight className="h-5 w-5 mt-4 text-white p-1 rounded-full bg-white/20" />
+            </div>
+            <div className="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform duration-500">
+              <TrendingUp className="h-32 w-32" />
+            </div>
+          </Card>
+        </Link>
       </div>
     </div>
   );

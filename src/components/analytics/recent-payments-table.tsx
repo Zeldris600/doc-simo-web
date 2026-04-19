@@ -61,8 +61,12 @@ const columns: ColumnDef<Payment>[] = [
   },
 ];
 
+const DASHBOARD_TABLE_LIMIT = 100;
+
 export function RecentPaymentsTable() {
-  const { data: response, isLoading } = usePayments({ limit: 5 });
+  const { data: response, isLoading } = usePayments({
+    limit: DASHBOARD_TABLE_LIMIT,
+  });
   const payments = response?.data?.data || [];
 
   return (
@@ -80,6 +84,7 @@ export function RecentPaymentsTable() {
             columns={columns}
             data={payments}
             isLoading={isLoading}
+            initialPageSize={DASHBOARD_TABLE_LIMIT}
           />
         ) : (
           <div className="py-12 text-center">

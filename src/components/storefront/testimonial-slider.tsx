@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { Star, Quote } from "@/lib/icons";
-import Image from "next/image";
 import {
   Carousel,
   CarouselContent,
@@ -16,31 +15,25 @@ const TESTIMONIALS = [
     id: 1,
     content:
       "The Papaya Enzyme Extract has completely transformed my digestive health. As a nutritionist, I highly recommend Doctasimo for their clinical standards.",
-    author: "Sarah Jenkins",
-    role: "Clinical Nutritionist",
+    author: "Christine Mbarga",
+    role: "Clinical Nutritionist, Douala",
     rating: 5,
-    avatar:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200&auto=format&fit=crop",
   },
   {
     id: 2,
     content:
       "Finally, an organic brand that actually backs its claims with laboratory testing. The Ashwagandha is the most potent I've ever used.",
-    author: "Dr. Mark Thompson",
-    role: "Holistic Practitioner",
+    author: "Dr. Paul Nguimbat",
+    role: "Holistic Practitioner, Yaoundé",
     rating: 5,
-    avatar:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=200&auto=format&fit=crop",
   },
   {
     id: 3,
     content:
       "The sleep support bundle is a game changer. I've never felt more rested. The attention to detail in their clinical formulations is unmatched.",
-    author: "Elena Rodriguez",
-    role: "Wellness Coach",
+    author: "Marie-Claire Fotso",
+    role: "Wellness Coach, Bafoussam",
     rating: 5,
-    avatar:
-      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=200&auto=format&fit=crop",
   },
 ];
 
@@ -79,14 +72,6 @@ export function TestimonialSlider() {
                       </p>
 
                       <div className="flex flex-col items-center space-y-4">
-                        <div className="relative w-16 h-16 rounded-full overflow-hidden grayscale">
-                          <Image
-                            src={testimonial.avatar}
-                            alt={testimonial.author}
-                            fill
-                            className="object-cover"
-                          />
-                        </div>
                         <div className="text-center">
                           <h4 className="font-black text-black text-lg">
                             {testimonial.author}
