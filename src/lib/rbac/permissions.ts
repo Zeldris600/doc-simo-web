@@ -13,6 +13,7 @@ export const ROLE_PERMISSIONS: RolePermissionsMapping = {
  "analytics:read",
  "discounts:read", "discounts:write",
  "support:read", "support:write",
+ "blog:read", "blog:write",
  ],
  [UserRole.SALES]: [
  "products:read",
@@ -23,6 +24,7 @@ export const ROLE_PERMISSIONS: RolePermissionsMapping = {
  "documents:read", "documents:write",
  "notifications:read", "notifications:write",
  "discounts:read", "discounts:write",
+ "blog:write",
  ],
  [UserRole.DELIVERY]: [
  "orders:read", "orders:update_status",

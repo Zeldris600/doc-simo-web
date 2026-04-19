@@ -2,21 +2,36 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
-import { useSupportMessages, useSendSupportMessage } from "@/hooks/use-support";
+import { useLocale, useTranslations } from "next-intl";
+import { useSupportMessages, useSendSupportMessage, useSupportThreads } from "@/hooks/use-support";
+import { useSupportTypingEmit } from "@/hooks/use-support-typing-emit";
+import { useRemoteSupportPresence } from "@/hooks/use-remote-support-presence";
+import { SupportPresenceTypingRow } from "@/components/consultation/support-presence-typing-row";
 import { useCan } from "@/hooks/use-can";
 import { getPusherClient } from "@/lib/pusher";
-import { SupportMessage, SupportAttachment } from "@/services/support.service";
+import {
+  SupportMessage,
+  SupportAttachment,
+  SupportService,
+  MessagesResponse,
+  getSupportThreadDisplayName,
+  getSupportThreadInitials,
+} from "@/services/support.service";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send, Loader2, MessageSquare, LifeBuoy, Paperclip, X, FileText } from "@/lib/icons";
 import { useQueryClient, InfiniteData } from "@tanstack/react-query";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-import { MessagesResponse } from "@/services/support.service";
 import { useUploadMultipleMedia } from "@/hooks/use-media";
 import Image from "next/image";
 
 export default function AdminThreadPage() {
+ const t = useTranslations("supportChat.admin");
+ const tCust = useTranslations("supportChat.customer");
+ const tDate = useTranslations("supportChat.date");
+ const tPresence = useTranslations("supportChat.presence");
+ const locale = useLocale();
  const { id: threadId } = useParams() as { id: string };
  const queryClient = useQueryClient();
  const { user } = useCan();
@@ -24,7 +39,26 @@ export default function AdminThreadPage() {
  const [attachments, setAttachments] = useState<SupportAttachment[]>([]);
  const scrollRef = useRef<HTMLDivElement>(null);
  const fileInputRef = useRef<HTMLInputElement>(null);
+ const filePickerSessionRef = useRef(false);
  const uploadMutation = useUploadMultipleMedia();
+
+ const { statusLine: presenceStatusLine } = useRemoteSupportPresence(
+ threadId,
+ user?.token,
+ user?.id,
+ );
+
+ useSupportTypingEmit(threadId, messageBody, Boolean(threadId));
+
+ useEffect(() => {
+ const onWinFocus = () => {
+ if (!filePickerSessionRef.current || !threadId) return;
+ filePickerSessionRef.current = false;
+ SupportService.emitUploading(threadId, false).catch(() => {});
+ };
+ window.addEventListener("focus", onWinFocus);
+ return () => window.removeEventListener("focus", onWinFocus);
+ }, [threadId]);
 
  const {
  data,
@@ -34,20 +68,35 @@ export default function AdminThreadPage() {
  isLoading,
  } = useSupportMessages(threadId);
 
+ const { data: threadsList = [] } = useSupportThreads({ limit: 100 });
+ const threadMeta = threadsList.find((thread) => thread.id === threadId);
+
  const sendMessageMutation = useSendSupportMessage(threadId, {
  onSuccess: () => {
  setMessageBody("");
  setAttachments([]);
  },
  onError: () => {
- toast.error("Failed to send message.");
+ toast.error(t("toastSendFailed"));
  }
  });
 
  const messages = data?.pages.flatMap((page) => page.data).reverse() || [];
 
+ const unnamedThread = (suffix: string) => tCust("unnamedThread", { suffix });
+ const customerTitle =
+ threadMeta
+ ? getSupportThreadDisplayName(threadMeta, unnamedThread)
+ : messages.find((m) => m.senderRole === "CUSTOMER")?.senderUserId.substring(0, 16) ||
+ t("supportThreadFallback");
+ const peerOnlineLabel = tPresence("peerOnline", { name: customerTitle });
+ const headerAvatarUrl = threadMeta?.customer?.image;
+ const headerInitials = threadMeta ? getSupportThreadInitials(threadMeta, unnamedThread) : null;
+
  // File upload handler
  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+ filePickerSessionRef.current = false;
+ SupportService.emitUploading(threadId, false).catch(() => {});
  const files = Array.from(e.target.files || []);
  if (!files.length) return;
 
@@ -63,9 +112,9 @@ export default function AdminThreadPage() {
  sizeBytes: files[i]?.size || 0,
  }));
  setAttachments(prev => [...prev, ...newAttachments]);
- toast.success(`${res.length} file(s) ready`);
+ toast.success(t("toastFilesReady", { count: res.length }));
  },
- onError: () => toast.error("Upload failed"),
+ onError: () => toast.error(t("toastUploadFailed")),
  }
  );
  if (fileInputRef.current) fileInputRef.current.value = "";
@@ -79,9 +128,10 @@ export default function AdminThreadPage() {
  useEffect(() => {
  if (!threadId || !user?.token) return;
  const pusher = getPusherClient(user.token);
+ if (!pusher) return;
  const channel = pusher.subscribe(`private-thread-${threadId}`);
 
- channel.bind("support.message.new", (newMessage: SupportMessage) => {
+ const onMessageNew = (newMessage: SupportMessage) => {
  queryClient.setQueryData<InfiniteData<MessagesResponse>>(["support-messages", threadId], (oldData) => {
  if (!oldData) return oldData;
  const allMessages = oldData.pages.flatMap((page) => page.data);
@@ -96,26 +146,37 @@ export default function AdminThreadPage() {
  });
  queryClient.invalidateQueries({ queryKey: ["support-messages", threadId] });
  if (newMessage.senderUserId !== user?.id) {
- toast.info("New message received");
+ toast.info(t("toastNewMessage"));
  }
- });
+ };
 
- return () => { channel.unbind_all(); channel.unsubscribe(); };
- }, [threadId, queryClient, user?.id, user?.token]);
+ channel.bind("support.message.new", onMessageNew);
+
+ return () => {
+ channel.unbind("support.message.new", onMessageNew);
+ channel.unsubscribe();
+ };
+ }, [threadId, queryClient, user?.id, user?.token, t]);
 
  useEffect(() => {
  if (scrollRef.current) {
  scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
  }
- }, [messages.length]);
+ }, [messages.length, presenceStatusLine]);
 
- const handleSend = (e: React.FormEvent) => {
+ const handleSend = async (e: React.FormEvent) => {
  e.preventDefault();
  if ((!messageBody.trim() && attachments.length === 0) || sendMessageMutation.isPending) return;
- sendMessageMutation.mutate({
+ const n = attachments.length;
+ await SupportService.emitSending(threadId, true, n > 0 ? n : undefined).catch(() => {});
+ try {
+ await sendMessageMutation.mutateAsync({
  body: messageBody,
  attachments: attachments.length > 0 ? attachments : undefined,
  });
+ } finally {
+ await SupportService.emitSending(threadId, false).catch(() => {});
+ }
  };
 
  const getDateLabel = (dateStr: string) => {
@@ -123,9 +184,9 @@ export default function AdminThreadPage() {
  const today = new Date();
  const yesterday = new Date(today);
  yesterday.setDate(yesterday.getDate() - 1);
- if (date.toDateString() === today.toDateString()) return "Today";
- if (date.toDateString() === yesterday.toDateString()) return "Yesterday";
- return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+ if (date.toDateString() === today.toDateString()) return tDate("today");
+ if (date.toDateString() === yesterday.toDateString()) return tDate("yesterday");
+ return date.toLocaleDateString(locale, { month: "short", day: "numeric" });
  };
 
  if (isLoading) {
@@ -153,16 +214,24 @@ export default function AdminThreadPage() {
  <div className="flex flex-col h-full bg-white">
  {/* Header */}
  <div className="flex items-center gap-3 px-4 py-3 border-b border-black/5 shrink-0">
- <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+ <div className="h-9 w-9 rounded-full overflow-hidden bg-primary/10 flex items-center justify-center shrink-0">
+ {headerAvatarUrl ? (
+ <Image src={headerAvatarUrl} alt="" width={36} height={36} className="h-9 w-9 object-cover" />
+ ) : headerInitials ? (
+ <span className="text-[10px] font-semibold text-primary">{headerInitials}</span>
+ ) : (
  <LifeBuoy className="h-4 w-4 text-primary" />
+ )}
  </div>
  <div className="min-w-0">
  <h2 className="text-sm font-medium text-black truncate">
- {messages.find(m => m.senderRole === "CUSTOMER")?.senderUserId.substring(0, 16) || "Support Thread"}
+ {customerTitle}
  </h2>
- <div className="flex items-center gap-1.5">
- <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
- <span className="text-[10px] font-medium text-black/40">#{threadId.substring(0, 8)}</span>
+ <div className="flex items-center gap-1.5 min-w-0">
+ <div className="w-1.5 h-1.5 shrink-0 rounded-full bg-emerald-500" />
+ <span className="text-[10px] font-medium text-emerald-600 truncate">
+ {presenceStatusLine ?? peerOnlineLabel}
+ </span>
  </div>
  </div>
  </div>
@@ -173,7 +242,7 @@ export default function AdminThreadPage() {
  <div className="flex justify-center mb-4">
  <Button variant="ghost" size="sm" onClick={() => fetchNextPage()} disabled={isFetchingNextPage}
  className="text-[10px] font-medium text-black/30 h-7">
- {isFetchingNextPage ? "Loading..." : "Load older messages"}
+ {isFetchingNextPage ? t("loading") : t("loadOlder")}
  </Button>
  </div>
  )}
@@ -181,7 +250,7 @@ export default function AdminThreadPage() {
  {messages.length === 0 && (
  <div className="flex flex-col items-center justify-center py-16 text-center">
  <MessageSquare className="h-8 w-8 text-black/10 mb-3" />
- <p className="text-xs font-medium text-black/30">No messages yet</p>
+ <p className="text-xs font-medium text-black/30">{t("noMessagesYet")}</p>
  </div>
  )}
 
@@ -203,7 +272,7 @@ export default function AdminThreadPage() {
  )}
  <div className={cn("flex flex-col", isMe ? "items-end" : "items-start", isSameSender ? "mt-0.5" : "mt-2")}>
  {!isSameSender && !isMe && (
- <span className="text-[9px] font-medium text-black/30 mb-1 ml-1">Customer</span>
+ <span className="text-[9px] font-medium text-black/30 mb-1 ml-1">{t("customerLabel")}</span>
  )}
  <div className={cn(
  "max-w-[80%] md:max-w-[65%] rounded-xl px-3.5 py-2.5 text-sm",
@@ -233,7 +302,7 @@ export default function AdminThreadPage() {
  isMe ? "border-white/20 text-white/80 hover:bg-white/10" : "border-black/5 text-black/60 hover:bg-black/[0.02]"
  )}>
  <FileText className="h-3.5 w-3.5 shrink-0" />
- <span className="truncate">{att.originalName || "File"}</span>
+ <span className="truncate">{att.originalName || t("fileFallback")}</span>
  </a>
  );
  })}
@@ -250,6 +319,8 @@ export default function AdminThreadPage() {
  })}
  </div>
  </div>
+
+ <SupportPresenceTypingRow line={presenceStatusLine} />
 
  {/* Attachment Preview */}
  {attachments.length > 0 && (
@@ -282,14 +353,18 @@ export default function AdminThreadPage() {
  <div className="px-4 py-3 border-t border-black/5 bg-white shrink-0">
  <form onSubmit={handleSend} className="flex items-center gap-2">
  <input ref={fileInputRef} type="file" multiple accept="image/*,.pdf,.doc,.docx,.txt" onChange={handleFileSelect} className="hidden" />
- <button type="button" onClick={() => fileInputRef.current?.click()} disabled={uploadMutation.isPending}
+ <button type="button" onClick={() => {
+ filePickerSessionRef.current = true;
+ SupportService.emitUploading(threadId, true).catch(() => {});
+ fileInputRef.current?.click();
+ }} disabled={uploadMutation.isPending}
  className="h-10 w-10 rounded-xl flex items-center justify-center shrink-0 text-black/40 hover:text-black/60 hover:bg-black/[0.03] transition-all">
  {uploadMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Paperclip className="h-4 w-4" />}
  </button>
  <Input
  value={messageBody}
  onChange={(e) => setMessageBody(e.target.value)}
- placeholder="Type a message..."
+ placeholder={t("placeholderMessage")}
  className="flex-1 h-10 border-black/[0.06] bg-black/[0.02] focus-visible:ring-primary/20 rounded-lg text-sm font-medium px-3"
  />
  <Button type="submit" disabled={(!messageBody.trim() && attachments.length === 0) || sendMessageMutation.isPending}

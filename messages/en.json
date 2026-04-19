@@ -162,7 +162,20 @@
     "notificationsEmpty": "No notifications yet.",
     "notificationsError": "Could not load notifications.",
     "notificationsLoading": "Loading…",
-    "notificationsLoadMore": "Load more"
+    "notificationsLoadMore": "Load more",
+    "blog": "Blog"
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "Wellness guides, product stories, and updates from our clinical team.",
+    "loadError": "We could not load posts. Please try again later.",
+    "empty": "No posts yet. Check back soon.",
+    "noCover": "No cover",
+    "authorFallback": "Doctasimo",
+    "prev": "Previous",
+    "next": "Next",
+    "notFound": "This article could not be found.",
+    "backToBlog": "Back to blog"
   },
   "account": {
     "title": "Your Account",
@@ -433,5 +446,74 @@
     "anonymous": "Customer",
     "previous": "Previous",
     "next": "Next"
+  },
+  "supportChat": {
+    "presence": {
+      "typing": "Typing…",
+      "choosingAttachment": "Choosing an attachment…",
+      "sendingOne": "Sending attachment…",
+      "sendingMany": "Sending {count} attachments…",
+      "online": "Online",
+      "peerOnline": "{name} is online"
+    },
+    "date": {
+      "today": "Today",
+      "yesterday": "Yesterday"
+    },
+    "customer": {
+      "pageTitle": "Consultation",
+      "unnamedThread": "Chat #{suffix}",
+      "sidebarTitle": "Chats",
+      "consultationCount": "{count, plural, one {# consultation} other {# consultations}}",
+      "searchPlaceholder": "Search or start new chat",
+      "newChatAria": "Start new chat",
+      "threadPreview": "#{id} · Tap to open",
+      "backToChatsAria": "Back to chats",
+      "loadOlder": "Load older messages",
+      "loadingShort": "Loading…",
+      "senderSupportName": "Doctasimo",
+      "voiceMessage": "Voice message",
+      "attachmentAlt": "Attachment",
+      "removeAttachmentAria": "Remove attachment",
+      "previewAlt": "Preview",
+      "toastChatStarted": "Chat started.",
+      "toastChatStartFailed": "Could not start chat.",
+      "toastSendFailed": "Failed to send message.",
+      "toastNewMessage": "New message",
+      "toastCallStarted": "Support call started",
+      "toastCallEnded": "Support call ended",
+      "toastAttachmentReady": "Attachment ready",
+      "toastUploadFailed": "Upload failed",
+      "toastAudioRecorded": "Audio recorded",
+      "toastAudioUploadFailed": "Audio upload failed",
+      "toastMicDenied": "Microphone access denied",
+      "composer": {
+        "attachAria": "Attach files",
+        "recordStartAria": "Start recording",
+        "recordStopAria": "Stop recording",
+        "recordingLabel": "Recording {time}",
+        "stop": "Stop",
+        "placeholder": "Type a message",
+        "sendAria": "Send message"
+      }
+    },
+    "admin": {
+      "messagesTitle": "Messages",
+      "searchPlaceholder": "Search…",
+      "noConversations": "No conversations",
+      "back": "Back",
+      "threadIdPrefix": "#{id}",
+      "supportThreadFallback": "Support Thread",
+      "loadOlder": "Load older messages",
+      "loading": "Loading...",
+      "noMessagesYet": "No messages yet",
+      "customerLabel": "Customer",
+      "fileFallback": "File",
+      "placeholderMessage": "Type a message...",
+      "toastNewMessage": "New message received",
+      "toastSendFailed": "Failed to send message.",
+      "toastFilesReady": "{count, plural, one {# file ready} other {# files ready}}",
+      "toastUploadFailed": "Upload failed"
+    }
   }
 }

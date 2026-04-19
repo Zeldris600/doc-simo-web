@@ -28,6 +28,8 @@ export type Permission =
  | "discounts:read"
  | "discounts:write"
  | "support:read"
- | "support:write";
+ | "support:write"
+ | "blog:read"
+ | "blog:write";
 
 export type RolePermissionsMapping = Record<UserRole, Permission[]>;

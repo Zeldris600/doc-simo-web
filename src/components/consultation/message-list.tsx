@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useRef, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { MessageBubble } from "./message-bubble";
+import { SupportPresenceTypingRow } from "./support-presence-typing-row";
 import { SupportMessage } from "@/services/support.service";
 import { User } from "@/types/auth";
 
@@ -13,6 +15,8 @@ interface MessageListProps {
   isFetchingNextPage: boolean;
   onFetchNextPage: () => void;
   getDateLabel: (date: string) => string;
+  /** Remote presence line (typing, choosing attachment, sending); scroll follows when it appears. */
+  presenceStatusLine?: string | null;
 }
 
 /** Subtle tile like WhatsApp Web chat wallpaper */
@@ -29,14 +33,16 @@ export function MessageList({
   isFetchingNextPage,
   onFetchNextPage,
   getDateLabel,
+  presenceStatusLine = null,
 }: MessageListProps) {
+  const t = useTranslations("supportChat.customer");
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages.length]);
+  }, [messages.length, presenceStatusLine]);
 
   return (
     <div
@@ -50,9 +56,9 @@ export function MessageList({
           size="sm"
           onClick={onFetchNextPage}
           disabled={isFetchingNextPage}
-          className="mb-2 self-center rounded-full bg-[#FFFFFF]/90 px-4 py-1 text-[12px] font-medium text-[#54656F] shadow-sm hover:bg-white"
+          className="mb-2 self-center rounded-full bg-white px-4 py-1 text-[12px] font-medium text-[#54656F] hover:bg-white"
         >
-          {isFetchingNextPage ? "Loading…" : "Load older messages"}
+          {isFetchingNextPage ? t("loadingShort") : t("loadOlder")}
         </Button>
       )}
 
@@ -70,7 +76,7 @@ export function MessageList({
             <React.Fragment key={msg.id}>
               {showDateSep && (
                 <div className="flex justify-center py-3">
-                  <span className="rounded-lg bg-[#FFFFFF]/95 px-3 py-1 text-[12px] font-medium text-[#54656F] shadow-sm">
+                  <span className="rounded-lg bg-white px-3 py-1 text-[12px] font-medium text-[#54656F]">
                     {getDateLabel(msg.createdAt)}
                   </span>
                 </div>
@@ -80,6 +86,8 @@ export function MessageList({
           );
         })}
       </div>
+
+      <SupportPresenceTypingRow line={presenceStatusLine} />
     </div>
   );
 }

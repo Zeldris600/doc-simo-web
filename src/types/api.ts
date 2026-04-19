@@ -77,6 +77,30 @@ export interface UpdateProductReviewDto {
   comment?: string;
 }
 
+/** Admin-managed delivery destination (requires `delivery_destinations:read` / `:write`). */
+export interface DeliveryDestination {
+  id: string;
+  name: string;
+  city: string | null;
+  region: string | null;
+  country: string;
+  active: boolean;
+  metadata: Record<string, unknown> | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateDeliveryDestinationDto {
+  name: string;
+  city?: string | null;
+  region?: string | null;
+  country?: string;
+  active?: boolean;
+  metadata?: Record<string, unknown> | null;
+}
+
+export type UpdateDeliveryDestinationDto = Partial<CreateDeliveryDestinationDto>;
+
 export interface Category {
   id: string;
   slug: string;

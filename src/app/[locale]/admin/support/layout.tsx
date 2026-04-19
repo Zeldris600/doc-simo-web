@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useTranslations } from "next-intl";
 import { Channel } from "pusher-js";
 import { useSupportThreads } from "@/hooks/use-support";
 import { useParams, useRouter } from "next/navigation";
@@ -10,12 +11,19 @@ import { MessageSquare, ArrowLeft, Search } from "@/lib/icons";
 import { getPusherClient } from "@/lib/pusher";
 import { useCan } from "@/hooks/use-can";
 import { useQueryClient } from "@tanstack/react-query";
+import {
+  getSupportThreadDisplayName,
+  getSupportThreadInitials,
+} from "@/services/support.service";
+import Image from "next/image";
 
 export default function SupportLayout({
  children,
 }: {
  children: React.ReactNode;
 }) {
+ const t = useTranslations("supportChat.admin");
+ const tCust = useTranslations("supportChat.customer");
  const { id } = useParams() as { id?: string };
  const router = useRouter();
  const { data: threads = [], isLoading } = useSupportThreads();
@@ -33,7 +41,8 @@ export default function SupportLayout({
  React.useEffect(() => {
  if (!user?.token) return;
  const pusher = getPusherClient(user.token);
- 
+ if (!pusher) return;
+
  // If we're viewing a specific thread, listen to it to update the list
  let channel: Channel | undefined;
  if (id) {
@@ -66,7 +75,7 @@ export default function SupportLayout({
  {/* Sidebar Header */}
  <div className="px-4 py-4 border-b border-black/5">
  <div className="flex items-center justify-between mb-3">
- <h2 className="text-base font-medium text-black">Messages</h2>
+ <h2 className="text-base font-medium text-black">{t("messagesTitle")}</h2>
  <span className="text-[10px] font-medium text-black/40 bg-black/[0.04] px-2 py-0.5 rounded-full">
  {threads.length}
  </span>
@@ -75,7 +84,7 @@ export default function SupportLayout({
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-black/30" />
  <input
  type="text"
- placeholder="Search..."
+ placeholder={t("searchPlaceholder")}
  className="w-full h-8 pl-9 pr-3 text-xs font-medium bg-black/[0.03] border-none rounded-lg outline-none focus:ring-1 focus:ring-primary/20 placeholder:text-black/30"
  />
  </div>
@@ -102,7 +111,7 @@ export default function SupportLayout({
  <div className="flex flex-col items-center justify-center py-12 px-6 text-center">
  <MessageSquare className="h-6 w-6 text-black/15 mb-3" />
  <p className="text-xs font-medium text-black/40">
- No conversations
+ {t("noConversations")}
  </p>
  </div>
  ) : (
@@ -110,6 +119,10 @@ export default function SupportLayout({
  {threads.map((thread) => {
  const isActive = id === thread.id;
  const isOpen = thread.status === "OPEN";
+ const unnamed = (suffix: string) => tCust("unnamedThread", { suffix });
+ const displayName = getSupportThreadDisplayName(thread, unnamed);
+ const initials = getSupportThreadInitials(thread, unnamed);
+ const avatarUrl = thread.customer?.image;
  return (
  <Link
  key={thread.id}
@@ -124,18 +137,22 @@ export default function SupportLayout({
  )}
  <div
  className={cn(
- "h-9 w-9 rounded-full flex items-center justify-center shrink-0 text-[10px] font-medium",
+ "h-9 w-9 rounded-full overflow-hidden shrink-0 flex items-center justify-center text-[10px] font-medium",
  isOpen
  ? "bg-primary/10 text-primary"
  : "bg-black/5 text-black/40",
  )}
  >
- {thread.customerUserId.substring(0, 2).toUpperCase()}
+ {avatarUrl ? (
+ <Image src={avatarUrl} alt="" width={36} height={36} className="h-9 w-9 object-cover" />
+ ) : (
+ initials
+ )}
  </div>
  <div className="flex-1 min-w-0">
  <div className="flex items-center justify-between">
  <span className="text-xs font-medium text-black truncate">
- Customer
+ {displayName}
  </span>
  <span className="text-[9px] font-medium text-black/30 shrink-0 ml-2">
  {new Date(thread.updatedAt).toLocaleTimeString([], {
@@ -152,7 +169,7 @@ export default function SupportLayout({
  )}
  />
  <span className="text-[10px] text-black/40 truncate">
- #{thread.id.substring(0, 8)}
+ {t("threadIdPrefix", { id: thread.id.substring(0, 8) })}
  </span>
  </div>
  </div>
@@ -175,7 +192,7 @@ export default function SupportLayout({
  className="flex md:hidden items-center gap-2 px-4 py-2.5 text-xs font-medium text-black/60 border-b border-black/5 bg-white"
  >
  <ArrowLeft className="h-3.5 w-3.5" />
- Back
+ {t("back")}
  </button>
  )}
  {children}

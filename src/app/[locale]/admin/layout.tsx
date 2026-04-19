@@ -15,6 +15,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { AdminNotifications } from "@/components/layout/admin-notifications";
+import { SalesOrdersPusherBridge } from "@/components/realtime/sales-orders-pusher-bridge";
 import { User } from "@/lib/icons";
 
 export default function AdminLayout({
@@ -69,6 +70,7 @@ export default function AdminLayout({
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-8 p-8 pt-6 bg-[#F5F7F5] min-h-[calc(100vh-4rem)]">
+          <SalesOrdersPusherBridge />
           <AdminPermissionShell>{children}</AdminPermissionShell>
         </div>
       </SidebarInset>

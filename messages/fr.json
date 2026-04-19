@@ -162,7 +162,20 @@
     "notificationsEmpty": "Aucune notification pour le moment.",
     "notificationsError": "Impossible de charger les notifications.",
     "notificationsLoading": "Chargement…",
-    "notificationsLoadMore": "Voir plus"
+    "notificationsLoadMore": "Voir plus",
+    "blog": "Blog"
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "Guides bien-être, histoires produits et actualités de notre équipe clinique.",
+    "loadError": "Impossible de charger les articles. Réessayez plus tard.",
+    "empty": "Aucun article pour le moment. Revenez bientôt.",
+    "noCover": "Pas d’image",
+    "authorFallback": "Doctasimo",
+    "prev": "Précédent",
+    "next": "Suivant",
+    "notFound": "Cet article est introuvable.",
+    "backToBlog": "Retour au blog"
   },
   "account": {
     "title": "Votre Compte",
@@ -433,5 +446,74 @@
     "anonymous": "Client",
     "previous": "Précédent",
     "next": "Suivant"
+  },
+  "supportChat": {
+    "presence": {
+      "typing": "Saisie en cours…",
+      "choosingAttachment": "Choix d'une pièce jointe…",
+      "sendingOne": "Envoi d'une pièce jointe…",
+      "sendingMany": "Envoi de {count} pièces jointes…",
+      "online": "En ligne",
+      "peerOnline": "{name} est en ligne"
+    },
+    "date": {
+      "today": "Aujourd'hui",
+      "yesterday": "Hier"
+    },
+    "customer": {
+      "pageTitle": "Consultation",
+      "unnamedThread": "Discussion #{suffix}",
+      "sidebarTitle": "Discussions",
+      "consultationCount": "{count, plural, one {# consultation} other {# consultations}}",
+      "searchPlaceholder": "Rechercher ou démarrer une discussion",
+      "newChatAria": "Nouvelle discussion",
+      "threadPreview": "#{id} · Appuyez pour ouvrir",
+      "backToChatsAria": "Retour aux discussions",
+      "loadOlder": "Charger les messages précédents",
+      "loadingShort": "Chargement…",
+      "senderSupportName": "Doctasimo",
+      "voiceMessage": "Message vocal",
+      "attachmentAlt": "Pièce jointe",
+      "removeAttachmentAria": "Retirer la pièce jointe",
+      "previewAlt": "Aperçu",
+      "toastChatStarted": "Discussion démarrée.",
+      "toastChatStartFailed": "Impossible de démarrer la discussion.",
+      "toastSendFailed": "Échec de l'envoi du message.",
+      "toastNewMessage": "Nouveau message",
+      "toastCallStarted": "Appel support démarré",
+      "toastCallEnded": "Appel support terminé",
+      "toastAttachmentReady": "Pièce jointe prête",
+      "toastUploadFailed": "Échec du téléversement",
+      "toastAudioRecorded": "Audio enregistré",
+      "toastAudioUploadFailed": "Échec du téléversement audio",
+      "toastMicDenied": "Accès au microphone refusé",
+      "composer": {
+        "attachAria": "Joindre des fichiers",
+        "recordStartAria": "Démarrer l'enregistrement",
+        "recordStopAria": "Arrêter l'enregistrement",
+        "recordingLabel": "Enregistrement {time}",
+        "stop": "Arrêter",
+        "placeholder": "Écrire un message",
+        "sendAria": "Envoyer le message"
+      }
+    },
+    "admin": {
+      "messagesTitle": "Messages",
+      "searchPlaceholder": "Rechercher…",
+      "noConversations": "Aucune conversation",
+      "back": "Retour",
+      "threadIdPrefix": "#{id}",
+      "supportThreadFallback": "Fil de support",
+      "loadOlder": "Charger les messages précédents",
+      "loading": "Chargement...",
+      "noMessagesYet": "Aucun message pour l'instant",
+      "customerLabel": "Client",
+      "fileFallback": "Fichier",
+      "placeholderMessage": "Écrire un message...",
+      "toastNewMessage": "Nouveau message reçu",
+      "toastSendFailed": "Échec de l'envoi du message.",
+      "toastFilesReady": "{count, plural, one {# fichier prêt} other {# fichiers prêts}}",
+      "toastUploadFailed": "Échec du téléversement"
+    }
   }
 }

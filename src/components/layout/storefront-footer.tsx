@@ -29,6 +29,7 @@ const NAV_SHOP = [
 const NAV_CLINIC = [
  { label: "Book Consultation", href: "/consultation" },
  { label: "Meet Dr. Simo", href: "/about" },
+ { label: "Blog", href: "/blog" },
  { label: "Health Videos", href: "/#videos" },
  { label: "Our Process", href: "/#how-it-works" },
  { label: "Clinical Research", href: "/about#research" },

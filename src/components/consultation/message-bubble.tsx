@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { FileText, Volume2 } from "@/lib/icons";
 import { cn } from "@/lib/utils";
@@ -13,6 +14,7 @@ interface MessageBubbleProps {
 }
 
 export function MessageBubble({ msg, isMe, showSenderName }: MessageBubbleProps) {
+  const t = useTranslations("supportChat.customer");
   const timeLabel = new Date(msg.createdAt).toLocaleTimeString([], {
     hour: "2-digit",
     minute: "2-digit",
@@ -23,15 +25,15 @@ export function MessageBubble({ msg, isMe, showSenderName }: MessageBubbleProps)
       <div className="max-w-[85%] md:max-w-[65%]">
         {showSenderName && !isMe && (
           <span className="mb-0.5 ml-1 block text-[12px] font-medium text-[#667781]">
-            Doctasimo
+            {t("senderSupportName")}
           </span>
         )}
         <div
           className={cn(
-            "rounded-2xl px-3 py-2 text-[14px] leading-relaxed shadow-sm",
+            "rounded-2xl px-3 py-2 text-[14px] leading-relaxed",
             isMe
               ? "rounded-br-sm bg-primary text-white"
-              : "rounded-bl-sm bg-white text-[#111B21] shadow-sm",
+              : "rounded-bl-sm bg-white text-[#111B21]",
           )}
         >
           {msg.body && (
@@ -58,7 +60,7 @@ export function MessageBubble({ msg, isMe, showSenderName }: MessageBubbleProps)
                     >
                       <Image
                         src={att.url}
-                        alt="Attachment"
+                        alt={t("attachmentAlt")}
                         width={520}
                         height={340}
                         className="w-full object-cover"
@@ -72,13 +74,13 @@ export function MessageBubble({ msg, isMe, showSenderName }: MessageBubbleProps)
                       key={ai}
                       className={cn(
                         "flex flex-col gap-2 rounded-md border p-2",
-                        isMe ? "border-[#B7E8B0] bg-white/50" : "border-black/10 bg-[#F0F2F5]",
+                        isMe ? "border-[#B7E8B0] bg-white" : "border-black/10 bg-[#F0F2F5]",
                       )}
                     >
                       <div className="flex items-center gap-2">
                         <Volume2 className="h-4 w-4 text-[#54656F]" />
                         <span className="text-[12px] font-medium text-[#54656F]">
-                          Voice message
+                          {t("voiceMessage")}
                         </span>
                       </div>
                       <audio controls src={att.url} className="h-8 w-full" />
@@ -94,7 +96,7 @@ export function MessageBubble({ msg, isMe, showSenderName }: MessageBubbleProps)
                     className={cn(
                       "flex items-center gap-2 rounded-md border px-3 py-2 text-[13px] font-medium",
                       isMe
-                        ? "border-[#B7E8B0] bg-white/40 text-[#111B21]"
+                        ? "border-[#B7E8B0] bg-white text-[#111B21]"
                         : "border-black/10 bg-[#F0F2F5] text-[#111B21]",
                     )}
                   >

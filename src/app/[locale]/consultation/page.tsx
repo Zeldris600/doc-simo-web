@@ -9,12 +9,20 @@ import {
 } from "@/hooks/use-support";
 import { useCan } from "@/hooks/use-can";
 import { getPusherClient } from "@/lib/pusher";
-import { SupportMessage, SupportAttachment } from "@/services/support.service";
+import {
+  SupportMessage,
+  SupportAttachment,
+  SupportService,
+  getSupportThreadDisplayName,
+  getSupportThreadInitials,
+  getSupportThreadSearchBlob,
+} from "@/services/support.service";
 import { ChevronLeft } from "@/lib/icons";
 import { useQueryClient, InfiniteData } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { MessagesResponse } from "@/services/support.service";
 import { useRouter, useParams } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
 import { ConsultationSkeleton } from "@/components/skeletons/consultation-skeleton";
 
 import { ThreadRegistry } from "@/components/consultation/thread-registry";
@@ -22,9 +30,16 @@ import { MessageList } from "@/components/consultation/message-list";
 import { ChatControls } from "@/components/consultation/chat-controls";
 import { AttachmentPreview } from "@/components/consultation/attachment-preview";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 import { useUploadMultipleMedia } from "@/hooks/use-media";
+import { useSupportTypingEmit } from "@/hooks/use-support-typing-emit";
+import { useRemoteSupportPresence } from "@/hooks/use-remote-support-presence";
 
 export default function ConsultationPage() {
+  const t = useTranslations("supportChat.customer");
+  const tPresence = useTranslations("supportChat.presence");
+  const tDate = useTranslations("supportChat.date");
+  const locale = useLocale();
   const { user, isLoading: isLoadingAuth } = useCan();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -36,9 +51,9 @@ export default function ConsultationPage() {
   const [isRecording, setIsRecording] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
+  const filePickerSessionRef = useRef(false);
 
   const params = useParams();
-  const locale = (params.locale as string) || "en";
 
   const [activeThreadId, setActiveThreadId] = useState<string | null>(null);
   const [showThreadList, setShowThreadList] = useState(true);
@@ -66,14 +81,35 @@ export default function ConsultationPage() {
     threadsData?.find((t) => t.id === activeThreadId) || threadsData?.[0];
   const threadId = activeThread?.id;
 
+  const { statusLine: presenceStatusLine } = useRemoteSupportPresence(
+    threadId,
+    user?.token,
+    user?.id,
+  );
+  const peerOnlineLabel = tPresence("peerOnline", {
+    name: t("senderSupportName"),
+  });
+
+  useSupportTypingEmit(threadId, messageBody, Boolean(threadId));
+
+  useEffect(() => {
+    const onWinFocus = () => {
+      if (!filePickerSessionRef.current || !threadId) return;
+      filePickerSessionRef.current = false;
+      SupportService.emitUploading(threadId, false).catch(() => {});
+    };
+    window.addEventListener("focus", onWinFocus);
+    return () => window.removeEventListener("focus", onWinFocus);
+  }, [threadId]);
+
   const createThreadMutation = useCreateSupportThread({
     onSuccess: (newThread) => {
-      toast.success("Chat started.");
+      toast.success(t("toastChatStarted"));
       setActiveThreadId(newThread.thread.id);
       setShowThreadList(false);
     },
     onError: () => {
-      toast.error("Could not start chat.");
+      toast.error(t("toastChatStartFailed"));
     },
   });
 
@@ -91,20 +127,24 @@ export default function ConsultationPage() {
       setIsRecording(false);
     },
     onError: () => {
-      toast.error("Failed to send message.");
+      toast.error(t("toastSendFailed"));
     },
   });
 
   const messages = messagesData?.pages.flatMap((page) => page.data).reverse() || [];
 
+  const unnamedThread = (suffix: string) => t("unnamedThread", { suffix });
+  const q = searchQuery.toLowerCase().trim();
   const filteredThreads =
     threadsData?.filter(
-      (t) =>
-        t.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        t.customerUserId.toLowerCase().includes(searchQuery.toLowerCase()),
+      (thread) => !q || getSupportThreadSearchBlob(thread, unnamedThread).includes(q),
     ) || [];
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    filePickerSessionRef.current = false;
+    if (threadId) {
+      SupportService.emitUploading(threadId, false).catch(() => {});
+    }
     const files = Array.from(e.target.files || []);
     if (!files.length) return;
 
@@ -120,9 +160,9 @@ export default function ConsultationPage() {
             sizeBytes: files[i]?.size || 0,
           }));
           setAttachments((prev) => [...prev, ...newAttachments]);
-          toast.success("Attachment ready");
+          toast.success(t("toastAttachmentReady"));
         },
-        onError: () => toast.error("Upload failed"),
+        onError: () => toast.error(t("toastUploadFailed")),
       },
     );
   };
@@ -157,9 +197,9 @@ export default function ConsultationPage() {
                 sizeBytes: audioBlob.size,
               };
               setAttachments((prev) => [...prev, att]);
-              toast.success("Audio recorded");
+              toast.success(t("toastAudioRecorded"));
             },
-            onError: () => toast.error("Audio upload failed"),
+            onError: () => toast.error(t("toastAudioUploadFailed")),
           },
         );
       };
@@ -168,7 +208,7 @@ export default function ConsultationPage() {
       setMediaRecorder(recorder);
       setIsRecording(true);
     } catch {
-      toast.error("Microphone access denied");
+      toast.error(t("toastMicDenied"));
     }
   };
 
@@ -187,9 +227,10 @@ export default function ConsultationPage() {
   useEffect(() => {
     if (!threadId || !user?.token) return;
     const pusher = getPusherClient(user.token);
+    if (!pusher) return;
     const channel = pusher.subscribe(`private-thread-${threadId}`);
 
-    channel.bind("support.message.new", (newMessage: SupportMessage) => {
+    const onMessageNew = (newMessage: SupportMessage) => {
       queryClient.setQueryData<InfiniteData<MessagesResponse>>(
         ["support-messages", threadId],
         (oldData) => {
@@ -207,27 +248,52 @@ export default function ConsultationPage() {
       );
       queryClient.invalidateQueries({ queryKey: ["support-messages", threadId] });
       if (newMessage.senderUserId !== user?.id) {
-        toast.info("New message");
+        toast.info(t("toastNewMessage"));
       }
-    });
+    };
+
+    const onCallStarted = () => {
+      toast.info(t("toastCallStarted"));
+    };
+
+    const onCallEnded = () => {
+      toast.info(t("toastCallEnded"));
+    };
+
+    channel.bind("support.message.new", onMessageNew);
+    channel.bind("support.call.started", onCallStarted);
+    channel.bind("support.call.ended", onCallEnded);
 
     return () => {
-      channel.unbind_all();
+      channel.unbind("support.message.new", onMessageNew);
+      channel.unbind("support.call.started", onCallStarted);
+      channel.unbind("support.call.ended", onCallEnded);
       channel.unsubscribe();
     };
-  }, [threadId, queryClient, user?.id, user?.token]);
+  }, [threadId, queryClient, user?.id, user?.token, t]);
 
-  const handleSend = (e: React.FormEvent) => {
+  const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
     if (
       (!messageBody.trim() && attachments.length === 0) ||
-      sendMessageMutation.isPending
+      sendMessageMutation.isPending ||
+      !threadId
     )
       return;
-    sendMessageMutation.mutate({
-      body: messageBody,
-      attachments: attachments.length > 0 ? attachments : undefined,
-    });
+    const n = attachments.length;
+    await SupportService.emitSending(
+      threadId,
+      true,
+      n > 0 ? n : undefined,
+    ).catch(() => {});
+    try {
+      await sendMessageMutation.mutateAsync({
+        body: messageBody,
+        attachments: attachments.length > 0 ? attachments : undefined,
+      });
+    } finally {
+      await SupportService.emitSending(threadId, false).catch(() => {});
+    }
   };
 
   const getDateLabel = (dateStr: string) => {
@@ -235,9 +301,9 @@ export default function ConsultationPage() {
     const today = new Date();
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
-    if (date.toDateString() === today.toDateString()) return "Today";
-    if (date.toDateString() === yesterday.toDateString()) return "Yesterday";
-    return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+    if (date.toDateString() === today.toDateString()) return tDate("today");
+    if (date.toDateString() === yesterday.toDateString()) return tDate("yesterday");
+    return date.toLocaleDateString(locale, { month: "short", day: "numeric" });
   };
 
   if (isLoadingAuth || isLoadingThreads || user === undefined) {
@@ -245,14 +311,18 @@ export default function ConsultationPage() {
   }
 
   const chatTitle = activeThread
-    ? `Chat #${activeThread.id.slice(-4)}`
-    : "Consultation";
+    ? getSupportThreadDisplayName(activeThread, unnamedThread)
+    : t("pageTitle");
+  const chatHeaderInitials = activeThread
+    ? getSupportThreadInitials(activeThread, unnamedThread)
+    : "?";
+  const chatHeaderAvatarUrl = activeThread?.customer?.image;
 
   return (
     <div className="fixed inset-0 z-40 flex overflow-hidden bg-[#F5F7F5]">
       <div
         className={cn(
-          "flex h-full min-h-0 w-full max-w-[1600px] flex-1 overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.05)] md:mx-auto md:my-4 md:max-h-[calc(100vh-2rem)] md:rounded-2xl md:border md:border-black/5",
+          "flex h-full min-h-0 w-full max-w-[1600px] flex-1 overflow-hidden md:mx-auto md:my-4 md:max-h-[calc(100vh-2rem)] md:rounded-2xl md:border md:border-black/5",
         )}
       >
         <div className={cn(!showThreadList && "hidden md:flex md:min-h-0")}>
@@ -281,18 +351,32 @@ export default function ConsultationPage() {
               type="button"
               onClick={() => setShowThreadList(true)}
               className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-[#54656F] hover:bg-[#D9DDE1] md:hidden"
-              aria-label="Back to chats"
+              aria-label={t("backToChatsAria")}
             >
               <ChevronLeft className="h-5 w-5" />
             </button>
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-[14px] font-bold text-primary">
-              {activeThread ? activeThread.id.slice(-2).toUpperCase() : "?"}
+            <div className="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-xl bg-primary/10">
+              {chatHeaderAvatarUrl ? (
+                <Image
+                  src={chatHeaderAvatarUrl}
+                  alt=""
+                  width={40}
+                  height={40}
+                  className="h-10 w-10 object-cover"
+                />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center text-[14px] font-bold text-primary">
+                  {chatHeaderInitials}
+                </div>
+              )}
             </div>
             <div className="min-w-0 flex-1">
               <h1 className="truncate text-sm font-bold text-foreground">
                 {chatTitle}
               </h1>
-              <p className="truncate text-[11px] font-medium text-emerald-600">online</p>
+              <p className="truncate text-[11px] font-medium text-emerald-600">
+                {presenceStatusLine ?? peerOnlineLabel}
+              </p>
             </div>
           </header>
 
@@ -303,6 +387,7 @@ export default function ConsultationPage() {
             isFetchingNextPage={isFetchingNextPage}
             onFetchNextPage={fetchNextPage}
             getDateLabel={getDateLabel}
+            presenceStatusLine={presenceStatusLine}
           />
 
           <AttachmentPreview
@@ -315,6 +400,11 @@ export default function ConsultationPage() {
             setMessageBody={setMessageBody}
             attachments={attachments}
             onFileSelect={handleFileSelect}
+            onAttachClick={() => {
+              if (!threadId) return;
+              filePickerSessionRef.current = true;
+              SupportService.emitUploading(threadId, true).catch(() => {});
+            }}
             onSend={handleSend}
             isSending={sendMessageMutation.isPending}
             uploadIsPending={uploadMutation.isPending}

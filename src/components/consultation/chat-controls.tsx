@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import { useTranslations } from "next-intl";
 import { Paperclip, Mic, Send, Square, Loader2 } from "@/lib/icons";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,6 +13,8 @@ interface ChatControlsProps {
   setMessageBody: (val: string) => void;
   attachments: SupportAttachment[];
   onFileSelect: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  /** Called immediately before opening the file picker (Socket.IO `support.uploading`). */
+  onAttachClick?: () => void;
   onSend: (e: React.FormEvent) => void;
   isSending: boolean;
   uploadIsPending: boolean;
@@ -25,6 +28,7 @@ export function ChatControls({
   setMessageBody,
   attachments,
   onFileSelect,
+  onAttachClick,
   onSend,
   isSending,
   uploadIsPending,
@@ -32,6 +36,7 @@ export function ChatControls({
   startRecording,
   stopRecording,
 }: ChatControlsProps) {
+  const t = useTranslations("supportChat.customer.composer");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [recordingTime, setRecordingTime] = useState(0);
 
@@ -75,9 +80,12 @@ export function ChatControls({
           <Button
             type="button"
             variant="ghost"
-            onClick={() => fileInputRef.current?.click()}
+            onClick={() => {
+              onAttachClick?.();
+              fileInputRef.current?.click();
+            }}
             className="h-10 w-10 rounded-full p-0 text-[#54656F] hover:bg-[#D9DDE1]"
-            aria-label="Attach files"
+            aria-label={t("attachAria")}
           >
             {uploadIsPending ? (
               <Loader2 className="h-5 w-5 animate-spin" />
@@ -103,7 +111,7 @@ export function ChatControls({
                 ? "bg-[#FF3B30] text-white hover:bg-[#E6352B]"
                 : "text-[#54656F] hover:bg-[#D9DDE1]",
             )}
-            aria-label={isRecording ? "Stop recording" : "Start recording"}
+            aria-label={isRecording ? t("recordStopAria") : t("recordStartAria")}
           >
             {isRecording ? (
               <Square className="h-4 w-4 fill-current" />
@@ -122,7 +130,7 @@ export function ChatControls({
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-red-500" />
                 </span>
                 <span className="text-[13px] font-medium text-[#111B21]">
-                  Recording {formatTime(recordingTime)}
+                  {t("recordingLabel", { time: formatTime(recordingTime) })}
                 </span>
               </div>
               <Button
@@ -131,7 +139,7 @@ export function ChatControls({
                 variant="ghost"
                 className="h-8 rounded-full px-3 text-[12px] font-semibold text-red-600 hover:bg-red-50"
               >
-                Stop
+                {t("stop")}
               </Button>
             </div>
           ) : (
@@ -144,7 +152,7 @@ export function ChatControls({
                   onSend(e as unknown as React.FormEvent);
                 }
               }}
-              placeholder="Type a message"
+              placeholder={t("placeholder")}
               rows={1}
               className={cn(
                 "max-h-32 min-h-[42px] resize-none rounded-lg border-0 bg-white py-2.5 pl-4 pr-3 text-[14px] text-[#111B21] shadow-none placeholder:text-[#54656F] focus-visible:ring-1 focus-visible:ring-primary/40",
@@ -163,7 +171,7 @@ export function ChatControls({
                 ? "bg-primary text-white hover:bg-primary/90"
                 : "bg-black/10 text-white hover:bg-black/10",
             )}
-            aria-label="Send message"
+            aria-label={t("sendAria")}
           >
             {isSending ? (
               <Loader2 className="h-5 w-5 animate-spin" />

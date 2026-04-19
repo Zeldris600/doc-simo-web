@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { FileText, X } from "@/lib/icons";
 import { SupportAttachment } from "@/services/support.service";
@@ -11,6 +12,7 @@ interface AttachmentPreviewProps {
 }
 
 export function AttachmentPreview({ attachments, onRemove }: AttachmentPreviewProps) {
+  const t = useTranslations("supportChat.customer");
   if (attachments.length === 0) return null;
 
   return (
@@ -35,8 +37,8 @@ export function AttachmentPreview({ attachments, onRemove }: AttachmentPreviewPr
             <button
               type="button"
               onClick={() => onRemove(i)}
-              className="absolute -right-1 -top-1 flex h-6 w-6 items-center justify-center rounded-full bg-[#54656F] text-white shadow-md opacity-0 transition-opacity group-hover:opacity-100"
-              aria-label="Remove attachment"
+              className="absolute -right-1 -top-1 flex h-6 w-6 items-center justify-center rounded-full bg-[#54656F] text-white opacity-0 transition-opacity group-hover:opacity-100"
+              aria-label={t("removeAttachmentAria")}
             >
               <X className="h-3 w-3" />
             </button>

@@ -1,13 +1,20 @@
 "use client";
 
 import React from "react";
+import { useTranslations } from "next-intl";
 import { Search, Plus, Loader2 } from "@/lib/icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { UseMutationResult } from "@tanstack/react-query";
-import { SupportThread, CreateThreadResponse } from "@/services/support.service";
+import {
+  SupportThread,
+  CreateThreadResponse,
+  getSupportThreadDisplayName,
+  getSupportThreadInitials,
+} from "@/services/support.service";
 import { ApiError } from "@/types/api";
+import Image from "next/image";
 
 interface ThreadRegistryProps {
   threads: SupportThread[];
@@ -33,6 +40,9 @@ export function ThreadRegistry({
   createMutation,
   getDateLabel,
 }: ThreadRegistryProps) {
+  const t = useTranslations("supportChat.customer");
+  const unnamed = (suffix: string) => t("unnamedThread", { suffix });
+
   return (
     <aside
       className={cn(
@@ -43,10 +53,10 @@ export function ThreadRegistry({
       <header className="flex h-[60px] shrink-0 items-center justify-between gap-3 bg-[#F0F2F5] px-3">
         <div className="min-w-0 pl-1">
           <h2 className="text-[16px] font-bold tracking-tight text-[#111B21]">
-            Chats
+            {t("sidebarTitle")}
           </h2>
           <p className="text-[11px] font-medium text-[#54656F]">
-            {threads.length} consultation{threads.length === 1 ? "" : "s"}
+            {t("consultationCount", { count: threads.length })}
           </p>
         </div>
         <Button
@@ -54,6 +64,7 @@ export function ThreadRegistry({
           variant="ghost"
           onClick={() => createMutation.mutate(undefined)}
           disabled={createMutation.isPending}
+          aria-label={t("newChatAria")}
           className="h-10 w-10 shrink-0 rounded-full text-[#54656F] hover:bg-[#D9DDE1] hover:text-[#111B21]"
         >
           {createMutation.isPending ? (
@@ -69,7 +80,7 @@ export function ThreadRegistry({
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#54656F]" />
           <Input
             type="text"
-            placeholder="Search or start new chat"
+            placeholder={t("searchPlaceholder")}
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             className="h-9 border-0 bg-[#F0F2F5] pl-9 text-[14px] text-[#111B21] placeholder:text-[#54656F] focus-visible:ring-0 focus-visible:ring-offset-0 rounded-lg"
@@ -78,33 +89,48 @@ export function ThreadRegistry({
       </div>
 
       <div className="flex-1 overflow-y-auto">
-        {threads.map((t) => {
-          const active = activeThreadId === t.id;
+        {threads.map((thread) => {
+          const active = activeThreadId === thread.id;
+          const displayName = getSupportThreadDisplayName(thread, unnamed);
+          const initials = getSupportThreadInitials(thread, unnamed);
+          const avatarUrl = thread.customer?.image;
           return (
             <button
-              key={t.id}
+              key={thread.id}
               type="button"
-              onClick={() => onThreadSelect(t.id)}
+              onClick={() => onThreadSelect(thread.id)}
               className={cn(
                 "flex w-full items-center gap-3 border-b border-black/5 px-3 py-3 text-left transition-colors hover:bg-[#F0F2F5]",
                 active &&
                   "border-l-[3px] border-l-primary bg-[#F0F2F5] pl-[9px]",
               )}
             >
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-[15px] font-bold text-primary">
-                {(t.id.slice(-2) || "?").toUpperCase()}
+              <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl bg-primary/10">
+                {avatarUrl ? (
+                  <Image
+                    src={avatarUrl}
+                    alt=""
+                    width={48}
+                    height={48}
+                    className="h-12 w-12 object-cover"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center text-[15px] font-bold text-primary">
+                    {initials}
+                  </div>
+                )}
               </div>
               <div className="min-w-0 flex-1">
                 <div className="flex items-baseline justify-between gap-2">
                   <span className="truncate text-sm font-bold text-[#111B21]">
-                    Chat #{t.id.slice(-4)}
+                    {displayName}
                   </span>
                   <span className="shrink-0 text-[10px] font-bold text-[#54656F]">
-                    {getDateLabel(t.updatedAt || t.createdAt)}
+                    {getDateLabel(thread.updatedAt || thread.createdAt)}
                   </span>
                 </div>
                 <p className="truncate text-[12px] font-medium text-[#54656F]">
-                  Tap to open conversation
+                  {t("threadPreview", { id: thread.id.slice(-4) })}
                 </p>
               </div>
             </button>

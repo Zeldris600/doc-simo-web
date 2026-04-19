@@ -25,6 +25,7 @@ import {
   Globe,
   LifeBuoy,
   MessageSquare,
+  Send,
   type IconType,
 } from "@/lib/icons";
 
@@ -160,6 +161,40 @@ export function AdminSidebar({
           url: "/admin/support",
           icon: MessageSquare,
           permission: "support:read",
+        },
+      ],
+    },
+    {
+      title: "Content",
+      url: "/admin/blog",
+      icon: FileText,
+      permission: "blog:write",
+      items: [
+        {
+          title: "Blog posts",
+          url: "/admin/blog",
+          icon: FileText,
+          permission: "blog:write",
+        },
+        {
+          title: "New post",
+          url: "/admin/blog/new",
+          icon: PlusCircle,
+          permission: "blog:write",
+        },
+      ],
+    },
+    {
+      title: "Broadcasts",
+      url: "/admin/broadcasts",
+      icon: Send,
+      permission: "notifications:write",
+      items: [
+        {
+          title: "Notify users",
+          url: "/admin/broadcasts",
+          icon: Send,
+          permission: "notifications:write",
         },
       ],
     },

@@ -29,6 +29,7 @@ import { CheckoutSkeleton } from "@/components/skeletons/checkout-skeleton";
 import { useDiscounts } from "@/hooks/use-discount";
 import { Tag, X } from "@/lib/icons";
 import { DELIVERY_TIMELINES, DELIVERY_CITIES } from "@/lib/delivery-config";
+import { CheckoutPaymentPusher } from "@/components/realtime/checkout-payment-pusher";
 
 export default function OrderCheckoutPage() {
   const t = useTranslations("checkout");
@@ -130,6 +131,7 @@ export default function OrderCheckoutPage() {
 
   return (
     <div className="container mx-auto max-w-6xl px-4 pt-24 md:pt-32 pb-8 md:pb-16">
+      <CheckoutPaymentPusher orderId={orderId} />
       <div className="flex items-center gap-2 mb-8 group">
         <Link
           href="/cart"

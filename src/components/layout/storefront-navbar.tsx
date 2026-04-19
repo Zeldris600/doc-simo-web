@@ -138,6 +138,19 @@ export function StorefrontNavbar() {
                         : "text-primary hover:bg-black/5",
                     )}
                   >
+                    <Link href="/blog">{t("blog")}</Link>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <NavigationMenuLink
+                    asChild
+                    className={cn(
+                      "px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs font-medium transition-all rounded-full cursor-pointer",
+                      headerActive
+                        ? "text-foreground hover:text-primary hover:bg-primary/5"
+                        : "text-primary hover:bg-black/5",
+                    )}
+                  >
                     <Link href="/contact">{t("contact")}</Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
@@ -258,6 +271,12 @@ export function StorefrontNavbar() {
                     className="px-4 py-3 text-sm font-medium text-foreground/70 hover:text-primary hover:bg-primary/5 rounded-xl transition-all"
                   >
                     {t("about")}
+                  </Link>
+                  <Link
+                    href="/blog"
+                    className="px-4 py-3 text-sm font-medium text-foreground/70 hover:text-primary hover:bg-primary/5 rounded-xl transition-all"
+                  >
+                    {t("blog")}
                   </Link>
                   <Link
                     href="/contact"
