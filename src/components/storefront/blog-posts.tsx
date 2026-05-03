@@ -45,21 +45,28 @@ export function BlogPosts() {
             href="/blog"
             className="inline-flex items-center text-[10px] font-black tracking-widest text-primary hover:opacity-70 transition-all group uppercase bg-primary/5 px-6 py-3 rounded-full"
           >
-            View All Articles <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            View All Articles{" "}
+            <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
 
         {isLoading ? (
           <BlogSkeleton />
         ) : posts.length === 0 ? (
-          <p className="text-center py-20 text-foreground/30 font-bold">No articles published yet.</p>
+          <p className="text-center py-20 text-foreground/30 font-bold">
+            No articles published yet.
+          </p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             {posts.map((post) => (
-              <Link key={post.id} href={`/blog/${post.slug}`} className="group cursor-pointer block">
+              <Link
+                key={post.id}
+                href={`/blog/${post.slug}`}
+                className="group cursor-pointer block"
+              >
                 <div className="relative aspect-16/10 rounded-2xl overflow-hidden mb-6 transition-transform duration-700 group-hover:scale-[1.03] shadow-lg shadow-black/5 ring-1 ring-black/5">
                   <Image
-                    src={post.image || "/extract_blog.png"}
+                    src={post.coverImageUrl || "/extract_blog.png"}
                     alt={post.title}
                     fill
                     className="object-cover"
@@ -71,14 +78,14 @@ export function BlogPosts() {
                     {new Date(post.createdAt).toLocaleDateString("en-US", {
                       month: "short",
                       day: "2-digit",
-                      year: "numeric"
+                      year: "numeric",
                     })}
                   </p>
                   <h3 className="text-xl font-black text-primary mb-3 group-hover:text-primary/70 transition-colors leading-tight">
                     {post.title}
                   </h3>
                   <p className="text-sm text-foreground/50 line-clamp-2 font-medium leading-relaxed">
-                    {post.description}
+                    {post.excerpt ?? ""}
                   </p>
                 </div>
               </Link>
