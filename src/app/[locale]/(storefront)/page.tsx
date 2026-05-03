@@ -1,34 +1,19 @@
 "use client";
 
 import { Hero } from "@/components/storefront/hero";
-import { LogosStrip } from "@/components/storefront/logos-strip";
+import { BlogPosts } from "@/components/storefront/blog-posts";
 import { FeaturedProducts } from "@/components/storefront/featured-products";
-import { MeetDoctor } from "@/components/storefront/meet-doctor";
-import { VideoSection } from "@/components/storefront/video-section";
-import { Features } from "@/components/storefront/features";
-import { CustomerReviews } from "@/components/storefront/customer-reviews";
-import { ProcessSection } from "@/components/storefront/process-section";
 import { CategoryShowcase } from "@/components/storefront/category-showcase";
 import { ProductGrid } from "@/components/storefront/product-grid";
-import { DiscountSection } from "@/components/storefront/discount-section";
-import { TrustBanner } from "@/components/storefront/trust-banner";
-import { HealthVideos } from "@/components/storefront/health-videos";
-import { FaqSection } from "@/components/storefront/faq-section";
 import { useProducts } from "@/hooks/use-product";
 import { useCategories } from "@/hooks/use-category";
-import { useBlogPosts } from "@/hooks/use-blog";
-import { Category } from "@/types/api";
+import { Link } from "@/i18n/routing";
+import { ShoppingBag, Heart, Play } from "@/lib/icons";
 
 export default function HomePage() {
-  const { data: blogList, isLoading: isLoadingBlog } = useBlogPosts({
-    page: 1,
-    limit: 12,
-  });
-  const blogPosts = blogList?.data ?? [];
-
   const { data: hotProductsRes, isLoading: isLoadingHot } = useProducts({
     isHot: true,
-    limit: 6,
+    limit: 8,
   });
   const { data: promotionProductsRes, isLoading: isLoadingPromo } = useProducts(
     { isPromotion: true, limit: 6 },
@@ -40,85 +25,108 @@ export default function HomePage() {
   const categories = categoriesRes?.data || [];
 
   return (
-    <div className="flex flex-col pb-0">
-      {/* 1. Hero — Clinic-first, full-screen impression */}
-      <Hero />
+    <div className="flex flex-col pb-20 md:pb-0">
+      {/* ── MOBILE HERO ── */}
+      <section className="md:hidden pt-28  bg-white">
+        <div className="flex flex-col items-center text-center space-y-8">
+          <div className="relative w-full aspect-square max-w-sm overflow-hidden shadow-2xl shadow-black/5">
+            <div className="">
+              <h1 className="text-2xl font-black text-primary tracking-tight">
+                DOCTASIMO
+              </h1>
+              <p className="text-lg text-primary font-medium">
+                Natural Health Platform
+              </p>
+            </div>
+            <img
+              src="/doctor.png"
+              alt="Dr. Simo"
+              className="w-full h-full object-cover object-top"
+            />
+          </div>
+          <div className="space-y-1">
+            <h1 className="text-3xl font-black text-primary tracking-tight">
+              Welcome to <span className="text-primary/70">Doctasimo</span>
+            </h1>
+            <p className="text-sm font-bold text-foreground/30">
+              Your trusted naturopath
+            </p>
+          </div>
 
-      {/* 2. Trust logos — African herbal traditions */}
-      <LogosStrip />
+          {/* Quick Action Tabs */}
+          <div className="grid grid-cols-3 w-full gap-2 px-5 pt-2">
+            <Link
+              href="/products"
+              className="flex items-center justify-center gap-2 py-3 bg-primary rounded-2xl active:scale-95 transition-all shadow-lg shadow-primary/10 border border-primary/10"
+            >
+              <ShoppingBag className="w-4 h-4 text-white" />
+              <span className="text-[13px] font-bold text-white">Shop</span>
+            </Link>
+            <Link
+              href="/consultation"
+              className="flex items-center justify-center gap-2 py-3 bg-[#f5faf6] rounded-2xl border border-primary/5 active:scale-95 transition-all"
+            >
+              <Heart className="w-4 h-4 text-primary" />
+              <span className="text-[13px] font-bold text-primary">
+                Consult
+              </span>
+            </Link>
+            <Link
+              href="/blog"
+              className="flex items-center justify-center gap-2 py-3 bg-[#f5faf6] rounded-2xl border border-primary/5 active:scale-95 transition-all"
+            >
+              <Play className="w-4 h-4 text-primary" />
+              <span className="text-[13px] font-bold text-primary whitespace-nowrap">
+                Videos
+              </span>
+            </Link>
+          </div>
+        </div>
+      </section>
 
-      {/* 3. Featured Products — Prominent product advertising */}
+      {/* ── DESKTOP HERO ── */}
+      <div className="hidden md:block">
+        <Hero />
+      </div>
+
+      {/* Popular Products */}
+      <section className="py-12">
+        <ProductGrid
+          title="Popular Products"
+          subtitle="Our most sought-after botanical formulations, hand-selected by Dr. Simo's medical team."
+          products={hotProducts}
+          actionText="View All"
+          actionUrl="/products"
+          isLoading={isLoadingHot}
+        />
+      </section>
+
+      {/* Featured Products */}
       <FeaturedProducts
         products={promotionProducts}
         isLoading={isLoadingPromo}
       />
 
-      {/* 4. Meet the Doctor — Human authority & connection */}
-      <MeetDoctor />
-
-      {/* 5. Featured blog video / story */}
-      <VideoSection posts={blogPosts} isLoading={isLoadingBlog} />
-
-      {/* 5. Why Doctasimo — 6-feature trust grid */}
-      <Features />
-
-      {/* 6. Customer Reviews — Social proof grid */}
-      <CustomerReviews />
-
-      {/* 7. Process — Transparency (soil to supplement) */}
-      <ProcessSection />
-
-      {/* 8. Discount — Coupon code offer */}
-      <DiscountSection />
-
-      {/* 9. Category Showcase — Browse by need */}
+      {/* Categories */}
       <CategoryShowcase />
 
-      {/* 10. Hot Products — Clinic-recommended formulations */}
-      <ProductGrid
-        title="Clinic-Recommended Formulations"
-        subtitle="Our most sought-after botanical formulations, hand-selected by Dr. Simo's medical team."
-        products={hotProducts}
-        actionText="Browse All Products"
-        actionUrl="/products"
-        isLoading={isLoadingHot}
-      />
+      {/* Latest Blog Posts / Health Insights */}
+      <BlogPosts />
 
-      {/* 11. Dynamic Category product rows */}
-      {!isLoadingCats &&
-        categories.map((category) => (
-          <CategoryProductRow key={category.id} category={category} />
-        ))}
-
-      {/* 12. Stats Banner */}
-      <TrustBanner />
-
-      {/* 13. Blog highlights (replaces static video grid) */}
-      <HealthVideos posts={blogPosts} isLoading={isLoadingBlog} />
-
-      {/* 15. FAQ */}
-      <FaqSection />
+      {/* Simple CTA for Mobile */}
+      <div className="md:hidden px-6 py-16">
+        <div className="bg-primary rounded-[40px] p-10 text-center space-y-8 shadow-2xl shadow-primary/20">
+          <h2 className="text-3xl font-black text-white tracking-tighter leading-tight">
+            Ready to start your natural healing journey?
+          </h2>
+          <Link
+            href="/consultation"
+            className="inline-flex items-center justify-center w-full bg-[#f2c94c] text-primary font-black py-4 rounded-2xl active:scale-95 transition-all shadow-lg uppercase tracking-widest text-xs"
+          >
+            Book Free Consultation
+          </Link>
+        </div>
+      </div>
     </div>
-  );
-}
-
-function CategoryProductRow({ category }: { category: Category }) {
-  const { data: res, isLoading } = useProducts({
-    category: category.slug,
-    limit: 6,
-  });
-  const products = res?.data || [];
-
-  if (!isLoading && products.length === 0) return null;
-
-  return (
-    <ProductGrid
-      title={category.name}
-      subtitle={category.description}
-      products={products}
-      actionText={`Explore ${category.name}`}
-      actionUrl={`/products?category=${category.slug}`}
-      isLoading={isLoading}
-    />
   );
 }

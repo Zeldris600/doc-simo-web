@@ -15,7 +15,10 @@ export function useSupportTypingEmit(
   enabled: boolean,
 ) {
   const bodyRef = useRef(messageBody);
-  bodyRef.current = messageBody;
+
+  useEffect(() => {
+    bodyRef.current = messageBody;
+  }, [messageBody]);
 
   useEffect(() => {
     if (!threadId || !enabled) return;

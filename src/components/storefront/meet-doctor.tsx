@@ -22,7 +22,7 @@ export function MeetDoctor() {
     <section className="px-4 sm:px-6 py-24 lg:px-12 bg-white relative w-full overflow-hidden">
       <div className="container max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16 lg:gap-20">
         {/* Doctor image — left on desktop */}
-        <div className="flex-1 relative aspect-[3/4] w-full max-w-sm mx-auto lg:max-w-none rounded-[2.5rem] overflow-hidden ring-1 ring-black/5 shadow-xl shadow-black/5 order-1">
+        <div className="flex-1 relative aspect-[3/4] w-full max-w-sm mx-auto lg:max-w-none rounded-xl overflow-hidden ring-1 ring-black/5 shadow-xl shadow-black/5 order-1">
           <Image
             src="/doctor.png"
             alt="Dr. Simo – Doctasimo Founder & Chief Medical Officer"

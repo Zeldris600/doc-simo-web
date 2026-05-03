@@ -1,94 +1,130 @@
+"use client";
+
 import { useTranslations } from "next-intl";
+import { MeetDoctor } from "@/components/storefront/meet-doctor";
+import { Features } from "@/components/storefront/features";
+import { ProcessSection } from "@/components/storefront/process-section";
+import { TrustBanner } from "@/components/storefront/trust-banner";
+import { FaqSection } from "@/components/storefront/faq-section";
+import { CategoryShowcase } from "@/components/storefront/category-showcase";
+import { Star } from "@/lib/icons";
 import Image from "next/image";
-import { ShieldCheck, Leaf, TestTube } from "@/lib/icons";
+
+const AVATARS = [
+  "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=80&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=80&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=80&auto=format&fit=crop",
+];
+
+const QUICK_FEATURES = [
+  {
+    emoji: "💬",
+    label: "Book a Consultation",
+    sub: "Douala clinic or online",
+  },
+  {
+    emoji: "🌱",
+    label: "Personalised Plan",
+    sub: "Tailored to your body",
+  },
+  {
+    emoji: "🇨🇲",
+    label: "Made in Cameroon",
+    sub: "Bamileke · Beti · Fulbe",
+  },
+];
 
 export default function AboutPage() {
   const t = useTranslations("about");
 
   return (
     <div className="bg-white min-h-screen animate-in fade-in duration-700 pt-24 md:pt-32">
+      {/* Header section with mission */}
       <div className="container mx-auto px-4 py-8 md:py-12 max-w-6xl">
-        <div className="flex flex-col lg:flex-row gap-16 lg:gap-24 items-center">
-          <div className="flex-1 space-y-10">
-            <div className="space-y-3">
-              <h1 className="text-2xl md:text-3xl lg:text-4xl font-black text-black tracking-tight leading-none uppercase">
-                {t("title")}
-              </h1>
-              <p className="text-sm md:text-base text-black/60 font-medium max-w-lg leading-relaxed">
-                {t("subtitle")}
+        <div className="space-y-6 text-center max-w-3xl mx-auto mb-16">
+          <h1 className="text-3xl md:text-5xl font-black text-primary tracking-tight uppercase">
+            {t("title")}
+          </h1>
+          <p className="text-lg text-foreground/60 font-medium leading-relaxed">
+            {t("subtitle")}
+          </p>
+          
+          {/* Social proof moved from Home */}
+          <div className="flex flex-col items-center gap-4 pt-6 border-t border-black/5">
+            <div className="flex -space-x-2">
+              {AVATARS.map((src, i) => (
+                <div
+                  key={i}
+                  className="w-10 h-10 rounded-full border-2 border-white overflow-hidden ring-1 ring-primary/10 shadow-sm"
+                >
+                  <Image
+                    src={src}
+                    alt="Patient"
+                    width={40}
+                    height={40}
+                    className="object-cover"
+                  />
+                </div>
+              ))}
+              <div className="w-10 h-10 rounded-full border-2 border-white bg-primary flex items-center justify-center text-white text-[10px] font-black ring-1 ring-primary/10">
+                +2.8k
+              </div>
+            </div>
+            <div>
+              <div className="flex items-center justify-center gap-1">
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    className="w-4 h-4 fill-[#f2c94c] text-[#f2c94c]"
+                  />
+                ))}
+                <span className="ml-1 text-base font-black text-foreground">
+                  4.9
+                </span>
+              </div>
+              <p className="text-xs text-foreground/50 font-bold">
+                Trusted by 2,800+ patients in Cameroon
               </p>
             </div>
-
-            <div className="bg-black/[0.02] p-8 md:p-10 rounded-[32px] border border-black/5 space-y-4 shadow-none">
-              <h2 className="text-xl md:text-2xl font-bold text-black tracking-tight">{t("mission")}</h2>
-              <p className="text-sm md:text-base font-medium text-black/70 leading-relaxed text-justify md:text-left">
-                {t("missionDesc")}
-              </p>
-            </div>
-
-            <div className="grid sm:grid-cols-2 gap-8 pt-4">
-              <div className="space-y-4">
-                <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
-                  <ShieldCheck className="h-6 w-6" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-black text-lg mb-1">{t("quality")}</h3>
-                  <p className="text-sm text-black/40 font-medium">
-                    {t("qualityDesc")}
-                  </p>
-                </div>
-              </div>
-              <div className="space-y-4">
-                <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
-                  <Leaf className="h-6 w-6" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-black text-lg mb-1">{t("purity")}</h3>
-                  <p className="text-sm text-black/40 font-medium">
-                    {t("purityDesc")}
-                  </p>
-                </div>
-              </div>
-              <div className="space-y-4 sm:col-span-2">
-                <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
-                  <TestTube className="h-6 w-6" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-black text-lg mb-1">{t("innovation")}</h3>
-                  <p className="text-sm text-black/40 font-medium max-w-md">
-                    {t("innovationDesc")}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex-1 w-full max-w-lg lg:max-w-none relative">
-            <div className="aspect-[4/5] rounded-[40px] overflow-hidden relative shadow-2xl shadow-black/10 border border-black/5">
-              <Image
-                src="/doctor.png"
-                alt="Middle-aged African doctor specializing in traditional formulations"
-                fill
-                className="object-cover hover:scale-105 transition-transform duration-1000"
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                priority
-              />
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-10 pt-32">
-                <div className="flex flex-col gap-3">
-                  <div className="bg-primary/20 backdrop-blur-md w-fit text-white px-4 py-2 text-xs font-bold uppercase tracking-widest rounded-xl">
-                    Clinical Expert
-                  </div>
-                  <div className="text-white/90 font-medium text-base">
-                    Advancing Traditional Botanical Medicine
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            {/* Decorative background element */}
-            <div className="absolute -z-10 -inset-6 bg-primary/5 rounded-[48px] rotate-3 transition-transform hover:rotate-6 duration-700"></div>
           </div>
         </div>
+
+        {/* Quick features moved from Home */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 pb-20 border-b border-black/5">
+          {QUICK_FEATURES.map((f) => (
+            <div key={f.label} className="text-center space-y-2">
+              <span className="text-4xl">{f.emoji}</span>
+              <p className="text-sm font-black text-primary leading-tight">
+                {f.label}
+              </p>
+              <p className="text-xs text-foreground/40 font-bold">
+                {f.sub}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Meet the Doctor - Detailed view */}
+      <MeetDoctor />
+
+      {/* Why Doctasimo - Feature grid */}
+      <Features />
+
+      {/* Our Process - Transparency */}
+      <ProcessSection />
+
+      {/* Trust Stats */}
+      <TrustBanner />
+
+      {/* Collections Overview */}
+      <div className="py-20 bg-[#f5faf6]">
+        <CategoryShowcase />
+      </div>
+
+      {/* FAQ - Common questions about our practice */}
+      <div className="pb-20">
+        <FaqSection />
       </div>
     </div>
   );

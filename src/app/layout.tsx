@@ -14,6 +14,11 @@ export const metadata: Metadata = {
   title: "Doctasimo - Clinical Herbal Extracts",
   description:
     "Your best source for natural, clinical herbal supplements by Doctasimo.",
+  icons: {
+    icon: "/icons/doctasimo-icon-transparent.png",
+    shortcut: "/icons/doctasimo-icon-transparent.png",
+    apple: "/icons/doctasimo-icon-transparent.png",
+  },
 };
 
 export default function RootLayout({

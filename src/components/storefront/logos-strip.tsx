@@ -23,20 +23,12 @@ const TRADITIONS = [
   },
 ];
 
-const SOURCED_REGIONS = [
-  "Cameroon Highlands",
-  "Congo Basin",
-  "Sahel Savanna",
-  "West African Coast",
-  "Great Rift Valley",
-];
-
 export function LogosStrip() {
   return (
-    <section className="bg-white border-y border-[#f2c94c]/15 py-10 px-4 sm:px-6 lg:px-12 overflow-hidden">
-      <div className="container max-w-7xl mx-auto space-y-8">
+    <section className="bg-white border-y border-[#f2c94c]/10 py-12 px-4 sm:px-6 lg:px-12">
+      <div className="container max-w-7xl mx-auto space-y-10">
         {/* Heading */}
-        <p className="text-center text-[10px] font-bold uppercase tracking-widest text-primary/75">
+        <p className="text-center text-[10px] font-black uppercase tracking-[0.2em] text-primary/50">
           Rooted in African Botanical Traditions
         </p>
 
@@ -45,37 +37,16 @@ export function LogosStrip() {
           {TRADITIONS.map(({ emoji, label, sub }) => (
             <div
               key={label}
-              className="flex flex-col items-center gap-1 px-5 py-4 rounded-2xl bg-[#f5faf6] hover:bg-[#eaf2e8] transition-colors min-w-[110px] text-center"
+              className="flex flex-col items-center gap-1 px-6 py-6 rounded-[32px] bg-[#f5faf6] hover:bg-[#eaf2e8] transition-all duration-300 min-w-[140px] text-center border border-black/[0.03] hover:-translate-y-1"
             >
-              <span className="text-3xl">{emoji}</span>
-              <p className="text-xs font-black text-primary leading-tight mt-1">
+              <span className="text-4xl mb-2">{emoji}</span>
+              <p className="text-xs font-black text-primary leading-tight">
                 {label}
               </p>
-              <p className="text-[10px] text-foreground/70 font-medium leading-snug">
+              <p className="text-[10px] text-foreground/40 font-bold leading-snug mt-1">
                 {sub}
               </p>
             </div>
-          ))}
-        </div>
-
-        {/* Divider */}
-        <div className="flex items-center gap-4">
-          <div className="flex-1 h-px bg-black/5" />
-          <p className="text-[10px] font-bold uppercase tracking-widest text-primary/70 whitespace-nowrap">
-            Wild-harvested from
-          </p>
-          <div className="flex-1 h-px bg-black/5" />
-        </div>
-
-        {/* Source regions */}
-        <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10">
-          {SOURCED_REGIONS.map((region) => (
-            <span
-              key={region}
-              className="text-sm font-black text-primary/85 hover:text-primary transition-colors cursor-default select-none tracking-tight"
-            >
-              {region}
-            </span>
           ))}
         </div>
       </div>

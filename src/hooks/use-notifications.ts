@@ -9,12 +9,15 @@ import {
 import { NotificationsService } from "@/services/notifications.service";
 import type { UserNotification } from "@/types/notification";
 import type { ApiError } from "@/types/api";
+import { useSession } from "next-auth/react";
 
 export function useNotificationsInfinite(
   params: { unreadOnly?: boolean; limit?: number },
   options?: { enabled?: boolean },
 ) {
+  const { status } = useSession();
   const limit = params.limit ?? 20;
+
   return useInfiniteQuery({
     queryKey: ["notifications", "infinite", params.unreadOnly ?? false, limit],
     queryFn: ({ pageParam }: { pageParam: string | undefined }) =>
@@ -25,7 +28,7 @@ export function useNotificationsInfinite(
       }),
     initialPageParam: undefined as string | undefined,
     getNextPageParam: (lastPage) => lastPage.nextCursor || undefined,
-    enabled: options?.enabled ?? true,
+    enabled: (options?.enabled ?? true) && status === "authenticated",
   });
 }
 

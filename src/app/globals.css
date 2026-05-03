@@ -167,3 +167,13 @@
     background-color: color-mix(in srgb, var(--primary) 20%, transparent);
   }
 }
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}

@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Link } from "@/i18n/routing";
-import { Star, PhoneCall, ArrowRight } from "@/lib/icons";
+import { PhoneCall, ArrowRight } from "@/lib/icons";
 import Image from "next/image";
 
 import { HeroSkeleton } from "@/components/skeletons/hero-skeleton";
@@ -10,16 +10,9 @@ import { HeroSkeleton } from "@/components/skeletons/hero-skeleton";
 // African-inspired geometric SVG pattern (Kente / Ndebele diamonds)
 const AFRICAN_PATTERN = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cg fill='none'%3E%3Cpolygon points='30,4 56,18 56,42 30,56 4,42 4,18' stroke='%23173b27' stroke-width='0.8' fill='none' opacity='0.16'/%3E%3Cpolygon points='30,12 48,22 48,38 30,48 12,38 12,22' stroke='%23f2c94c' stroke-width='0.5' fill='none' opacity='0.13'/%3E%3Ccircle cx='30' cy='30' r='2' fill='%23173b27' opacity='0.1'/%3E%3C/g%3E%3C/svg%3E")`;
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface HeroProps {
   isLoading?: boolean;
 }
-
-const AVATARS = [
-  "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=80&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=80&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=80&auto=format&fit=crop",
-];
 
 export function Hero({ isLoading }: HeroProps) {
   if (isLoading) return <HeroSkeleton />;
@@ -100,89 +93,19 @@ export function Hero({ isLoading }: HeroProps) {
               Book Free Consultation
             </Link>
             <Link
-              href="#how-it-works"
+              href="/about"
               className="inline-flex items-center gap-2 rounded-full border-2 border-primary/20 bg-white/60 backdrop-blur-sm px-7 py-3.5 text-sm font-bold text-primary hover:bg-primary/5 transition-all duration-300 hover:scale-105 active:scale-95"
             >
-              How it works
+              Learn Our Story
               <ArrowRight className="h-4 w-4 shrink-0" aria-hidden />
             </Link>
-          </div>
-
-          {/* Social proof */}
-          <div className="flex items-center justify-center lg:justify-start gap-4 pt-2">
-            <div className="flex -space-x-2">
-              {AVATARS.map((src, i) => (
-                <div
-                  key={i}
-                  className="w-9 h-9 rounded-full border-2 border-white overflow-hidden ring-1 ring-primary/10"
-                >
-                  <Image
-                    src={src}
-                    alt="Patient"
-                    width={36}
-                    height={36}
-                    className="object-cover"
-                  />
-                </div>
-              ))}
-              <div className="w-9 h-9 rounded-full border-2 border-white bg-primary flex items-center justify-center text-white text-[10px] font-black ring-1 ring-primary/10">
-                +2.8k
-              </div>
-            </div>
-            <div>
-              <div className="flex items-center gap-1">
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    className="w-3.5 h-3.5 fill-[#f2c94c] text-[#f2c94c]"
-                  />
-                ))}
-                <span className="ml-1 text-sm font-bold text-foreground">
-                  4.9
-                </span>
-              </div>
-              <p className="text-xs text-foreground/50 font-medium">
-                Trusted by 2,800+ patients in Cameroon
-              </p>
-            </div>
-          </div>
-
-          {/* Quick feature row */}
-          <div className="grid grid-cols-3 gap-4 pt-6 border-t border-[#f2c94c]/20">
-            {[
-              {
-                emoji: "💬",
-                label: "Book a Consultation",
-                sub: "Douala clinic or online",
-              },
-              {
-                emoji: "🌱",
-                label: "Personalised Plan",
-                sub: "Tailored to your body",
-              },
-              {
-                emoji: "🇨🇲",
-                label: "Made in Cameroon",
-                sub: "Bamileke · Beti · Fulbe",
-              },
-            ].map((f) => (
-              <div key={f.label} className="text-center lg:text-left">
-                <span className="text-xl">{f.emoji}</span>
-                <p className="text-xs font-bold text-primary leading-tight mt-1">
-                  {f.label}
-                </p>
-                <p className="text-[11px] text-foreground/50 font-medium mt-0.5">
-                  {f.sub}
-                </p>
-              </div>
-            ))}
           </div>
         </div>
 
         {/* ── RIGHT DOCTOR IMAGE ── */}
         <div className="flex-1 relative w-full max-w-md lg:max-w-none flex items-end justify-center">
           {/* Doctor photo container */}
-          <div className="relative w-full max-w-sm lg:max-w-md aspect-[3/4] rounded-[2.5rem] overflow-hidden shadow-2xl shadow-primary/10 ring-1 ring-primary/10">
+          <div className="relative w-full max-w-sm lg:max-w-md aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl shadow-primary/10 ring-1 ring-primary/10">
             <Image
               src="/dr-simeon.png"
               alt="Dr. Simeon - Doctasimo Chief Medical Officer"
