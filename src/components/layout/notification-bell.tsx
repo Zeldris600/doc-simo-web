@@ -41,7 +41,7 @@ export function NotificationBell({ headerActive }: { headerActive: boolean }) {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useNotificationsInfinite({ limit: 15 }, { enabled: !!user?.token });
+  } = useNotificationsInfinite({ limit: 15 });
 
   const markRead = useMarkNotificationRead();
 

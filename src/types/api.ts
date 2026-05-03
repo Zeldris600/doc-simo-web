@@ -228,6 +228,51 @@ export type OrderStatus =
   | "CANCELLED"
   | "REFUNDED";
 
+export type JsonValue =
+  | string
+  | number
+  | boolean
+  | null
+  | JsonValue[]
+  | { [key: string]: JsonValue };
+
+export interface OrderStatusHistoryActor {
+  id: string;
+  name: string | null;
+  role: string;
+  phoneNumber: string | null;
+}
+
+export interface OrderStatusHistoryTimelineEntry {
+  id: string;
+  occurredAt: string;
+  fromStatus: OrderStatus | null;
+  toStatus: OrderStatus;
+  message: string;
+  isLatest: boolean;
+  metadata: JsonValue | null;
+  actor: OrderStatusHistoryActor | null;
+}
+
+/** `GET /orders/:id/status-history` — `timeline` is newest first. */
+export interface OrderStatusHistoryPayload {
+  order: {
+    id: string;
+    orderNumber: string;
+    currentStatus: OrderStatus;
+    placedAt: string;
+  };
+  summary: {
+    trackingTitle: string;
+    orderNumber: string;
+    headlineMessage: string;
+    headlineAt: string;
+    lastEventMessage: string;
+  };
+  timeline: OrderStatusHistoryTimelineEntry[];
+  timelineOldestFirst: OrderStatusHistoryTimelineEntry[];
+}
+
 export interface OrderItem {
   id: string;
   orderId: string;

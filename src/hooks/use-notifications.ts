@@ -15,7 +15,8 @@ export function useNotificationsInfinite(
   params: { unreadOnly?: boolean; limit?: number },
   options?: { enabled?: boolean },
 ) {
-  const { status } = useSession();
+  const { data: session, status } = useSession();
+  const hasApiSession = status === "authenticated" && !!session?.user?.token;
   const limit = params.limit ?? 20;
 
   return useInfiniteQuery({
@@ -28,7 +29,7 @@ export function useNotificationsInfinite(
       }),
     initialPageParam: undefined as string | undefined,
     getNextPageParam: (lastPage) => lastPage.nextCursor || undefined,
-    enabled: (options?.enabled ?? true) && status === "authenticated",
+    enabled: (options?.enabled ?? true) && hasApiSession,
   });
 }
 

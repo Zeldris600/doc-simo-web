@@ -66,6 +66,14 @@ export function useOrder(id: string) {
   });
 }
 
+export function useOrderStatusHistory(id: string) {
+  return useQuery({
+    queryKey: ["order", id, "status-history"],
+    queryFn: () => OrderService.getStatusHistory(id),
+    enabled: !!id,
+  });
+}
+
 export function useUpdateOrderStatus<TError extends ApiError = ApiError>(
   opt?: UseMutationOptions<
     Order,
@@ -80,6 +88,9 @@ export function useUpdateOrderStatus<TError extends ApiError = ApiError>(
     onSuccess: (data, ...rest) => {
       queryClient.invalidateQueries({ queryKey: ["orders"] });
       queryClient.invalidateQueries({ queryKey: ["order", data.id] });
+      queryClient.invalidateQueries({
+        queryKey: ["order", data.id, "status-history"],
+      });
       opt?.onSuccess?.(data, ...rest);
     },
   });
@@ -95,6 +106,9 @@ export function useAssignOrder<TError extends ApiError = ApiError>(
     onSuccess: (data, ...rest) => {
       queryClient.invalidateQueries({ queryKey: ["orders"] });
       queryClient.invalidateQueries({ queryKey: ["order", data.id] });
+      queryClient.invalidateQueries({
+        queryKey: ["order", data.id, "status-history"],
+      });
       opt?.onSuccess?.(data, ...rest);
     },
   });
@@ -110,6 +124,9 @@ export function useSubmitShippingProof<TError extends ApiError = ApiError>(
     onSuccess: (data, ...rest) => {
       queryClient.invalidateQueries({ queryKey: ["orders"] });
       queryClient.invalidateQueries({ queryKey: ["order", data.id] });
+      queryClient.invalidateQueries({
+        queryKey: ["order", data.id, "status-history"],
+      });
       opt?.onSuccess?.(data, ...rest);
     },
   });

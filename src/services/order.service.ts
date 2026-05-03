@@ -3,6 +3,7 @@ import {
   AssignOrderDto,
   CreateOrderDto,
   Order,
+  OrderStatusHistoryPayload,
   PaginatedResponse,
   PushOrderLocationDto,
   ShippingProofDto,
@@ -30,6 +31,13 @@ export const OrderService = {
 
   getById: async (id: string) => {
     const response = await api.get<StandardResponse<Order>>("/orders/" + id);
+    return response.data.data;
+  },
+
+  getStatusHistory: async (id: string) => {
+    const response = await api.get<StandardResponse<OrderStatusHistoryPayload>>(
+      `/orders/${id}/status-history`,
+    );
     return response.data.data;
   },
 

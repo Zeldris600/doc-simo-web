@@ -87,11 +87,16 @@ export function FCMProvider() {
   }, [status, session?.user?.id, session?.user?.token]);
 
   useEffect(() => {
+    if (status !== "authenticated" || !session?.user?.token) {
+      return;
+    }
+
+    let cancelled = false;
     let unsubscribe: (() => void) | undefined;
 
     void (async () => {
       const messaging = await getMessagingInstance();
-      if (!messaging) return;
+      if (!messaging || cancelled) return;
       unsubscribe = onMessage(messaging, (payload) => {
         void queryClient.invalidateQueries({ queryKey: ["notifications"] });
         toast(payload.notification?.title || "Notification", {
@@ -101,9 +106,10 @@ export function FCMProvider() {
     })();
 
     return () => {
+      cancelled = true;
       unsubscribe?.();
     };
-  }, [queryClient]);
+  }, [status, session?.user?.token, queryClient]);
 
   return null;
 }
