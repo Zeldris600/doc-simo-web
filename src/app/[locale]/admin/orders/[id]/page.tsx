@@ -8,8 +8,9 @@ import {
   useAssignOrder,
   useSubmitShippingProof,
 } from "@/hooks/use-order";
-import { useUsers } from "@/hooks/use-users";
 import { useUploadMedia } from "@/hooks/use-media";
+import { Input } from "@/components/ui/input";
+import { getOrderDriverDisplayName } from "@/lib/order-delivery";
 import { OrderStatus } from "@/types/api";
 import DashboardHeader from "@/components/dashboard-header";
 import { Badge } from "@/components/ui/badge";
@@ -39,8 +40,8 @@ import {
 import { toast } from "sonner";
 import { useCan } from "@/hooks/use-can";
 import Image from "next/image";
-import { UserRole } from "@/lib/rbac/types";
 import { Link, useRouter } from "@/i18n/routing";
+import { OrderDetailSkeleton } from "@/components/skeletons/order-detail-skeleton";
 
 export default function AdminOrderDetailsPage() {
   const { id } = useParams() as { id: string };
@@ -57,10 +58,7 @@ export default function AdminOrderDetailsPage() {
   const { can, role, user: currentUser } = useCan();
   const proofInputRef = React.useRef<HTMLInputElement>(null);
 
-  const { data: usersResponse } = useUsers({ role: UserRole.DELIVERY });
-  const deliveryUsers = usersResponse?.data || [];
-
-  const [assigneeId, setAssigneeId] = React.useState<string>("");
+  const [driverName, setDriverName] = React.useState("");
 
   const handleStatusChange = (status: string) => {
     updateStatus(
@@ -68,21 +66,22 @@ export default function AdminOrderDetailsPage() {
       {
         onSuccess: () => toast.success(`Order status updated to ${status}`),
         onError: () => toast.error("Failed to update order status"),
-      },
+      }
     );
   };
 
   const handleAssign = () => {
-    if (!assigneeId) {
-      toast.error("Choose a delivery professional.");
+    const name = driverName.trim();
+    if (!name) {
+      toast.error("Enter the delivery person's name.");
       return;
     }
     assignOrder(
-      { id, data: { assigneeUserId: assigneeId } },
+      { id, data: { assigneeName: name } },
       {
         onSuccess: () => {
-          toast.success("Delivery assignee updated.");
-          setAssigneeId("");
+          toast.success(`Assigned to ${name}`);
+          setDriverName("");
         },
         onError: () => toast.error("Failed to assign order."),
       },
@@ -96,29 +95,25 @@ export default function AdminOrderDetailsPage() {
     uploadMedia.mutate(
       { file },
       {
-        onSuccess: (res) => {
+        onSuccess: res => {
           submitProof(
             { id, data: { proofUrl: res.url } },
             {
               onSuccess: () =>
                 toast.success(
-                  "Shipping proof submitted. Order marked shipped.",
+                  "Shipping proof submitted. Order marked shipped."
                 ),
               onError: () => toast.error("Failed to submit shipping proof."),
-            },
+            }
           );
         },
         onError: () => toast.error("Receipt upload failed."),
-      },
+      }
     );
   };
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[40vh]">
-        <Loader2 className="h-8 w-8 animate-spin text-primary/40" />
-      </div>
-    );
+    return <OrderDetailSkeleton />;
   }
 
   if (!order) {
@@ -164,7 +159,7 @@ export default function AdminOrderDetailsPage() {
         {/* Main Content Area */}
         <div className="lg:col-span-2 space-y-6">
           {/* Order Items Card */}
-          <Card className="border-none bg-white rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.02)] overflow-hidden">
+          <Card className="border border-black/8 bg-white rounded-xl shadow-none overflow-hidden">
             <CardHeader className="border-b border-gray-50 pb-4">
               <CardTitle className="text-sm font-medium flex items-center gap-2">
                 <Package className="h-4 w-4 text-primary" />
@@ -173,7 +168,7 @@ export default function AdminOrderDetailsPage() {
             </CardHeader>
             <CardContent className="p-0">
               <div className="divide-y divide-gray-50">
-                {order.items.map((item) => (
+                {order.items.map(item => (
                   <div
                     key={item.id}
                     className="p-4 flex items-center gap-4 group"
@@ -225,7 +220,7 @@ export default function AdminOrderDetailsPage() {
 
           {/* Location Tracking (Placeholder for functionality) */}
           {order.status === "SHIPPED" && (
-            <Card className="border-none bg-white rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.02)] p-6">
+            <Card className="border border-black/8 bg-white rounded-xl shadow-none p-6">
               <h3 className="text-sm font-medium flex items-center gap-2 mb-4">
                 <MapPin className="h-4 w-4 text-orange-500" />
                 Real-time Tracking
@@ -246,7 +241,7 @@ export default function AdminOrderDetailsPage() {
         {/* Sidebar Actions */}
         <div className="space-y-6">
           {/* Status Controls */}
-          <Card className="border-none bg-white rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.02)] p-6">
+          <Card className="border border-black/8 bg-white rounded-xl shadow-none p-6">
             <h3 className="text-xs font-medium text-gray-400 mb-4 flex items-center gap-2">
               Fulfillment Status
             </h3>
@@ -293,7 +288,7 @@ export default function AdminOrderDetailsPage() {
                         "SHIPPED",
                         "DELIVERED",
                         "CANCELLED",
-                      ].map((s) => (
+                      ].map(s => (
                         <SelectItem
                           key={s}
                           value={s}
@@ -310,7 +305,7 @@ export default function AdminOrderDetailsPage() {
           </Card>
 
           {/* Delivery Assignment */}
-          <Card className="border-none bg-white rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.02)] p-6">
+          <Card className="border border-black/8 bg-white rounded-xl shadow-none p-6">
             <h3 className="text-xs font-medium text-gray-400 mb-4 flex items-center gap-2">
               <Truck className="h-3.5 w-3.5" />
               Logistics
@@ -322,36 +317,28 @@ export default function AdminOrderDetailsPage() {
                 </div>
                 <div>
                   <p className="text-xs font-medium text-black">Assignee</p>
-                  <p className="text-[10px] font-medium text-gray-400 truncate max-w-[150px]">
-                    {order.assignedToUserId
-                      ? `ID: ${order.assignedToUserId.substring(0, 12)}...`
-                      : "Unassigned"}
+                  <p className="text-sm font-medium text-gray-600 truncate max-w-[180px]">
+                    {getOrderDriverDisplayName(order)}
                   </p>
                 </div>
               </div>
 
               {canAssignDelivery && (
                 <div className="space-y-2 pt-2 border-t border-gray-50">
-                  <Select value={assigneeId} onValueChange={setAssigneeId}>
-                    <SelectTrigger className="rounded-xl border-gray-100 font-medium text-xs h-10">
-                      <SelectValue placeholder="Choose dispatcher" />
-                    </SelectTrigger>
-                    <SelectContent className="rounded-xl border-gray-100">
-                      {deliveryUsers.map((u) => (
-                        <SelectItem
-                          key={u.id}
-                          value={u.id}
-                          className="font-medium text-xs"
-                        >
-                          {u.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Label className="text-xs font-medium text-gray-500">
+                    Driver name
+                  </Label>
+                  <Input
+                    placeholder="e.g. Jean Mbarga"
+                    value={driverName}
+                    onChange={(e) => setDriverName(e.target.value)}
+                    className="h-10 rounded-lg text-sm"
+                    onKeyDown={(e) => e.key === "Enter" && handleAssign()}
+                  />
                   <Button
-                    className="w-full rounded-xl font-medium h-10"
+                    className="w-full rounded-lg font-medium h-10"
                     onClick={handleAssign}
-                    disabled={isAssigning || !assigneeId}
+                    disabled={isAssigning || !driverName.trim()}
                   >
                     {isAssigning ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
@@ -391,7 +378,7 @@ export default function AdminOrderDetailsPage() {
           </Card>
 
           {/* Customer Details */}
-          <Card className="border-none bg-white rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.02)] p-6">
+          <Card className="border border-black/8 bg-white rounded-xl shadow-none p-6">
             <h3 className="text-xs font-medium text-gray-400 mb-4 flex items-center gap-2">
               <User className="h-3.5 w-3.5" />
               Customer Profile

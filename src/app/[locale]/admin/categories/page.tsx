@@ -139,16 +139,19 @@ export default function AdminCategoriesPage() {
  title="Category Management"
  description="Organize your product catalog by therapeutic functions."
  />
+ <div className="rounded-xl border border-black/8 bg-white shadow-sm overflow-hidden p-4 sm:p-6">
  <DataTable
  columns={columns}
  data={categories}
- searchKey="name"
+ searchKeys={["name", "slug"]}
+ searchPlaceholder="Search categories…"
  action={addAction || undefined}
  pageCount={pageCount}
  pagination={pagination}
  onPaginationChange={setPagination}
  isLoading={isLoading}
  />
+ </div>
  </div>
  );
 }

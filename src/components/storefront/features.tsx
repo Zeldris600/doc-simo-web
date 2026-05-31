@@ -72,7 +72,7 @@ export function Features() {
           <p className="text-[10px] font-bold uppercase tracking-widest text-[#f2c94c]">
             🇨🇲 Proudly Cameroonian
           </p>
-          <h2 className="text-xl sm:text-2xl font-black text-primary tracking-tight">
+          <h2 className="text-xl sm:text-2xl font-semibold text-primary tracking-tight">
             Healing Rooted in Our Land
           </h2>
           <p className="text-sm text-foreground/50 font-medium max-w-lg mx-auto leading-relaxed">
@@ -97,7 +97,7 @@ export function Features() {
                 <span className="text-2xl">{f.emoji}</span>
               </div>
               <div className="space-y-1.5">
-                <h3 className="text-sm font-black text-primary tracking-tight">
+                <h3 className="text-sm font-semibold text-primary tracking-tight">
                   {f.title}
                 </h3>
                 <p className="text-xs text-foreground/55 leading-relaxed font-medium">

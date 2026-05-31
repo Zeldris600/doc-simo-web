@@ -197,6 +197,10 @@ export interface Order {
   currency: string;
   status: OrderStatus;
   assignedToUserId?: string | null;
+  assignedTo?: {
+    id: string;
+    name?: string | null;
+  } | null;
   shippingProofUrl?: string | null;
   deliveryAddress?: {
     address?: string;
@@ -299,7 +303,9 @@ export interface UpdateOrderStatusDto {
 }
 
 export interface AssignOrderDto {
-  assigneeUserId: string;
+  assigneeUserId?: string;
+  /** Driver display name when assigning without listing users (e.g. SALES). */
+  assigneeName?: string;
 }
 
 export interface ShippingProofDto {

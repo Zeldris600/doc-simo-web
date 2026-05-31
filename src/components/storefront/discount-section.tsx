@@ -59,13 +59,13 @@ export function DiscountSection() {
               {/* Badge */}
               <div className="inline-flex items-center gap-2 bg-[#f2c94c]/15 border border-[#f2c94c]/30 rounded-full px-4 py-1.5">
                 <Zap className="w-3.5 h-3.5 text-[#f2c94c]" />
-                <span className="text-[10px] font-black text-[#f2c94c] uppercase tracking-widest">
+                <span className="text-[10px] font-semibold text-[#f2c94c] uppercase tracking-widest">
                   {badge}
                 </span>
               </div>
 
               <div className="space-y-2">
-                <h2 className="text-xl sm:text-2xl font-black text-white leading-tight tracking-tight">
+                <h2 className="text-xl sm:text-2xl font-semibold text-white leading-tight tracking-tight">
                   {active ? saving : "Special Offer"}
                   <br />
                   <span className="text-[#f2c94c]">Just for You</span>
@@ -78,12 +78,12 @@ export function DiscountSection() {
               {/* Coupon code box */}
               <div className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl px-5 py-3">
                 <Tag className="w-4 h-4 text-[#f2c94c] shrink-0" />
-                <span className="text-xl font-black text-white tracking-widest">
+                <span className="text-xl font-semibold text-white tracking-widest">
                   {code}
                 </span>
                 <button
                   onClick={copyCode}
-                  className="ml-2 flex items-center gap-1.5 bg-[#f2c94c] hover:bg-[#f0c040] text-[#142c1b] text-[10px] font-black px-3 py-1.5 rounded-xl transition-colors"
+                  className="ml-2 flex items-center gap-1.5 bg-[#f2c94c] hover:bg-[#f0c040] text-[#142c1b] text-[10px] font-semibold px-3 py-1.5 rounded-xl transition-colors"
                 >
                   {copied ? (
                     <>
@@ -99,7 +99,7 @@ export function DiscountSection() {
 
               <Link
                 href="/products"
-                className="inline-flex items-center gap-2 bg-white text-primary px-6 py-3 rounded-full text-xs font-black uppercase tracking-wider hover:bg-white/90 transition-all shadow-lg shadow-black/10 group"
+                className="inline-flex items-center gap-2 bg-white text-primary px-6 py-3 rounded-full text-xs font-semibold uppercase tracking-wider hover:bg-white/90 transition-all shadow-lg shadow-black/10 group"
               >
                 Shop Now — Use Code at Checkout
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -110,14 +110,14 @@ export function DiscountSection() {
             <div className="hidden md:flex shrink-0 items-center justify-center">
               <div className="relative w-44 h-44 rounded-full border-2 border-dashed border-white/15 flex items-center justify-center">
                 <div className="w-36 h-36 rounded-full bg-white/10 backdrop-blur-sm flex flex-col items-center justify-center text-center px-2">
-                  <span className="text-[9px] text-[#f2c94c] font-black uppercase tracking-widest mb-1">
+                  <span className="text-[9px] text-[#f2c94c] font-semibold uppercase tracking-widest mb-1">
                     Save
                   </span>
-                  <span className="text-3xl font-black text-white leading-none">
+                  <span className="text-3xl font-semibold text-white leading-none">
                     {active ? (isPercent ? active.value + "%" : "XAF") : "🌿"}
                   </span>
                   {active && !isPercent && (
-                    <span className="text-xs font-black text-white/60 mt-1">
+                    <span className="text-xs font-semibold text-white/60 mt-1">
                       {Number(active.value).toLocaleString()}
                     </span>
                   )}

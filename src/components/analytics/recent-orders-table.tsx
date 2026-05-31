@@ -6,45 +6,43 @@ import { DataTable } from "@/components/ui/data-table";
 import { ColumnDef } from "@tanstack/react-table";
 import { Order } from "@/types/api";
 import { Badge } from "@/components/ui/badge";
-import { Package, ArrowRight, User } from "@/lib/icons";
+import { Package, ArrowRight } from "@/lib/icons";
 import { Link } from "@/i18n/routing";
 
 const columns: ColumnDef<Order>[] = [
   {
-    accessorKey: "id",
-    header: "Order ID",
+    id: "orderNumber",
+    accessorFn: (row) => row.orderNumber || row.id,
+    header: "Order",
     cell: ({ row }) => (
       <div className="flex items-center gap-2">
         <div className="h-7 w-7 rounded-lg bg-gray-50 flex items-center justify-center">
           <Package className="h-3.5 w-3.5 text-gray-400" />
         </div>
-        <span className="font-medium text-black text-[10px]">
-          #{row.original.id.substring(0, 8)}
+        <span className="font-medium text-sm font-mono">
+          {row.original.orderNumber ||
+            `#${row.original.id.substring(0, 8)}`}
         </span>
       </div>
     ),
   },
   {
-    accessorKey: "user",
+    id: "customerName",
     header: "Customer",
-    cell: ({ row }) => {
-      const user = row.original.user;
-      return (
-        <div className="flex items-center gap-2">
-          <div className="h-6 w-6 rounded-full bg-primary/5 flex items-center justify-center">
-            <User className="h-3 w-3 text-primary" />
-          </div>
-          <div className="flex flex-col">
-            <span className="font-medium text-black text-[10px] truncate max-w-[min(100%,280px)]">
-              {user?.name || "Guest Checkout"}
-            </span>
-            <span className="text-[9px] text-gray-400">
-              {user?.email || "No email"}
-            </span>
-          </div>
-        </div>
-      );
-    },
+    cell: ({ row }) => (
+      <span className="font-medium text-sm">
+        {row.original.user?.name || "Guest"}
+      </span>
+    ),
+  },
+  {
+    id: "customerEmail",
+    header: "Email",
+    cell: ({ row }) => (
+      <span className="text-sm text-muted-foreground truncate max-w-[180px] block">
+        {row.original.user?.email || "—"}
+      </span>
+    ),
   },
   {
     accessorKey: "status",
@@ -101,13 +99,13 @@ export function RecentOrdersTable() {
   const orders = response?.data ?? [];
 
   return (
-    <Card className="border-none bg-white rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.02)] overflow-hidden">
+    <Card className="border border-black/8 bg-white rounded-xl shadow-sm overflow-hidden">
       <CardHeader className="py-4 px-6 border-b border-gray-50 flex flex-row items-center justify-between">
         <div className="space-y-1">
-          <CardTitle className="text-sm font-medium text-black">
+          <CardTitle className="text-base font-semibold text-black">
             Recent Orders
           </CardTitle>
-          <p className="text-[10px] font-medium text-gray-400">
+          <p className="text-xs font-medium text-gray-500">
             Latest shop transactions
           </p>
         </div>
@@ -124,6 +122,9 @@ export function RecentOrdersTable() {
           data={orders}
           isLoading={isLoading}
           initialPageSize={DASHBOARD_TABLE_LIMIT}
+          showToolbar={false}
+          enableRowSelection={false}
+          embedded
         />
       </CardContent>
     </Card>

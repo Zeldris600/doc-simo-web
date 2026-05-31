@@ -14,6 +14,13 @@ import {
  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import DashboardHeader from "@/components/dashboard-header";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useDiscounts, useDeleteDiscount } from "@/hooks/use-discount";
 import { Discount } from "@/types/api";
 import { useCan } from "@/hooks/use-can";
@@ -24,9 +31,13 @@ export default function AdminDiscountsPage() {
  const router = useRouter();
  const { can } = useCan();
  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
+ const [activeOnly, setActiveOnly] = useState<"true" | "false" | undefined>(
+   undefined,
+ );
  const { data: discountsResponse, isLoading } = useDiscounts({
- page: pagination.pageIndex + 1,
- limit: pagination.pageSize,
+   page: pagination.pageIndex + 1,
+   limit: pagination.pageSize,
+   activeOnly,
  });
  const { mutate: deleteDiscount } = useDeleteDiscount();
 
@@ -179,16 +190,37 @@ export default function AdminDiscountsPage() {
  description="Create and manage promotional discount codes for your store."
  />
 
+ <div className="rounded-xl border border-black/8 bg-white shadow-sm overflow-hidden p-4 sm:p-6">
  <DataTable
  columns={columns}
  data={discounts}
- searchKey="code"
+ searchKeys={["code", "type"]}
+ searchPlaceholder="Search discounts…"
+ filterSlot={
+     <Select
+       value={activeOnly ?? "all"}
+       onValueChange={(v) => {
+         setActiveOnly(v === "all" ? undefined : (v as "true" | "false"));
+         setPagination((p) => ({ ...p, pageIndex: 0 }));
+       }}
+     >
+       <SelectTrigger className="h-10 w-[160px] shrink-0 text-sm" aria-label="Status">
+         <SelectValue placeholder="Status" />
+       </SelectTrigger>
+       <SelectContent>
+         <SelectItem value="all">All</SelectItem>
+         <SelectItem value="true">Active only</SelectItem>
+         <SelectItem value="false">Inactive only</SelectItem>
+       </SelectContent>
+     </Select>
+ }
  action={addAction || undefined}
  pageCount={pageCount}
  pagination={pagination}
  onPaginationChange={setPagination}
  isLoading={isLoading}
  />
+ </div>
  </div>
  );
 }

@@ -1,12 +1,7 @@
 "use client";
 
 import { Table } from "@tanstack/react-table";
-import {
-  ChevronLeft,
-  ChevronRight,
-  ArrowRight, // Using as chevrons
-  ArrowLeft,
-} from "@/lib/icons";
+import { ChevronLeft, ChevronRight } from "@/lib/icons";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -19,85 +14,99 @@ import {
 
 interface DataTablePaginationProps<TData> {
   table: Table<TData>;
+  showSelection?: boolean;
 }
 
 export function DataTablePagination<TData>({
   table,
+  showSelection = true,
 }: DataTablePaginationProps<TData>) {
+  const selectedCount = table.getFilteredSelectedRowModel().rows.length;
+  const filteredCount = table.getFilteredRowModel().rows.length;
+
   return (
-    <div className="flex items-center justify-between px-2 py-4">
-      <div className="flex-1 text-xs text-muted-foreground font-medium">
-        {table.getFilteredSelectedRowModel().rows.length} of{" "}
-        {table.getFilteredRowModel().rows.length} row(s) selected.
-      </div>
-      <div className="flex items-center space-x-6 lg:space-x-8">
-        <div className="flex items-center space-x-2">
-          <p className="text-xs font-bold text-black/50  tracking-wider">Rows per page</p>
+    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between px-1 py-3">
+      {showSelection ? (
+        <div className="text-sm text-muted-foreground font-medium">
+          {selectedCount} of {filteredCount} row(s) selected.
+        </div>
+      ) : (
+        <div className="text-sm text-muted-foreground font-medium">
+          {filteredCount} row(s)
+        </div>
+      )}
+      <div className="flex flex-wrap items-center gap-4 lg:gap-6">
+        <div className="flex items-center gap-2">
+          <p className="text-sm font-medium text-black/60 whitespace-nowrap">
+            Rows per page
+          </p>
           <Select
             value={`${table.getState().pagination.pageSize}`}
             onValueChange={(value) => {
               table.setPageSize(Number(value));
             }}
           >
-            <SelectTrigger className="h-8 w-[70px] border-gray-100 rounded-lg text-xs font-bold">
+            <SelectTrigger className="h-9 w-[72px] border-gray-200 rounded-lg text-sm">
               <SelectValue placeholder={table.getState().pagination.pageSize} />
             </SelectTrigger>
-            <SelectContent side="top" className="rounded-xl border-gray-100">
+            <SelectContent side="top" className="rounded-lg border-gray-200">
               {[10, 20, 30, 40, 50, 100].map((pageSize) => (
-                <SelectItem key={pageSize} value={`${pageSize}`} className="text-xs font-bold">
+                <SelectItem key={pageSize} value={`${pageSize}`} className="text-sm">
                   {pageSize}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
-        <div className="flex w-[100px] items-center justify-center text-xs font-bold text-black/80">
+        <div className="text-sm font-medium text-black/80 whitespace-nowrap">
           Page {table.getState().pagination.pageIndex + 1} of{" "}
-          {table.getPageCount()}
+          {Math.max(table.getPageCount(), 1)}
         </div>
-        <div className="flex items-center space-x-2">
-           {/* First Page */}
+        <div className="flex items-center gap-1">
           <Button
             variant="outline"
-            className="hidden h-8 w-8 p-0 lg:flex border-gray-100 rounded-lg hover:bg-gray-50 active:scale-95 transition-all"
+            className="hidden h-9 w-9 p-0 lg:flex border-gray-200 rounded-lg"
             onClick={() => table.setPageIndex(0)}
             disabled={!table.getCanPreviousPage()}
+            type="button"
           >
             <span className="sr-only">Go to first page</span>
             <div className="flex -space-x-2">
-                <ChevronLeft className="h-4 w-4" />
-                <ChevronLeft className="h-4 w-4" />
+              <ChevronLeft className="h-4 w-4" />
+              <ChevronLeft className="h-4 w-4" />
             </div>
           </Button>
           <Button
             variant="outline"
-            className="h-8 w-8 p-0 border-gray-100 rounded-lg hover:bg-gray-50 active:scale-95 transition-all"
+            className="h-9 w-9 p-0 border-gray-200 rounded-lg"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
+            type="button"
           >
             <span className="sr-only">Go to previous page</span>
             <ChevronLeft className="h-4 w-4" />
           </Button>
           <Button
             variant="outline"
-            className="h-8 w-8 p-0 border-gray-100 rounded-lg hover:bg-gray-50 active:scale-95 transition-all"
+            className="h-9 w-9 p-0 border-gray-200 rounded-lg"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
+            type="button"
           >
             <span className="sr-only">Go to next page</span>
             <ChevronRight className="h-4 w-4" />
           </Button>
-          {/* Last Page */}
           <Button
             variant="outline"
-            className="hidden h-8 w-8 p-0 lg:flex border-gray-100 rounded-lg hover:bg-gray-50 active:scale-95 transition-all"
+            className="hidden h-9 w-9 p-0 lg:flex border-gray-200 rounded-lg"
             onClick={() => table.setPageIndex(table.getPageCount() - 1)}
             disabled={!table.getCanNextPage()}
+            type="button"
           >
             <span className="sr-only">Go to last page</span>
             <div className="flex -space-x-2">
-                <ChevronRight className="h-4 w-4" />
-                <ChevronRight className="h-4 w-4" />
+              <ChevronRight className="h-4 w-4" />
+              <ChevronRight className="h-4 w-4" />
             </div>
           </Button>
         </div>

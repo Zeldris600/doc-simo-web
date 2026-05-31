@@ -7,7 +7,8 @@ import Image from "next/image";
 import { useBlogPost } from "@/hooks/use-blog";
 import { BlogBodyHtml } from "@/components/blog/blog-body-html";
 import { Button } from "@/components/ui/button";
-import { Loader2, ChevronLeft } from "@/lib/icons";
+import { ChevronLeft } from "@/lib/icons";
+import { BlogPostSkeleton } from "@/components/skeletons/blog-post-skeleton";
 import { toBlogEmbedSrc } from "@/lib/blog-embed";
 
 export default function BlogPostPage() {
@@ -17,11 +18,7 @@ export default function BlogPostPage() {
   const { data: post, isLoading, isError } = useBlogPost(slug);
 
   if (isLoading) {
-    return (
-      <div className="flex min-h-[50vh] items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
+    return <BlogPostSkeleton />;
   }
 
   if (isError || !post) {

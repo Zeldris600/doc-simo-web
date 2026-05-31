@@ -14,6 +14,13 @@ import {
  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+ Select,
+ SelectContent,
+ SelectItem,
+ SelectTrigger,
+ SelectValue,
+} from "@/components/ui/select";
+import {
  Dialog,
  DialogContent,
  DialogHeader,
@@ -34,9 +41,13 @@ export default function AdminProductsPage() {
  const router = useRouter();
  const { can } = useCan();
  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
+ const [availabilityFilter, setAvailabilityFilter] = useState<
+   "true" | "false" | undefined
+ >(undefined);
  const { data: productsResponse, isLoading } = useProducts({
- page: pagination.pageIndex + 1,
- limit: pagination.pageSize,
+   page: pagination.pageIndex + 1,
+   limit: pagination.pageSize,
+   availability: availabilityFilter,
  });
  const { mutate: deleteProduct } = useDeleteProduct();
  const { mutate: restockProduct, isPending: isRestocking } = useRestockProduct();
@@ -215,16 +226,39 @@ export default function AdminProductsPage() {
  description="View and manage your clinical herbal products."
  />
 
+ <div className="rounded-xl border border-black/8 bg-white shadow-sm overflow-hidden p-4 sm:p-6">
  <DataTable
  columns={columns}
  data={products}
- searchKey="name"
+ searchKeys={["name", "category.name"]}
+ searchPlaceholder="Search products…"
+ filterSlot={
+     <Select
+       value={availabilityFilter ?? "all"}
+       onValueChange={(v) => {
+         setAvailabilityFilter(
+           v === "all" ? undefined : (v as "true" | "false"),
+         );
+         setPagination((p) => ({ ...p, pageIndex: 0 }));
+       }}
+     >
+       <SelectTrigger className="h-10 w-[160px] shrink-0 text-sm" aria-label="Availability">
+         <SelectValue placeholder="Availability" />
+       </SelectTrigger>
+       <SelectContent>
+         <SelectItem value="all">All</SelectItem>
+         <SelectItem value="true">In stock</SelectItem>
+         <SelectItem value="false">Out of stock</SelectItem>
+       </SelectContent>
+     </Select>
+ }
  action={addAction || undefined}
  pageCount={pageCount}
  pagination={pagination}
  onPaginationChange={setPagination}
  isLoading={isLoading}
  />
+ </div>
 
  {/* Restock Dialog */}
  <Dialog

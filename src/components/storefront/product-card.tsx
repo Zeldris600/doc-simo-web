@@ -66,7 +66,7 @@ export function ProductCard({ product, layout = "grid" }: ProductCardProps) {
         {/* Product Information */}
         <div className="flex flex-col flex-grow py-2">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-[10px] font-black uppercase tracking-widest text-primary/40">
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-primary/40">
               {product.category?.name || "General Catalog"}
             </span>
             {ratingBlock ?? (
@@ -80,7 +80,7 @@ export function ProductCard({ product, layout = "grid" }: ProductCardProps) {
           </div>
 
           <Link href={`/products/${product.id}`}>
-            <h3 className="text-2xl font-black text-primary mb-3 transition-colors underline-offset-4 group-hover:underline">
+            <h3 className="text-2xl font-semibold text-primary mb-3 transition-colors underline-offset-4 group-hover:underline">
               {product.name}
             </h3>
           </Link>
@@ -91,7 +91,7 @@ export function ProductCard({ product, layout = "grid" }: ProductCardProps) {
 
           <div className="mt-auto flex items-center justify-between gap-8 pt-6 border-t border-black/5">
             <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-black text-primary">
+              <span className="text-3xl font-semibold text-primary">
                 {Number(product.price).toLocaleString()}{" "}
                 <span className="text-xs font-bold text-primary/40">XAF</span>
               </span>
@@ -105,12 +105,12 @@ export function ProductCard({ product, layout = "grid" }: ProductCardProps) {
             <div className="flex items-center gap-4">
               <Button
                 variant="outline"
-                className="rounded-full h-11 px-6 text-[11px] font-black tracking-widest uppercase transition-all hover:bg-primary/5 hover:text-primary hover:border-primary/20"
+                className="rounded-full h-11 px-6 text-[11px] font-semibold tracking-widest uppercase transition-all hover:bg-primary/5 hover:text-primary hover:border-primary/20"
                 asChild
               >
                 <Link href={`/products/${product.id}`}>Details</Link>
               </Button>
-              <Button className="rounded-full h-11 px-8 text-[11px] font-black tracking-widest uppercase bg-primary text-white hover:bg-[#142c1b] transition-all">
+              <Button className="rounded-full h-11 px-8 text-[11px] font-semibold tracking-widest uppercase bg-primary text-white hover:bg-[#142c1b] transition-all">
                 Reserve now
               </Button>
             </div>
@@ -129,7 +129,7 @@ export function ProductCard({ product, layout = "grid" }: ProductCardProps) {
           {product.isHot && (
             <div className="bg-primary text-white border border-white/20 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-xl shadow-primary/10">
               <Flame className="h-3 w-3 fill-current" />
-              <span className="text-[9px] font-black uppercase tracking-wider">
+              <span className="text-[9px] font-semibold uppercase tracking-wider">
                 Best Seller
               </span>
             </div>
@@ -137,14 +137,14 @@ export function ProductCard({ product, layout = "grid" }: ProductCardProps) {
           {product.isPromotion && (
             <div className="bg-emerald-500 text-white border border-white/20 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-xl shadow-emerald-500/10">
               <Zap className="h-3 w-3 fill-current" />
-              <span className="text-[9px] font-black uppercase tracking-wider">
+              <span className="text-[9px] font-semibold uppercase tracking-wider">
                 Clinical Offer
               </span>
             </div>
           )}
           {product.inventoryLevel === 0 && (
             <div className="bg-foreground/60 backdrop-blur-md text-white px-3 py-1.5 rounded-full flex items-center gap-1.5">
-              <span className="text-[9px] font-black uppercase tracking-wider">
+              <span className="text-[9px] font-semibold uppercase tracking-wider">
                 Restocking
               </span>
             </div>
@@ -176,7 +176,7 @@ export function ProductCard({ product, layout = "grid" }: ProductCardProps) {
       {/* Product Information */}
       <div className="p-4 flex flex-col flex-grow">
         <div className="flex items-center justify-between mb-3">
-          <span className="text-[9px] font-black uppercase tracking-widest text-primary/30">
+          <span className="text-[9px] font-semibold uppercase tracking-widest text-primary/30">
             {product.category?.name || "General Catalog"}
           </span>
           {ratingBlock ? (
@@ -184,7 +184,7 @@ export function ProductCard({ product, layout = "grid" }: ProductCardProps) {
           ) : (
             <div className="flex items-center gap-1">
               <Star className="h-2.5 w-2.5 fill-primary text-primary" />
-              <span className="text-[10px] font-black text-primary">
+              <span className="text-[10px] font-semibold text-primary">
                 SPECIALIST
               </span>
             </div>
@@ -192,7 +192,7 @@ export function ProductCard({ product, layout = "grid" }: ProductCardProps) {
         </div>
 
         <Link href={`/products/${product.id}`}>
-          <h3 className="text-sm font-black text-primary line-clamp-1 mb-1 hover:underline underline-offset-4 transition-all tracking-tight">
+          <h3 className="text-sm font-semibold text-primary line-clamp-1 mb-1 hover:underline underline-offset-4 transition-all tracking-tight">
             {product.name}
           </h3>
         </Link>
@@ -203,10 +203,10 @@ export function ProductCard({ product, layout = "grid" }: ProductCardProps) {
 
         <div className="mt-auto flex items-center justify-between pt-5 border-t border-black/5">
           <div className="flex items-baseline gap-1.5">
-            <span className="text-[17px] font-black text-primary">
+            <span className="text-[17px] font-semibold text-primary">
               {Number(product.price).toLocaleString()}
             </span>
-            <span className="text-[9px] font-black text-primary/30 tracking-tight">
+            <span className="text-[9px] font-semibold text-primary/30 tracking-tight">
               XAF
             </span>
             {product.isPromotion && (

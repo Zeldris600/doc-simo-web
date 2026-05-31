@@ -16,10 +16,14 @@ import {
 } from "@/services/support.service";
 import { ApiError } from "@/types/api";
 
-export function useSupportThreads(params?: { limit?: number; cursor?: string }) {
+export function useSupportThreads(
+  params?: { limit?: number; cursor?: string },
+  options?: { enabled?: boolean },
+) {
   return useQuery({
     queryKey: ["support-threads", params],
     queryFn: () => SupportService.listThreads(params),
+    enabled: options?.enabled ?? true,
   });
 }
 

@@ -24,6 +24,7 @@ export type Permission =
  | "documents:write"
  | "notifications:read"
  | "notifications:write"
+ | "notifications:broadcast"
  | "analytics:read"
  | "discounts:read"
  | "discounts:write"

@@ -8,6 +8,7 @@ import {
   useSendSupportMessage,
 } from "@/hooks/use-support";
 import { useCan } from "@/hooks/use-can";
+import { UserRole } from "@/lib/rbac/types";
 import { getPusherClient } from "@/lib/pusher";
 import {
   SupportMessage,
@@ -58,11 +59,22 @@ export default function ConsultationPage() {
   const [activeThreadId, setActiveThreadId] = useState<string | null>(null);
   const [showThreadList, setShowThreadList] = useState(true);
 
+  const isAdmin = user?.role === UserRole.ADMIN;
+  const isStaff =
+    isAdmin ||
+    user?.role === UserRole.SALES ||
+    user?.role === UserRole.DELIVERY;
+
   useEffect(() => {
-    if (!user && !isLoadingAuth) {
+    if (!isLoadingAuth && !user) {
       router.push(`/${locale}/login`);
+      return;
     }
-  }, [user, isLoadingAuth, router, locale]);
+    if (!isLoadingAuth && user && isStaff) {
+      const staffPath = isAdmin ? "/admin/support" : "/admin";
+      router.replace(`/${locale}${staffPath}`);
+    }
+  }, [user, isLoadingAuth, isStaff, isAdmin, router, locale]);
 
   const { data: threadsData, isLoading: isLoadingThreads } = useSupportThreads({
     limit: 50,
@@ -306,7 +318,7 @@ export default function ConsultationPage() {
     return date.toLocaleDateString(locale, { month: "short", day: "numeric" });
   };
 
-  if (isLoadingAuth || isLoadingThreads || user === undefined) {
+  if (isLoadingAuth || isLoadingThreads || user === undefined || isStaff) {
     return <ConsultationSkeleton />;
   }
 

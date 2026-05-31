@@ -24,7 +24,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { PhoneInput } from "@/components/ui/phone-input";
 
 export function LoginForm() {
   const locale = useLocale();
@@ -115,20 +115,11 @@ export function LoginForm() {
                   {tc("phoneLabel")}
                 </FormLabel>
                 <FormControl>
-                  <div className="flex">
-                    <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-input bg-muted text-black/60 text-sm">
-                      +237
-                    </span>
-                    <Input
-                      placeholder={tc("phonePlaceholder")}
-                      className="rounded-l-none rounded-r-md"
-                      {...field}
-                      onChange={(e) => {
-                        const val = e.target.value.replace(/^\+237/, "");
-                        field.onChange(val);
-                      }}
-                    />
-                  </div>
+                  <PhoneInput
+                    defaultCountry="CM"
+                    placeholder={tc("phonePlaceholder")}
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

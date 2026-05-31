@@ -43,7 +43,7 @@ function handleUnauthorizedResponse() {
       signOut({
         callbackUrl: loginUrl,
         redirect: true,
-      }),
+      })
     )
     .catch(() => {
       window.location.href = loginUrl;
@@ -57,7 +57,7 @@ function handleUnauthorizedResponse() {
 
 // Request interceptor to attach token
 api.interceptors.request.use(
-  async (config) => {
+  async config => {
     // For client-side requests, fetch the token from NextAuth session
     if (typeof window !== "undefined") {
       const session = await getSession();
@@ -69,21 +69,39 @@ api.interceptors.request.use(
     }
     return config;
   },
-  (error) => {
+  error => {
     return Promise.reject(error);
-  },
+  }
 );
 
-// Response: on 401 / 403, sign out and send user to localized login
+function handleForbiddenResponse() {
+  if (typeof window === "undefined" || authErrorHandling) {
+    return;
+  }
+  const locale = localeFromPathname();
+  const path = window.location.pathname;
+  if (!path.includes("/admin") || path.includes("/admin/unauthorized")) {
+    return;
+  }
+  authErrorHandling = true;
+  window.location.href = `/${locale}/admin/unauthorized`;
+  window.setTimeout(() => {
+    authErrorHandling = false;
+  }, 2000);
+}
+
+// Response: 401 → login; 403 on admin → unauthorized (do not sign out)
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     const status = error.response?.status;
-    if (
-      (status === 401 || status === 403) &&
-      typeof window !== "undefined"
-    ) {
+    if (typeof window === "undefined") {
+      return Promise.reject(error);
+    }
+    if (status === 401) {
       handleUnauthorizedResponse();
+    } else if (status === 403) {
+      handleForbiddenResponse();
     }
     return Promise.reject(error);
   },

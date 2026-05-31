@@ -15,7 +15,7 @@ export function Newsletter() {
           <p className="text-xs font-bold uppercase text-[#f2c94c] tracking-tight">
             Community
           </p>
-          <h2 className="text-4xl font-black tracking-tight text-black sm:text-7xl leading-tight">
+          <h2 className="text-4xl font-semibold tracking-tight text-black sm:text-7xl leading-tight">
             {dict.newsletter.title.split(" ").map((word, i) =>
               word === "20%" || word === "Off" ? (
                 <span

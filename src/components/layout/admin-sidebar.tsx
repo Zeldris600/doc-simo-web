@@ -188,13 +188,13 @@ export function AdminSidebar({
       title: "Broadcasts",
       url: "/admin/broadcasts",
       icon: Send,
-      permission: "notifications:write",
+      permission: "notifications:broadcast",
       items: [
         {
           title: "Notify users",
           url: "/admin/broadcasts",
           icon: Send,
-          permission: "notifications:write",
+          permission: "notifications:broadcast",
         },
       ],
     },

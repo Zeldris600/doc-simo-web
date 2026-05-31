@@ -31,7 +31,7 @@ export function MeetDoctor() {
           />
           {/* Name plate */}
           <div className="absolute bottom-6 left-6 right-6 bg-white/90 backdrop-blur-lg rounded-2xl px-5 py-4 shadow-lg">
-            <p className="font-black text-primary text-base leading-tight">
+            <p className="font-semibold text-primary text-base leading-tight">
               Dr. Simo
             </p>
             <p className="text-xs text-foreground/50 font-medium mt-0.5">
@@ -46,7 +46,7 @@ export function MeetDoctor() {
             <p className="text-[10px] font-bold uppercase tracking-widest text-[#f2c94c]">
               The Visionary Behind Doctasimo
             </p>
-            <h2 className="text-xl sm:text-2xl font-black text-primary leading-tight tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-semibold text-primary leading-tight tracking-tight">
               Meet Dr. Simo
             </h2>
           </div>
@@ -105,7 +105,7 @@ export function MeetDoctor() {
                   <div className="shrink-0 w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
                     <Icon className="w-4 h-4 text-primary" />
                   </div>
-                  <p className="text-2xl font-black text-primary leading-none">
+                  <p className="text-2xl font-semibold text-primary leading-none">
                     {value}
                   </p>
                 </div>
@@ -130,7 +130,7 @@ export function MeetDoctor() {
             </Link>
             <Link
               href="/about"
-              className="inline-flex items-center gap-2 text-sm font-black text-primary hover:opacity-70 transition-all group"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:opacity-70 transition-all group"
             >
               Read Dr. Simo&apos;s Story
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

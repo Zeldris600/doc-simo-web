@@ -16,7 +16,11 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useSession } from "next-auth/react";
+import { useMe } from "@/hooks/use-user";
+import { HealthDisclaimer } from "@/components/storefront/health-disclaimer";
+import type { User } from "@/types/auth";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -44,6 +48,26 @@ const checkoutSchema = z.object({
 
 type CheckoutValues = z.infer<typeof checkoutSchema>;
 
+function buildDeliveryPrefill(user: {
+  name?: string | null;
+  phoneNumber?: string | null;
+  customer?: User["customer"];
+  city?: string | null;
+  region?: string | null;
+  address?: string | null;
+}): Partial<CheckoutValues> {
+  const customer = user.customer;
+  const recipientName =
+    user.name?.trim() ||
+    [customer?.firstName, customer?.lastName].filter(Boolean).join(" ").trim() ||
+    "";
+  const phone = customer?.phoneNumber || user.phoneNumber || "";
+  const city = customer?.city || user.city || "";
+  const region = customer?.region || user.region || "";
+  const address = customer?.address || user.address || "";
+  return { recipientName, phone, city, region, address };
+}
+
 export default function CartPage() {
   const t = useTranslations("cart");
   const checkoutT = useTranslations("checkout");
@@ -56,6 +80,9 @@ export default function CartPage() {
     clearCart,
   } = useCart();
   const { mutate: createOrder, isPending: isCreating } = useCreateOrder();
+  const { data: session, status: sessionStatus } = useSession();
+  const { data: me } = useMe();
+  const prefilledRef = useRef(false);
 
   const [promoCode] = useState("");
 
@@ -73,6 +100,32 @@ export default function CartPage() {
   const subtotal = getSubtotal();
   const shipping = 0;
   const total = subtotal + shipping;
+
+  useEffect(() => {
+    if (sessionStatus !== "authenticated" || prefilledRef.current) return;
+    const user = me ?? session?.user;
+    if (!user) return;
+
+    const prefill = buildDeliveryPrefill(user);
+    if (
+      !prefill.recipientName &&
+      !prefill.phone &&
+      !prefill.city &&
+      !prefill.address
+    ) {
+      return;
+    }
+
+    const current = form.getValues();
+    form.reset({
+      recipientName: current.recipientName || prefill.recipientName || "",
+      phone: current.phone || prefill.phone || "",
+      city: current.city || prefill.city || "",
+      region: current.region || prefill.region || "",
+      address: current.address || prefill.address || "",
+    });
+    prefilledRef.current = true;
+  }, [sessionStatus, me, session?.user, form]);
 
   const onSubmit = (values: CheckoutValues) => {
     createOrder(
@@ -391,6 +444,8 @@ export default function CartPage() {
                 </>
               )}
             </Button>
+
+            <HealthDisclaimer />
 
             <div className="space-y-4 pt-6 border-t border-black/5">
               <div className="flex items-center gap-4 text-[10px] text-black/40 font-bold uppercase tracking-widest">

@@ -15,13 +15,12 @@ const STAFF_ROLES = new Set<string>([
 ]);
 
 /** Next.js 16 network boundary (replaces `middleware.ts`). */
-export const proxy = auth((req) => {
+export const proxy = auth(req => {
   const { pathname, search } = req.nextUrl;
 
   const localeMatch = pathname.match(/^\/(en|fr)(?=\/|$)/);
   const locale = (localeMatch?.[1] as "en" | "fr") ?? routing.defaultLocale;
-  const rest =
-    pathname.replace(/^\/(en|fr)(?=\/|$)/, "") || "/";
+  const rest = pathname.replace(/^\/(en|fr)(?=\/|$)/, "") || "/";
 
   if (rest === "/admin" || rest.startsWith("/admin/")) {
     if (!req.auth?.user) {
@@ -45,9 +44,5 @@ export const proxy = auth((req) => {
 });
 
 export const config = {
-  matcher: [
-    "/",
-    "/(en|fr)/:path*",
-    "/((?!api|_next|_vercel|.*\\..*).*)",
-  ],
+  matcher: ["/", "/(en|fr)/:path*", "/((?!api|_next|_vercel|.*\\..*).*)"],
 };

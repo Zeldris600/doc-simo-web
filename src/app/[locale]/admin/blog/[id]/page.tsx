@@ -4,8 +4,8 @@ import { useParams } from "next/navigation";
 import DashboardHeader from "@/components/dashboard-header";
 import { BlogAdminForm } from "@/components/blog/blog-admin-form";
 import { useAdminBlogPost } from "@/hooks/use-blog";
-import { Loader2 } from "@/lib/icons";
 import { Button } from "@/components/ui/button";
+import { PageSkeleton } from "@/components/skeletons/page-skeleton";
 import { Link } from "@/i18n/routing";
 
 export default function AdminEditBlogPage() {
@@ -18,11 +18,7 @@ export default function AdminEditBlogPage() {
   }
 
   if (isLoading) {
-    return (
-      <div className="flex justify-center py-24">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
+    return <PageSkeleton />;
   }
 
   if (isFetched && !post) {

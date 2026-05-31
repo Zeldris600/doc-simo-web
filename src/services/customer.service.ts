@@ -30,7 +30,9 @@ export const CustomerService = {
   },
 
   getById: async (id: string) => {
-    const response = await api.get<CustomerProfile>(`/customers/${id}`);
-    return response.data;
+    const response = await api.get<ApiResponse<CustomerProfile>>(
+      `/customers/${id}`,
+    );
+    return response.data.data;
   },
 };

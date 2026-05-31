@@ -5,7 +5,8 @@ import Image from "next/image";
 import { Link } from "@/i18n/routing";
 import type { BlogPostWithAuthor } from "@/types/blog";
 import { blogPostPreviewImage } from "@/lib/blog-embed";
-import { Loader2, Play, Calendar } from "@/lib/icons";
+import { Play, Calendar } from "@/lib/icons";
+import { ProductCardSkeleton } from "@/components/skeletons/product-card-skeleton";
 
 type HealthVideosProps = {
   posts: BlogPostWithAuthor[];
@@ -26,7 +27,7 @@ export function HealthVideos({ posts, isLoading }: HealthVideosProps) {
           <p className="text-[10px] font-bold uppercase tracking-widest text-[#f2c94c]">
             Doctasimo blog
           </p>
-          <h2 className="text-xl sm:text-2xl font-black text-primary tracking-tight">
+          <h2 className="text-xl sm:text-2xl font-semibold text-primary tracking-tight">
             Stories, videos &amp; clinical insight
           </h2>
           <p className="text-sm text-foreground/50 font-medium max-w-md mx-auto leading-relaxed">
@@ -42,8 +43,10 @@ export function HealthVideos({ posts, isLoading }: HealthVideosProps) {
         </div>
 
         {isLoading ? (
-          <div className="flex justify-center py-16">
-            <Loader2 className="h-10 w-10 animate-spin text-primary" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <ProductCardSkeleton key={i} />
+            ))}
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -82,13 +85,13 @@ export function HealthVideos({ posts, isLoading }: HealthVideosProps) {
                         </div>
                       </div>
                     )}
-                    <div className="absolute top-3 left-3 bg-[#f2c94c] text-[#142c1b] text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider max-w-[85%] truncate">
+                    <div className="absolute top-3 left-3 bg-[#f2c94c] text-[#142c1b] text-[10px] font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider max-w-[85%] truncate">
                       {tag}
                     </div>
                   </div>
 
                   <div className="p-5 space-y-2 flex-1 flex flex-col">
-                    <h3 className="text-sm font-black text-primary leading-snug line-clamp-2 group-hover:text-primary/80 transition-colors">
+                    <h3 className="text-sm font-semibold text-primary leading-snug line-clamp-2 group-hover:text-primary/80 transition-colors">
                       {post.title}
                     </h3>
                     {post.excerpt && (

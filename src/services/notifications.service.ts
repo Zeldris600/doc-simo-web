@@ -22,9 +22,10 @@ export const NotificationsService = {
   },
 
   /** POST /api/notifications/fcm/register — Register current device FCM token */
-  registerFcmToken: async (): Promise<unknown> => {
+  registerFcmToken: async (token: string): Promise<unknown> => {
     const response = await api.post<StandardResponse<unknown>>(
       "/notifications/fcm/register",
+      { token },
     );
     return response.data.data;
   },

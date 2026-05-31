@@ -20,6 +20,7 @@ import { useMyOrders } from "@/hooks/use-order";
 import { ApiError, ProductReview } from "@/types/api";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { ReviewsListSkeleton } from "@/components/skeletons/reviews-list-skeleton";
 
 const PAGE_SIZE = 10;
 
@@ -208,7 +209,7 @@ export function ProductReviewsSection({
     <section className="mt-16 md:mt-24 border-t border-black/10 pt-12 md:pt-16">
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10">
         <div>
-          <h2 className="text-xl md:text-2xl font-black text-primary tracking-tight">
+          <h2 className="text-xl md:text-2xl font-semibold text-primary tracking-tight">
             {t("title")}
           </h2>
           <div className="mt-3 flex flex-wrap items-center gap-3">
@@ -286,7 +287,7 @@ export function ProductReviewsSection({
       {sessionStatus === "authenticated" && myReview && !editingReview && (
         <div className="mb-10 rounded-2xl border border-primary/20 bg-[#f5faf6] p-5 space-y-3">
           <div className="flex items-center justify-between gap-3">
-            <p className="text-sm font-black text-primary">{t("yourReview")}</p>
+            <p className="text-sm font-semibold text-primary">{t("yourReview")}</p>
             <div className="flex gap-2">
               <Button
                 type="button"
@@ -380,9 +381,7 @@ export function ProductReviewsSection({
 
       <div className="space-y-6">
         {listLoading && page === 1 ? (
-          <div className="flex justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-primary/40" />
-          </div>
+          <ReviewsListSkeleton />
         ) : reviews.length === 0 ? (
           <p className="text-sm text-black/50 font-medium py-6">{t("noReviews")}</p>
         ) : (
@@ -400,7 +399,7 @@ export function ProductReviewsSection({
                     className="h-10 w-10 rounded-full object-cover bg-black/5 shrink-0"
                   />
                 ) : (
-                  <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-xs font-black text-primary shrink-0">
+                  <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-xs font-semibold text-primary shrink-0">
                     {(r.user.name || "?").slice(0, 1).toUpperCase()}
                   </div>
                 )}

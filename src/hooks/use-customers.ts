@@ -3,10 +3,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { CustomerService } from "@/services/customer.service";
 
-export function useCustomers(params?: { page?: number; limit?: number }) {
+export function useCustomers(
+  params?: { page?: number; limit?: number },
+  options?: { enabled?: boolean },
+) {
   return useQuery({
     queryKey: ["customers", params],
     queryFn: () => CustomerService.list(params),
+    enabled: options?.enabled ?? true,
   });
 }
 

@@ -69,7 +69,7 @@ export default function AdminLayout({
             </div>
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-8 p-8 pt-6 bg-[#F5F7F5] min-h-[calc(100vh-4rem)]">
+        <div className="flex flex-1 flex-col gap-8 p-8 pt-6 bg-[#EEF2EE] min-h-[calc(100vh-4rem)]">
           <SalesOrdersPusherBridge />
           <AdminPermissionShell>{children}</AdminPermissionShell>
         </div>

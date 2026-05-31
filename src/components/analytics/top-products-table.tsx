@@ -81,13 +81,13 @@ export function TopProductsTable() {
   }
 
   return (
-    <Card className="border-none bg-white rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.02)] overflow-hidden">
+    <Card className="border border-black/8 bg-white rounded-xl shadow-sm overflow-hidden">
       <CardHeader className="py-4 border-b border-gray-50 flex flex-row items-center justify-between">
         <div className="space-y-1">
-          <CardTitle className="text-xs font-medium text-black">
+          <CardTitle className="text-base font-semibold text-black">
             Best Sellers
           </CardTitle>
-          <p className="text-[9px] font-medium text-gray-400">
+          <p className="text-xs font-medium text-gray-500">
             High volume movers
           </p>
         </div>
@@ -100,6 +100,9 @@ export function TopProductsTable() {
             data={topProducts}
             isLoading={false}
             initialPageSize={DASHBOARD_TABLE_LIMIT}
+            showToolbar={false}
+            enableRowSelection={false}
+            embedded
           />
         ) : (
           <div className="py-12 text-center bg-gray-50/30 rounded-xl border border-dashed border-gray-200">

@@ -46,7 +46,7 @@ export function TestimonialSlider() {
             <p className="text-xs font-bold uppercase text-[#f2c94c] tracking-tight">
               Verified Results
             </p>
-            <h2 className="text-4xl font-black text-black tracking-tight">
+            <h2 className="text-4xl font-semibold text-black tracking-tight">
               Community Voices
             </h2>
           </div>
@@ -73,7 +73,7 @@ export function TestimonialSlider() {
 
                       <div className="flex flex-col items-center space-y-4">
                         <div className="text-center">
-                          <h4 className="font-black text-black text-lg">
+                          <h4 className="font-semibold text-black text-lg">
                             {testimonial.author}
                           </h4>
                           <p className="text-sm text-gray-400 font-bold uppercase tracking-tight">

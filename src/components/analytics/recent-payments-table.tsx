@@ -14,16 +14,19 @@ const columns: ColumnDef<Payment>[] = [
     accessorKey: "id",
     header: "Transaction",
     cell: ({ row }) => (
-      <div className="flex items-center gap-2">
-        <div className="h-7 w-7 rounded-lg bg-primary/5 flex items-center justify-center shrink-0">
-          <CreditCard className="h-3.5 w-3.5 text-primary" />
+      <div className="flex items-center gap-3">
+        <div className="h-9 w-9 rounded-lg bg-primary/5 flex items-center justify-center shrink-0">
+          <CreditCard className="h-4 w-4 text-primary" />
         </div>
-        <div className="flex flex-col">
-          <span className="font-medium text-black text-[10px]">
+        <div className="flex flex-col gap-0.5">
+          <span className="font-medium text-sm text-black font-mono">
             #{row.original.id.substring(0, 8)}
           </span>
-          <span className="text-[9px] text-gray-400">
-            {new Date(row.original.createdAt).toLocaleTimeString()}
+          <span className="text-xs text-muted-foreground">
+            {new Date(row.original.createdAt).toLocaleString(undefined, {
+              dateStyle: "medium",
+              timeStyle: "short",
+            })}
           </span>
         </div>
       </div>
@@ -35,11 +38,15 @@ const columns: ColumnDef<Payment>[] = [
     cell: ({ row }) => {
       const status = row.original.status;
       return (
-        <Badge className={`border-none font-medium text-[9px] px-2 py-0 h-5 rounded-full text-white ${
-          status === "success" ? "bg-[#166534]" :
-          status === "failed" ? "bg-red-500" :
-          "bg-amber-500"
-        }`}>
+        <Badge
+          className={`border-none font-medium text-xs px-2.5 py-0.5 h-6 rounded-full text-white capitalize ${
+            status === "success"
+              ? "bg-[#166534]"
+              : status === "failed"
+                ? "bg-red-500"
+                : "bg-amber-500"
+          }`}
+        >
           {status}
         </Badge>
       );
@@ -50,11 +57,11 @@ const columns: ColumnDef<Payment>[] = [
     header: "Amount",
     cell: ({ row }) => (
       <div className="flex items-center justify-end gap-2">
-        <span className="font-medium text-black text-[10px] whitespace-nowrap">
+        <span className="font-semibold text-sm text-black whitespace-nowrap tabular-nums">
           {row.original.currency} {Number(row.original.amount).toLocaleString()}
         </span>
         <div className="p-1.5 rounded-lg text-gray-300">
-          <ArrowRight className="h-3 w-3" />
+          <ArrowRight className="h-4 w-4" />
         </div>
       </div>
     ),
@@ -70,13 +77,13 @@ export function RecentPaymentsTable() {
   const payments = response?.data?.data || [];
 
   return (
-    <Card className="border-none bg-white rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.02)] overflow-hidden">
+    <Card className="border border-black/8 bg-white rounded-xl shadow-sm overflow-hidden">
       <CardHeader className="py-4 px-6 border-b border-gray-50 flex flex-row items-center justify-between">
         <div className="space-y-1">
-          <CardTitle className="text-sm font-medium text-black">Recent Payments</CardTitle>
-          <p className="text-[10px] font-medium text-gray-400">Incoming clinical transaction log</p>
+          <CardTitle className="text-base font-semibold text-black">Recent Payments</CardTitle>
+          <p className="text-xs font-medium text-gray-500">Incoming clinical transaction log</p>
         </div>
-        <Link href="/admin/analytics" className="text-[10px] font-medium text-primary hover:underline">View All</Link>
+        <Link href="/admin/analytics" className="text-sm font-medium text-primary hover:underline">View All</Link>
       </CardHeader>
       <CardContent className="p-6">
         {payments.length > 0 ? (
@@ -85,11 +92,14 @@ export function RecentPaymentsTable() {
             data={payments}
             isLoading={isLoading}
             initialPageSize={DASHBOARD_TABLE_LIMIT}
+            showToolbar={false}
+            enableRowSelection={false}
+            embedded
           />
         ) : (
           <div className="py-12 text-center">
             <AlertCircle className="h-6 w-6 text-gray-200 mx-auto mb-2" />
-            <p className="text-[10px] font-medium text-gray-400">No payment records found</p>
+            <p className="text-sm font-medium text-gray-400">No payment records found</p>
           </div>
         )}
       </CardContent>

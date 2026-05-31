@@ -155,6 +155,7 @@
     "signUp": "S'inscrire",
     "account": "Compte",
     "myAccount": "Mon compte",
+    "profileSettings": "Paramètres du profil",
     "orders": "Commandes",
     "settings": "Paramètres",
     "logout": "Déconnexion",
@@ -163,7 +164,9 @@
     "notificationsError": "Impossible de charger les notifications.",
     "notificationsLoading": "Chargement…",
     "notificationsLoadMore": "Voir plus",
-    "blog": "Blog"
+    "blog": "Blog",
+    "dashboard": "Tableau de bord",
+    "consultation": "Consultation"
   },
   "blog": {
     "title": "Blog",
@@ -253,6 +256,21 @@
       "title": "Paramètres de Sécurité",
       "subtitle": "Mettez à jour votre mot de passe et vos préférences de sécurité.",
       "password": "Changer le mot de passe"
+    },
+    "settingsPage": {
+      "title": "Profil et paramètres du compte",
+      "subtitle": "Mettez à jour votre profil, votre adresse de livraison et vos notifications sur cet appareil.",
+      "profileSection": "Profil",
+      "notificationsSection": "Notifications"
+    },
+    "hub": {
+      "title": "Mon compte",
+      "subtitle": "Gérez vos commandes, articles enregistrés et adresse de livraison.",
+      "browseProducts": "Parcourir les produits",
+      "profileCtaTitle": "Profil et notifications",
+      "profileCtaBody": "Modifiez votre photo, vos coordonnées, votre adresse de livraison et les notifications push.",
+      "openSettings": "Ouvrir les paramètres du profil",
+      "alertsCtaBody": "Gérez les notifications push et nos messages dans les paramètres."
     }
   },
   "common": {

@@ -3,16 +3,15 @@
 import { useEffect, useRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
-import { getMessagingInstance, VAPID_KEY } from "@/lib/firebase";
-import { getToken, onMessage } from "firebase/messaging";
+import { getMessagingInstance } from "@/lib/firebase";
+import { onMessage } from "firebase/messaging";
 import { toast } from "sonner";
-import { api } from "@/services/api";
-
-const FCM_REGISTER_PATH = "/notifications/fcm/register";
-
-async function unregisterFcmToken(token: string) {
-  await api.delete(FCM_REGISTER_PATH, { data: { token } });
-}
+import {
+  getStoredFcmToken,
+  registerFcmTokenWithBackend,
+  obtainFcmDeviceToken,
+  unregisterFcmTokenFromBackend,
+} from "@/lib/fcm-registration";
 
 export function FCMProvider() {
   const queryClient = useQueryClient();
@@ -23,9 +22,9 @@ export function FCMProvider() {
     if (status === "loading") return;
 
     if (status === "unauthenticated") {
-      const t = lastTokenRef.current;
-      if (t) {
-        unregisterFcmToken(t).catch(() => {
+      const token = lastTokenRef.current ?? getStoredFcmToken();
+      if (token) {
+        unregisterFcmTokenFromBackend(token).catch(() => {
           /* backend may already have removed token */
         });
         lastTokenRef.current = null;
@@ -41,38 +40,21 @@ export function FCMProvider() {
 
     async function registerDevice() {
       try {
-        const permission = await Notification.requestPermission();
-        if (permission !== "granted" || cancelled) return;
-
-        const firebaseConfig = {
-          apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-          authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-          projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-          storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-          messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-          appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-        };
-
-        const swUrl = `/firebase-messaging-sw.js?firebaseConfig=${encodeURIComponent(
-          JSON.stringify(firebaseConfig),
-        )}`;
-
-        let registration: ServiceWorkerRegistration | undefined;
-        if ("serviceWorker" in navigator) {
-          registration = await navigator.serviceWorker.register(swUrl);
+        if (typeof Notification === "undefined" || Notification.permission !== "granted") {
+          return;
         }
 
-        const messaging = await getMessagingInstance();
-        if (!messaging || cancelled) return;
+        const stored = getStoredFcmToken();
+        if (stored) {
+          await registerFcmTokenWithBackend(stored);
+          lastTokenRef.current = stored;
+          return;
+        }
 
-        const currentToken = await getToken(messaging, {
-          vapidKey: VAPID_KEY,
-          serviceWorkerRegistration: registration,
-        });
-
+        const currentToken = await obtainFcmDeviceToken();
         if (!currentToken || cancelled) return;
 
-        await api.post(FCM_REGISTER_PATH, { token: currentToken });
+        await registerFcmTokenWithBackend(currentToken);
         lastTokenRef.current = currentToken;
       } catch {
         /* permission denied, unsupported env, or network */

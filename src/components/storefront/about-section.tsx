@@ -18,7 +18,7 @@ export function AboutSection() {
             <p className="text-xs font-bold uppercase text-[#f2c94c] tracking-tight">
               Our Standard
             </p>
-            <h2 className="text-4xl font-black text-black sm:text-5xl leading-tight tracking-tight">
+            <h2 className="text-4xl font-semibold text-black sm:text-5xl leading-tight tracking-tight">
               About Doctasimo
             </h2>
           </div>
@@ -33,7 +33,7 @@ export function AboutSection() {
             and modern clinical standards. Every product we make is rigorously
             tested, fully organic, and designed with your health in mind.
           </p>
-          <button className="inline-flex items-center text-xs font-black tracking-widest text-primary hover:opacity-70 transition-all group uppercase">
+          <button className="inline-flex items-center text-xs font-semibold tracking-widest text-primary hover:opacity-70 transition-all group uppercase">
             Learn More <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </button>
         </div>

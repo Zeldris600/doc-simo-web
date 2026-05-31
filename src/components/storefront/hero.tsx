@@ -53,7 +53,7 @@ export function Hero({ isLoading }: HeroProps) {
           </div>
 
           {/* Headline */}
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black leading-[1.02] tracking-tight text-primary text-balance">
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-semibold leading-[1.02] tracking-tight text-primary text-balance">
             Ancestral Wisdom,
             <br />
             <span className="relative">
@@ -121,7 +121,7 @@ export function Hero({ isLoading }: HeroProps) {
           {/* Floating card — top right — Organic */}
           <div className="absolute top-8 -right-4 lg:-right-10 bg-white/90 backdrop-blur-xl px-5 py-4 rounded-2xl shadow-xl shadow-black/5 border border-[#f2c94c]/20 z-20 w-44 hover:-translate-y-1 transition-transform duration-500">
             <span className="text-4xl leading-none block mb-2">🌿</span>
-            <p className="font-black text-sm text-primary leading-tight">
+            <p className="font-semibold text-sm text-primary leading-tight">
               Pure African Botanicals
             </p>
             <p className="text-[11px] text-foreground/50 font-medium mt-0.5">
@@ -132,7 +132,7 @@ export function Hero({ isLoading }: HeroProps) {
           {/* Floating card — bottom left — Traditional + Modern */}
           <div className="absolute bottom-12 -left-4 lg:-left-10 bg-white/90 backdrop-blur-xl px-5 py-4 rounded-2xl shadow-xl shadow-black/5 border border-primary/10 z-20 w-48 hover:-translate-y-1 transition-transform duration-500 delay-150">
             <span className="text-4xl leading-none block mb-2">⚕️</span>
-            <p className="font-black text-sm text-primary leading-tight">
+            <p className="font-semibold text-sm text-primary leading-tight">
               Clinically Validated
             </p>
             <p className="text-[11px] text-foreground/50 font-medium mt-0.5">

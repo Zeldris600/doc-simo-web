@@ -38,7 +38,7 @@ export function PromoBanner() {
           <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8 px-8 md:px-14 py-12 md:py-16">
             {/* Left */}
             <div className="space-y-4 text-center lg:text-left max-w-xl">
-              <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md border border-white/20 rounded-full px-4 py-1.5 text-xs font-black text-white uppercase tracking-widest">
+              <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md border border-white/20 rounded-full px-4 py-1.5 text-xs font-semibold text-white uppercase tracking-widest">
                 <Sparkles className="w-3.5 h-3.5" />
                 Special Clinical Offer
               </div>
@@ -53,7 +53,7 @@ export function PromoBanner() {
               <div className="flex flex-col sm:flex-row items-center gap-4 pt-2">
                 <Link
                   href="/products"
-                  className="inline-flex items-center gap-2 bg-white text-primary px-6 py-2.5 md:px-8 md:py-3 rounded-full text-[10px] md:text-xs font-black tracking-widest uppercase hover:bg-white/90 transition-all shadow-xl shadow-black/10"
+                  className="inline-flex items-center gap-2 bg-white text-primary px-6 py-2.5 md:px-8 md:py-3 rounded-full text-[10px] md:text-xs font-semibold tracking-widest uppercase hover:bg-white/90 transition-all shadow-xl shadow-black/10"
                 >
                   Access Formulary
                   <ArrowRight className="w-4 h-4" />
@@ -72,13 +72,13 @@ export function PromoBanner() {
             <div className="hidden md:flex flex-col items-center justify-center">
               <div className="relative w-40 h-40 rounded-full border-2 border-dashed border-white/20 flex items-center justify-center">
                 <div className="w-32 h-32 rounded-full bg-white/10 backdrop-blur-sm flex flex-col items-center justify-center">
-                  <span className="text-[10px] text-white/40 font-black uppercase tracking-widest">
+                  <span className="text-[10px] text-white/40 font-semibold uppercase tracking-widest">
                     Saving
                   </span>
-                  <span className="text-4xl font-black text-white">
+                  <span className="text-4xl font-semibold text-white">
                     {amount}
                   </span>
-                  <span className="text-[10px] text-white/40 font-black uppercase tracking-widest">
+                  <span className="text-[10px] text-white/40 font-semibold uppercase tracking-widest">
                     Off Formulary
                   </span>
                 </div>

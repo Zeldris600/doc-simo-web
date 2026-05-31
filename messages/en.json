@@ -155,6 +155,7 @@
     "signUp": "Sign Up",
     "account": "Account",
     "myAccount": "My account",
+    "profileSettings": "Profile settings",
     "orders": "Orders",
     "settings": "Settings",
     "logout": "Log Out",
@@ -163,7 +164,9 @@
     "notificationsError": "Could not load notifications.",
     "notificationsLoading": "Loading…",
     "notificationsLoadMore": "Load more",
-    "blog": "Blog"
+    "blog": "Blog",
+    "dashboard": "Dashboard",
+    "consultation": "Consultation"
   },
   "blog": {
     "title": "Blog",
@@ -253,6 +256,21 @@
       "title": "Security Settings",
       "subtitle": "Update your password and account security preferences.",
       "password": "Change Password"
+    },
+    "settingsPage": {
+      "title": "Profile & account settings",
+      "subtitle": "Update your profile, delivery address, and how we notify you on this device.",
+      "profileSection": "Profile",
+      "notificationsSection": "Notifications"
+    },
+    "hub": {
+      "title": "My Account",
+      "subtitle": "Manage your orders, saved items, and delivery details.",
+      "browseProducts": "Browse Products",
+      "profileCtaTitle": "Profile & notifications",
+      "profileCtaBody": "Edit your photo, contact details, delivery address, and push notification preferences.",
+      "openSettings": "Open profile settings",
+      "alertsCtaBody": "Manage browser push and what we send you in settings."
     }
   },
   "common": {

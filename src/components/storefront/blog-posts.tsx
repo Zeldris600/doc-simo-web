@@ -30,10 +30,10 @@ export function BlogPosts() {
       <div className="container max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
           <div className="space-y-4">
-            <p className="text-[10px] font-black uppercase text-primary/40 tracking-[0.2em]">
+            <p className="text-[10px] font-semibold uppercase text-primary/40 tracking-[0.2em]">
               Clinical Journal
             </p>
-            <h2 className="text-3xl md:text-5xl font-black text-primary tracking-tight">
+            <h2 className="text-3xl md:text-5xl font-semibold text-primary tracking-tight">
               Herbal Insights
             </h2>
             <p className="text-foreground/50 max-w-xl font-medium leading-relaxed">
@@ -43,7 +43,7 @@ export function BlogPosts() {
           </div>
           <Link
             href="/blog"
-            className="inline-flex items-center text-[10px] font-black tracking-widest text-primary hover:opacity-70 transition-all group uppercase bg-primary/5 px-6 py-3 rounded-full"
+            className="inline-flex items-center text-[10px] font-semibold tracking-widest text-primary hover:opacity-70 transition-all group uppercase bg-primary/5 px-6 py-3 rounded-full"
           >
             View All Articles{" "}
             <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -74,14 +74,14 @@ export function BlogPosts() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
                 <div className="space-y-3">
-                  <p className="text-[10px] font-black text-[#f2c94c] uppercase tracking-widest">
+                  <p className="text-[10px] font-semibold text-[#f2c94c] uppercase tracking-widest">
                     {new Date(post.createdAt).toLocaleDateString("en-US", {
                       month: "short",
                       day: "2-digit",
                       year: "numeric",
                     })}
                   </p>
-                  <h3 className="text-xl font-black text-primary mb-3 group-hover:text-primary/70 transition-colors leading-tight">
+                  <h3 className="text-xl font-semibold text-primary mb-3 group-hover:text-primary/70 transition-colors leading-tight">
                     {post.title}
                   </h3>
                   <p className="text-sm text-foreground/50 line-clamp-2 font-medium leading-relaxed">

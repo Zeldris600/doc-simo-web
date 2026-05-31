@@ -1,33 +1,16 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useTranslations } from "next-intl";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { useMe, useUpdateMe } from "@/hooks/use-user";
+import { useMe } from "@/hooks/use-user";
 import { useMyOrders } from "@/hooks/use-order";
 import { useFavouriteProducts } from "@/hooks/use-favourites";
 import { useCart } from "@/store/use-cart";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-  FormDescription,
-} from "@/components/ui/form";
-import { ImageUploader } from "@/components/ui/image-uploader";
 import { toast } from "sonner";
 import {
   Loader2,
   User,
-  MapPin,
-  ShieldCheck,
-  Fingerprint,
   ShoppingBag,
   Heart,
   RotateCcw,
@@ -36,8 +19,8 @@ import {
   ArrowRight,
   ArrowUpRight,
   Bell,
+  Settings,
 } from "@/lib/icons";
-import { NotificationPreferences } from "@/components/account/notification-preferences";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -47,62 +30,21 @@ import Image from "next/image";
 import type { Order, Product } from "@/types/api";
 import { cn } from "@/lib/utils";
 
-const profileSchema = z.object({
-  name: z.string().min(2, "Name is too short"),
-  image: z.string().optional(),
-  phoneNumber: z.string().optional(),
-  address: z.string().optional(),
-  city: z.string().optional(),
-  region: z.string().optional(),
-});
-
-type ProfileFormValues = z.infer<typeof profileSchema>;
+const accountCardClass =
+  "border border-black/8 bg-white rounded-xl shadow-none overflow-hidden";
 
 function formatMoney(n: number, currency = "XAF") {
   return `XAF ${n.toLocaleString()}`;
 }
 
 export default function AccountDashboardPage() {
-  const t = useTranslations("account.dashboard");
+  const tHub = useTranslations("account.hub");
   const { data: user, isLoading: isLoadingUser } = useMe();
-  const { mutate: updateProfile, isPending: isUpdating } = useUpdateMe();
   const { data: ordersPage, isLoading: loadingOrders } = useMyOrders();
   const { favourites, isLoading: loadingFavourites } = useFavouriteProducts();
   const { addItem } = useCart();
 
   const [reorderingId, setReorderingId] = useState<string | null>(null);
-
-  const form = useForm<ProfileFormValues>({
-    resolver: zodResolver(profileSchema),
-    defaultValues: {
-      name: "",
-      image: "",
-      phoneNumber: "",
-      address: "",
-      city: "",
-      region: "",
-    },
-  });
-
-  useEffect(() => {
-    if (user) {
-      form.reset({
-        name: user.name || "",
-        image: user.image || "",
-        phoneNumber: user.phoneNumber || "",
-        address: user.address || user.customer?.address || "",
-        city: user.city || user.customer?.city || "",
-        region: user.region || user.customer?.region || "",
-      });
-    }
-  }, [user, form]);
-
-  const onProfileSubmit = (data: ProfileFormValues) => {
-    updateProfile(data, {
-      onSuccess: () => toast.success("Profile updated successfully."),
-      onError: () => toast.error("Could not update profile."),
-    });
-  };
 
   const handleReorder = (order: Order) => {
     setReorderingId(order.id);
@@ -122,31 +64,35 @@ export default function AccountDashboardPage() {
 
   if (isLoadingUser || loadingOrders || loadingFavourites) {
     return (
-      <div className="container mx-auto max-w-6xl px-4 pt-28 pb-12">
-        <PageSkeleton />
+      <div className="min-h-screen bg-[#EEF2EE]">
+        <div className="container mx-auto max-w-6xl px-4 pt-32 pb-16">
+          <PageSkeleton />
+        </div>
       </div>
     );
   }
 
-  // OrderService.getMe() already unwraps to Order[] via response.data.data.data
-  const orders: Order[] = Array.isArray(ordersPage) ? ordersPage : (ordersPage?.data || []);
+  const orders: Order[] = ordersPage?.data ?? [];
   const totalSpent = orders.reduce((sum: number, o: Order) => sum + Number(o.amount || 0), 0);
 
   return (
-    <div className="min-h-screen bg-[#F5F7F5]">
-      <div className="container mx-auto max-w-6xl px-4 pt-36 pb-20">
-        {/* Page Header — matches admin DashboardHeader style */}
+    <div className="min-h-screen bg-[#EEF2EE]">
+      <div className="container mx-auto max-w-6xl px-4 pt-32 pb-20">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-xl font-medium text-black">My Account</h1>
-            <p className="text-[10px] font-medium text-gray-400 mt-0.5">
-              Manage your orders, saved items, and delivery details.
-            </p>
+            <h1 className="text-2xl font-semibold text-foreground">{tHub("title")}</h1>
+            <p className="text-sm text-muted-foreground mt-1">{tHub("subtitle")}</p>
           </div>
           <div className="flex items-center gap-2">
+            <Button asChild variant="outline" className="rounded-lg h-10 text-sm font-medium">
+              <Link href="/account/settings">
+                <Settings className="h-4 w-4 mr-2" />
+                {tHub("openSettings")}
+              </Link>
+            </Button>
             <Link href="/products">
-              <Button className="font-medium rounded-xl h-9 px-4 text-xs">
-                Browse Products
+              <Button className="font-semibold rounded-lg h-10 px-5 text-sm">
+                {tHub("browseProducts")}
               </Button>
             </Link>
           </div>
@@ -182,10 +128,10 @@ export default function AccountDashboardPage() {
           ].map((stat, i) => (
             <Card
               key={i}
-              className="border-none bg-white rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.02)] overflow-hidden group hover:shadow-md transition-all duration-300"
+              className={cn(accountCardClass, "group transition-colors hover:border-primary/20")}
             >
-              <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                <CardTitle className="text-[10px] font-medium text-gray-400">
+              <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0 px-6 pt-5">
+                <CardTitle className="text-xs font-medium text-muted-foreground">
                   {stat.title}
                 </CardTitle>
                 <div
@@ -194,9 +140,9 @@ export default function AccountDashboardPage() {
                   <stat.icon className="h-4 w-4" />
                 </div>
               </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-medium text-black">{stat.value}</div>
-                <p className="text-[10px] font-medium text-gray-400 mt-1 flex items-center gap-1">
+              <CardContent className="px-6 pb-5">
+                <div className="text-2xl font-semibold text-foreground">{stat.value}</div>
+                <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
                   {stat.description}
                   <ArrowUpRight className="h-2 w-2 text-emerald-500" />
                 </p>
@@ -207,42 +153,42 @@ export default function AccountDashboardPage() {
 
         {/* Tabs — clean, left-aligned, understated */}
         <Tabs defaultValue="orders" className="w-full">
-          <TabsList className="bg-white border-none rounded-xl h-10 p-1 shadow-[0_8px_30px_rgba(0,0,0,0.02)] w-auto mb-6">
+          <TabsList className="bg-white border border-black/8 rounded-xl h-11 p-1 shadow-none w-auto mb-6">
             <TabsTrigger
               value="orders"
-              className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-sm font-medium text-xs gap-1.5 px-4 transition-all"
+              className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-none font-medium text-sm gap-1.5 px-4 transition-all"
             >
-              <ShoppingBag className="h-3.5 w-3.5" /> Orders
+              <ShoppingBag className="h-4 w-4" /> Orders
             </TabsTrigger>
             <TabsTrigger
               value="favourites"
-              className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-sm font-medium text-xs gap-1.5 px-4 transition-all"
+              className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-none font-medium text-sm gap-1.5 px-4 transition-all"
             >
-              <Heart className="h-3.5 w-3.5" /> Favourites
+              <Heart className="h-4 w-4" /> Favourites
             </TabsTrigger>
             <TabsTrigger
               value="profile"
-              className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-sm font-medium text-xs gap-1.5 px-4 transition-all"
+              className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-none font-medium text-sm gap-1.5 px-4 transition-all"
             >
-              <User className="h-3.5 w-3.5" /> Profile
+              <User className="h-4 w-4" /> Profile
             </TabsTrigger>
             <TabsTrigger
               value="alerts"
-              className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-sm font-medium text-xs gap-1.5 px-4 transition-all"
+              className="rounded-lg data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-none font-medium text-sm gap-1.5 px-4 transition-all"
             >
-              <Bell className="h-3.5 w-3.5" /> Alerts
+              <Bell className="h-4 w-4" /> Alerts
             </TabsTrigger>
           </TabsList>
 
           {/* ─── Orders ─── */}
           <TabsContent value="orders">
-            <Card className="border-none bg-white rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.02)] overflow-hidden">
-              <CardHeader className="py-4 px-6 border-b border-gray-50 flex flex-row items-center justify-between">
+            <Card className={accountCardClass}>
+              <CardHeader className="py-4 px-6 border-b border-black/6 flex flex-row items-center justify-between">
                 <div className="space-y-1">
-                  <CardTitle className="text-sm font-medium text-black">
+                  <CardTitle className="text-base font-semibold text-foreground">
                     Order History
                   </CardTitle>
-                  <p className="text-[10px] font-medium text-gray-400">
+                  <p className="text-sm text-muted-foreground">
                     Your recent purchases and their status
                   </p>
                 </div>
@@ -391,13 +337,13 @@ export default function AccountDashboardPage() {
 
           {/* ─── Favourites ─── */}
           <TabsContent value="favourites">
-            <Card className="border-none bg-white rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.02)] overflow-hidden">
-              <CardHeader className="py-4 px-6 border-b border-gray-50 flex flex-row items-center justify-between">
+            <Card className={accountCardClass}>
+              <CardHeader className="py-4 px-6 border-b border-black/6 flex flex-row items-center justify-between">
                 <div className="space-y-1">
-                  <CardTitle className="text-sm font-medium text-black">
+                  <CardTitle className="text-base font-semibold text-foreground">
                     Saved Items
                   </CardTitle>
-                  <p className="text-[10px] font-medium text-gray-400">
+                  <p className="text-sm text-muted-foreground">
                     Products you&apos;ve added to your wishlist
                   </p>
                 </div>
@@ -493,197 +439,51 @@ export default function AccountDashboardPage() {
 
           {/* ─── Profile ─── */}
           <TabsContent value="profile">
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onProfileSubmit)}
-                className="grid grid-cols-1 lg:grid-cols-3 gap-6"
-              >
-                {/* Left: Avatar */}
-                <div className="space-y-6">
-                  <Card className="border-none bg-white rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.02)] overflow-hidden">
-                    <CardHeader className="py-4 px-6 border-b border-gray-50">
-                      <CardTitle className="text-sm font-medium text-black flex items-center gap-2">
-                        <Fingerprint className="h-4 w-4 text-gray-400" /> Photo
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="pt-6 pb-8">
-                      <FormField
-                        control={form.control}
-                        name="image"
-                        render={({ field }) => (
-                          <FormItem className="space-y-3">
-                            <FormControl>
-                              <ImageUploader
-                                defaultValue={field.value}
-                                onUploadSuccess={field.onChange}
-                                className="rounded-xl h-48 w-48 mx-auto bg-gray-50 border-2 border-dashed border-gray-100 hover:border-primary/30 transition-all"
-                              />
-                            </FormControl>
-                            <FormDescription className="text-[10px] font-medium text-gray-400 text-center">
-                              Profile photo
-                            </FormDescription>
-                          </FormItem>
-                        )}
-                      />
-                    </CardContent>
-                  </Card>
-
-                  <Button
-                    type="submit"
-                    disabled={isUpdating}
-                    className="w-full h-10 rounded-xl font-medium text-xs"
-                  >
-                    {isUpdating ? (
-                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                    ) : (
-                      <ShieldCheck className="h-4 w-4 mr-2" />
-                    )}
-                    Save Changes
-                  </Button>
+            <Card className={accountCardClass}>
+              <CardContent className="p-8 md:p-10 flex flex-col md:flex-row md:items-center gap-6">
+                <div className="h-16 w-16 rounded-full bg-primary/10 text-primary flex items-center justify-center text-lg font-semibold shrink-0">
+                  {user?.name?.slice(0, 2).toUpperCase() || "?"}
                 </div>
-
-                {/* Right: Forms */}
-                <div className="lg:col-span-2 space-y-6">
-                  <Card className="border-none bg-white rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.02)] overflow-hidden">
-                    <CardHeader className="py-4 px-6 border-b border-gray-50">
-                      <CardTitle className="text-sm font-medium text-black flex items-center gap-2">
-                        <User className="h-4 w-4 text-gray-400" /> Personal
-                        Information
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-6 grid gap-5">
-                      <FormField
-                        control={form.control}
-                        name="name"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-[10px] font-medium text-gray-400">
-                              Full Name
-                            </FormLabel>
-                            <FormControl>
-                              <Input
-                                placeholder="e.g. John Doe"
-                                {...field}
-                                className="bg-gray-50/50 border-gray-100 rounded-lg h-10 text-sm"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <FormField
-                          control={form.control}
-                          name="phoneNumber"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel className="text-[10px] font-medium text-gray-400">
-                                Phone Number
-                              </FormLabel>
-                              <FormControl>
-                                <Input
-                                  placeholder="+237 ..."
-                                  {...field}
-                                  className="bg-gray-50/50 border-gray-100 rounded-lg h-10 text-sm"
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormItem>
-                          <FormLabel className="text-[10px] font-medium text-gray-400">
-                            Email Address
-                          </FormLabel>
-                          <FormControl>
-                            <Input
-                              value={user?.email || ""}
-                              disabled
-                              className="bg-gray-100 border-gray-100 rounded-lg h-10 text-sm text-gray-400"
-                            />
-                          </FormControl>
-                        </FormItem>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="border-none bg-white rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.02)] overflow-hidden">
-                    <CardHeader className="py-4 px-6 border-b border-gray-50">
-                      <CardTitle className="text-sm font-medium text-black flex items-center gap-2">
-                        <MapPin className="h-4 w-4 text-gray-400" /> Delivery
-                        Address
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-6 space-y-5">
-                      <FormField
-                        control={form.control}
-                        name="address"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-[10px] font-medium text-gray-400">
-                              Street Address
-                            </FormLabel>
-                            <FormControl>
-                              <Input
-                                placeholder="123 Main Street"
-                                {...field}
-                                className="bg-gray-50/50 border-gray-100 rounded-lg h-10 text-sm"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <div className="grid grid-cols-2 gap-5">
-                        <FormField
-                          control={form.control}
-                          name="city"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel className="text-[10px] font-medium text-gray-400">
-                                City
-                              </FormLabel>
-                              <FormControl>
-                                <Input
-                                  placeholder="Yaoundé"
-                                  {...field}
-                                  className="bg-gray-50/50 border-gray-100 rounded-lg h-10 text-sm"
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="region"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel className="text-[10px] font-medium text-gray-400">
-                                Region
-                              </FormLabel>
-                              <FormControl>
-                                <Input
-                                  placeholder="Centre"
-                                  {...field}
-                                  className="bg-gray-50/50 border-gray-100 rounded-lg h-10 text-sm"
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                    </CardContent>
-                  </Card>
+                <div className="flex-1 space-y-2">
+                  <h3 className="text-lg font-semibold">{tHub("profileCtaTitle")}</h3>
+                  <p className="text-sm text-muted-foreground max-w-lg">
+                    {tHub("profileCtaBody")}
+                  </p>
+                  {user?.email && (
+                    <p className="text-sm text-foreground/80">{user.email}</p>
+                  )}
                 </div>
-              </form>
-            </Form>
+                <Button asChild className="rounded-lg h-11 shrink-0 font-semibold">
+                  <Link href="/account/settings">
+                    <Settings className="h-4 w-4 mr-2" />
+                    {tHub("openSettings")}
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           {/* ─── Alerts ─── */}
           <TabsContent value="alerts">
-            <NotificationPreferences />
+            <Card className={accountCardClass}>
+              <CardContent className="p-8 md:p-10 flex flex-col md:flex-row md:items-center gap-6">
+                <div className="h-14 w-14 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                  <Bell className="h-7 w-7 text-primary" />
+                </div>
+                <div className="flex-1 space-y-2">
+                  <h3 className="text-lg font-semibold">{tHub("profileCtaTitle")}</h3>
+                  <p className="text-sm text-muted-foreground max-w-lg">
+                    {tHub("alertsCtaBody")}
+                  </p>
+                </div>
+                <Button asChild variant="outline" className="rounded-lg h-11 shrink-0 font-semibold">
+                  <Link href="/account/settings#notifications">
+                    {tHub("openSettings")}
+                    <ArrowRight className="h-4 w-4 ml-2" />
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </div>

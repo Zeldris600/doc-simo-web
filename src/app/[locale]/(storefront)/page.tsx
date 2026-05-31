@@ -31,7 +31,7 @@ export default function HomePage() {
         <div className="flex flex-col items-center text-center space-y-8">
           <div className="relative w-full aspect-square max-w-sm overflow-hidden shadow-2xl shadow-black/5">
             <div className="">
-              <h1 className="text-2xl font-black text-primary tracking-tight">
+              <h1 className="text-2xl font-semibold text-primary tracking-tight">
                 DOCTASIMO
               </h1>
               <p className="text-lg text-primary font-medium">
@@ -45,7 +45,7 @@ export default function HomePage() {
             />
           </div>
           <div className="space-y-1">
-            <h1 className="text-3xl font-black text-primary tracking-tight">
+            <h1 className="text-3xl font-semibold text-primary tracking-tight">
               Welcome to <span className="text-primary/70">Doctasimo</span>
             </h1>
             <p className="text-sm font-bold text-foreground/30">
@@ -116,12 +116,12 @@ export default function HomePage() {
       {/* Simple CTA for Mobile */}
       <div className="md:hidden px-6 py-16">
         <div className="bg-primary rounded-[40px] p-10 text-center space-y-8 shadow-2xl shadow-primary/20">
-          <h2 className="text-3xl font-black text-white tracking-tighter leading-tight">
+          <h2 className="text-3xl font-semibold text-white tracking-tighter leading-tight">
             Ready to start your natural healing journey?
           </h2>
           <Link
             href="/consultation"
-            className="inline-flex items-center justify-center w-full bg-[#f2c94c] text-primary font-black py-4 rounded-2xl active:scale-95 transition-all shadow-lg uppercase tracking-widest text-xs"
+            className="inline-flex items-center justify-center w-full bg-[#f2c94c] text-primary font-semibold py-4 rounded-2xl active:scale-95 transition-all shadow-lg uppercase tracking-widest text-xs"
           >
             Book Free Consultation
           </Link>

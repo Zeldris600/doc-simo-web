@@ -22,6 +22,7 @@ import { Badge } from "@/components/ui/badge";
 import { useMe, useUpdateMe } from "@/hooks/use-user";
 import { toast } from "sonner";
 import { signOut } from "next-auth/react";
+import { ProfileSkeleton } from "@/components/skeletons/profile-skeleton";
 
 export function AccountClient() {
  const t = useTranslations("account");
@@ -57,11 +58,7 @@ export function AccountClient() {
  };
 
  if (isUserLoading) {
- return (
- <div className="flex items-center justify-center min-h-[400px]">
- <Loader2 className="h-8 w-8 animate-spin text-primary" />
- </div>
- );
+ return <ProfileSkeleton />;
  }
 
  const initials = formData.name

@@ -83,7 +83,7 @@ export function CustomerReviews() {
           <p className="text-[10px] font-bold uppercase tracking-widest text-[#f2c94c]">
             Verified Patient Reviews
           </p>
-          <h2 className="text-xl sm:text-2xl font-black text-primary tracking-tight">
+          <h2 className="text-xl sm:text-2xl font-semibold text-primary tracking-tight">
             Real People, Real Healing
           </h2>
           {/* Aggregate rating */}
@@ -96,7 +96,7 @@ export function CustomerReviews() {
                 />
               ))}
             </div>
-            <span className="text-2xl font-black text-primary">{avg}</span>
+            <span className="text-2xl font-semibold text-primary">{avg}</span>
             <span className="text-sm text-foreground/65 font-medium">
               / 5 · {REVIEWS.length * 580}+ reviews
             </span>
@@ -148,7 +148,7 @@ export function CustomerReviews() {
                 </div>
                 <div>
                   <p
-                    className={`text-sm font-black leading-tight ${i === 1 ? "text-white" : "text-primary"}`}
+                    className={`text-sm font-semibold leading-tight ${i === 1 ? "text-white" : "text-primary"}`}
                   >
                     {r.author}
                   </p>

@@ -25,6 +25,7 @@ import { toast } from "sonner";
 import { useCan } from "@/hooks/use-can";
 import { AssignDeliveryDialog } from "@/components/analytics/assign-delivery-dialog";
 import { Link } from "@/i18n/routing";
+import { getOrderDriverDisplayName } from "@/lib/order-delivery";
 
 const OrderActions = ({ order }: { order: Order }) => {
   const { mutate: updateStatus, isPending } = useUpdateOrderStatus();
@@ -41,7 +42,7 @@ const OrderActions = ({ order }: { order: Order }) => {
         onError: () => {
           toast.error("Failed to update status");
         },
-      },
+      }
     );
   };
 
@@ -97,7 +98,7 @@ const OrderActions = ({ order }: { order: Order }) => {
                       "DELIVERED",
                       "CANCELLED",
                       "REFUNDED",
-                    ].map((status) => (
+                    ].map(status => (
                       <DropdownMenuItem
                         key={status}
                         className="rounded-lg text-xs font-medium cursor-pointer"
@@ -140,11 +141,12 @@ const OrderActions = ({ order }: { order: Order }) => {
 
 const columns: ColumnDef<Order>[] = [
   {
-    accessorKey: "id",
-    header: "Order ID",
+    id: "orderNumber",
+    accessorFn: row => row.orderNumber || row.id,
+    header: "Order",
     cell: ({ row }) => (
-      <span className="font-medium text-black text-xs">
-        #{row.getValue<string>("id").substring(0, 8)}
+      <span className="font-medium font-mono text-sm" title={row.original.id}>
+        {row.original.orderNumber || `#${row.original.id.substring(0, 8)}`}
       </span>
     ),
   },
@@ -158,35 +160,51 @@ const columns: ColumnDef<Order>[] = [
     ),
   },
   {
-    id: "customer",
+    id: "customerName",
+    accessorFn: row => row.user?.name || "Guest",
     header: "Customer",
     cell: ({ row }) => (
-      <div className="flex flex-col">
-        <span className="font-medium text-black text-xs">
-          {row.original.user?.name || "Guest"}
-        </span>
-        <span className="text-[10px] text-gray-400 font-medium">
-          {row.original.deliveryAddress?.phone || "No phone"}
-        </span>
-      </div>
+      <span className="font-medium">{row.original.user?.name || "Guest"}</span>
     ),
   },
   {
-    accessorKey: "assignedToUserId",
-    header: "Assignee",
+    id: "customerPhone",
+    accessorFn: row => row.deliveryAddress?.phone || "",
+    header: "Phone",
     cell: ({ row }) => (
-      <div className="flex items-center gap-2">
-        {row.original.assignedToUserId ? (
-          <Badge className="bg-blue-50 text-blue-600 border-none font-medium text-[9px] px-2 rounded-full">
-            Assigned
-          </Badge>
-        ) : (
-          <span className="text-[10px] text-gray-300 font-medium italic">
-            Unassigned
-          </span>
-        )}
-      </div>
+      <span className="text-muted-foreground">
+        {row.original.deliveryAddress?.phone || "—"}
+      </span>
     ),
+  },
+  {
+    id: "customerEmail",
+    accessorFn: row => row.user?.email || "",
+    header: "Email",
+    cell: ({ row }) => (
+      <span className="text-muted-foreground truncate max-w-[200px] block">
+        {row.original.user?.email || "—"}
+      </span>
+    ),
+  },
+  {
+    id: "assignee",
+    header: "Driver",
+    cell: ({ row }) => {
+      const name = getOrderDriverDisplayName(row.original);
+      const isUnassigned = name === "Unassigned";
+      return (
+        <span
+          className={
+            isUnassigned
+              ? "text-sm text-muted-foreground italic"
+              : "text-sm font-medium"
+          }
+        >
+          {name}
+        </span>
+      );
+    },
   },
   {
     accessorKey: "amount",
@@ -203,6 +221,10 @@ const columns: ColumnDef<Order>[] = [
   {
     accessorKey: "status",
     header: "Status",
+    filterFn: (row, columnId, filterValue) => {
+      if (!filterValue || filterValue === "all") return true;
+      return row.getValue(columnId) === filterValue;
+    },
     cell: ({ row }) => {
       const status = row.getValue("status") as string;
       return (
@@ -250,11 +272,28 @@ export default function AdminOrdersPage() {
         description="Monitor and fulfill your clinical herbal orders."
       />
 
-      <div className="bg-white rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.02)] overflow-hidden">
+      <div className="rounded-xl border border-black/8 bg-white shadow-sm overflow-hidden p-4 sm:p-6">
         <DataTable
           columns={columns}
           data={orders as Order[]}
-          searchKey="id"
+          searchKeys={["orderNumber", "id", "user.name", "user.email"]}
+          searchPlaceholder="Search orders…"
+          filters={[
+            {
+              columnId: "status",
+              label: "Status",
+              options: [
+                { label: "All statuses", value: "all" },
+                { label: "Pending", value: "PENDING" },
+                { label: "Paid", value: "PAID" },
+                { label: "Processing", value: "PROCESSING" },
+                { label: "Shipped", value: "SHIPPED" },
+                { label: "Delivered", value: "DELIVERED" },
+                { label: "Cancelled", value: "CANCELLED" },
+                { label: "Refunded", value: "REFUNDED" },
+              ],
+            },
+          ]}
           pageCount={pageCount}
           pagination={pagination}
           onPaginationChange={setPagination}

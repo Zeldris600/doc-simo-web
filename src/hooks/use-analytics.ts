@@ -4,10 +4,14 @@ import { useQuery } from "@tanstack/react-query";
 import { AnalyticsService, type TimeSeriesParams } from "@/services/analytics.service";
 import { AnalyticsQueryDto } from "@/types/api";
 
-export function useAnalyticsOverview(params?: AnalyticsQueryDto) {
+export function useAnalyticsOverview(
+ params?: AnalyticsQueryDto,
+ options?: { enabled?: boolean },
+) {
  return useQuery({
  queryKey: ["analytics", "overview", params],
  queryFn: () => AnalyticsService.getOverview(params),
+ enabled: options?.enabled ?? true,
  });
 }
 

@@ -170,38 +170,39 @@ export default function AdminBlogPage() {
         description="Create and publish articles and videos for the storefront."
       />
 
-      <div className="flex flex-wrap items-center gap-3">
-        <span className="text-xs font-medium text-gray-500 uppercase">Status</span>
-        <Select
-          value={statusFilter}
-          onValueChange={(v) => {
-            setStatusFilter(v);
-            setPagination((p) => ({ ...p, pageIndex: 0 }));
-          }}
-        >
-          <SelectTrigger className="w-[180px] bg-white">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {STATUS_FILTER.map((opt) => (
-              <SelectItem key={opt.value} value={opt.value}>
-                {opt.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+      <div className="rounded-xl border border-black/8 bg-white shadow-sm overflow-hidden p-4 sm:p-6">
+        <DataTable
+          columns={columns}
+          data={posts}
+          searchKeys={["title", "slug", "status", "kind"]}
+          searchPlaceholder="Search posts…"
+          filterSlot={
+              <Select
+                value={statusFilter}
+                onValueChange={(v) => {
+                  setStatusFilter(v);
+                  setPagination((p) => ({ ...p, pageIndex: 0 }));
+                }}
+              >
+                <SelectTrigger className="h-10 w-[160px] shrink-0 text-sm" aria-label="Status">
+                  <SelectValue placeholder="Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  {STATUS_FILTER.map((opt) => (
+                    <SelectItem key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+          }
+          action={addAction || undefined}
+          pageCount={pageCount}
+          pagination={pagination}
+          onPaginationChange={setPagination}
+          isLoading={isLoading}
+        />
       </div>
-
-      <DataTable
-        columns={columns}
-        data={posts}
-        searchKey="title"
-        action={addAction || undefined}
-        pageCount={pageCount}
-        pagination={pagination}
-        onPaginationChange={setPagination}
-        isLoading={isLoading}
-      />
     </div>
   );
 }

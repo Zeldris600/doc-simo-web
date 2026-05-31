@@ -5,8 +5,8 @@ import { Link } from "@/i18n/routing";
 import Image from "next/image";
 import { useBlogPosts } from "@/hooks/use-blog";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "@/lib/icons";
 import { useState } from "react";
+import { ProductCardSkeleton } from "@/components/skeletons/product-card-skeleton";
 
 export default function BlogIndexPage() {
   const t = useTranslations("blog");
@@ -30,8 +30,10 @@ export default function BlogIndexPage() {
       </header>
 
       {isLoading && (
-        <div className="flex justify-center py-20">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <ProductCardSkeleton key={i} />
+          ))}
         </div>
       )}
 

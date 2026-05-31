@@ -1,9 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useUsers } from "@/hooks/use-users";
 import { useAssignOrder } from "@/hooks/use-order";
-import { UserRole } from "@/lib/rbac/types";
 import { ApiError } from "@/types/api";
 import {
   Dialog,
@@ -14,13 +12,8 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
-} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Loader2, Truck } from "@/lib/icons";
 
@@ -35,84 +28,74 @@ export function AssignDeliveryDialog({
   open,
   onOpenChange,
 }: AssignDeliveryDialogProps) {
-  const [selectedUserId, setSelectedUserId] = useState<string>("");
-  const { data: usersResponse, isLoading: isLoadingUsers } = useUsers({ role: UserRole.DELIVERY });
+  const [driverName, setDriverName] = useState("");
   const { mutate: assignOrder, isPending: isAssigning } = useAssignOrder();
 
-  const deliveryUsers = usersResponse?.data || [];
-
   const handleAssign = () => {
-    if (!selectedUserId) {
-      toast.error("Please select a delivery person");
+    const name = driverName.trim();
+    if (!name) {
+      toast.error("Enter the delivery person's name");
       return;
     }
 
     assignOrder(
-      { id: orderId, data: { assigneeUserId: selectedUserId } },
+      { id: orderId, data: { assigneeName: name } },
       {
         onSuccess: () => {
-          toast.success("Order assigned successfully");
+          toast.success(`Assigned to ${name}`);
           onOpenChange(false);
-          setSelectedUserId("");
+          setDriverName("");
         },
         onError: (err: ApiError) => {
           toast.error(err.response?.data?.message || "Failed to assign order");
         },
-      }
+      },
     );
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px] rounded-xl">
+      <DialogContent className="sm:max-w-[425px] rounded-lg border border-black/8 shadow-sm">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 font-medium">
             <Truck className="h-5 w-5 text-primary" />
-            Assign Delivery
+            Assign delivery
           </DialogTitle>
-          <DialogDescription className="text-xs font-medium text-gray-400">
-            Select a delivery professional to handle this order.
+          <DialogDescription className="text-sm text-muted-foreground">
+            Enter the name of the driver handling this order.
           </DialogDescription>
         </DialogHeader>
-        <div className="py-4">
-          <Select
-            value={selectedUserId}
-            onValueChange={setSelectedUserId}
-            disabled={isLoadingUsers}
-          >
-            <SelectTrigger className="w-full rounded-xl border-gray-100 font-medium">
-              <SelectValue placeholder={isLoadingUsers ? "Loading users..." : "Select assignee"} />
-            </SelectTrigger>
-            <SelectContent className="rounded-xl border-gray-100">
-              {deliveryUsers.map((user) => (
-                <SelectItem key={user.id} value={user.id} className="font-medium">
-                  {user.name} ({user.email})
-                </SelectItem>
-              ))}
-              {deliveryUsers.length === 0 && !isLoadingUsers && (
-                <p className="p-2 text-xs text-center text-gray-500 font-medium">No delivery users found</p>
-              )}
-            </SelectContent>
-          </Select>
+        <div className="py-2 space-y-2">
+          <Label htmlFor="driver-name" className="text-sm font-medium">
+            Driver name
+          </Label>
+          <Input
+            id="driver-name"
+            placeholder="e.g. Jean Mbarga"
+            value={driverName}
+            onChange={(e) => setDriverName(e.target.value)}
+            className="h-10 rounded-lg"
+            onKeyDown={(e) => e.key === "Enter" && handleAssign()}
+          />
         </div>
         <DialogFooter>
           <Button
             variant="outline"
             onClick={() => onOpenChange(false)}
-            className="rounded-xl font-medium"
+            className="rounded-lg font-medium"
             disabled={isAssigning}
           >
             Cancel
           </Button>
           <Button
             onClick={handleAssign}
-            className="rounded-xl font-medium px-8"
-            disabled={isAssigning || !selectedUserId}
+            className="rounded-lg font-medium px-8"
+            disabled={isAssigning || !driverName.trim()}
           >
             {isAssigning ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Assigning...
+                Assigning…
               </>
             ) : (
               "Assign"

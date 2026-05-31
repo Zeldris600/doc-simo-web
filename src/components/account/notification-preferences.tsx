@@ -3,13 +3,20 @@
 import * as React from "react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { Bell, Smartphone } from "@/lib/icons";
+import { Bell, Smartphone, Loader2 } from "@/lib/icons";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import {
+  enablePushNotifications,
+  disablePushNotifications,
+  getStoredFcmToken,
+} from "@/lib/fcm-registration";
 
-const STORAGE_KEY = "doctasimo:customer-notification-prefs";
+const accountCardClass =
+  "border border-black/8 bg-white rounded-xl shadow-none overflow-hidden";
+
+const PREF_STORAGE_KEY = "doctasimo:customer-notification-prefs";
 
 type Prefs = {
   tipsAndOrderUpdates: boolean;
@@ -24,7 +31,7 @@ const defaultPrefs: Prefs = {
 function readPrefs(): Prefs {
   if (typeof window === "undefined") return defaultPrefs;
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(PREF_STORAGE_KEY);
     if (!raw) return defaultPrefs;
     return { ...defaultPrefs, ...JSON.parse(raw) };
   } catch {
@@ -33,19 +40,24 @@ function readPrefs(): Prefs {
 }
 
 function writePrefs(p: Prefs) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(p));
+  localStorage.setItem(PREF_STORAGE_KEY, JSON.stringify(p));
 }
 
 export function NotificationPreferences() {
   const t = useTranslations("account.notifications");
+  const [mounted, setMounted] = React.useState(false);
+  const [pushEnabled, setPushEnabled] = React.useState(false);
+  const [pushLoading, setPushLoading] = React.useState(false);
   const [permission, setPermission] = React.useState<NotificationPermission>("default");
   const [prefs, setPrefs] = React.useState<Prefs>(defaultPrefs);
-  const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => {
     setMounted(true);
-    setPermission(typeof Notification !== "undefined" ? Notification.permission : "default");
+    setPermission(
+      typeof Notification !== "undefined" ? Notification.permission : "default",
+    );
     setPrefs(readPrefs());
+    setPushEnabled(Boolean(getStoredFcmToken()));
   }, []);
 
   const updatePref = <K extends keyof Prefs>(key: K, value: Prefs[K]) => {
@@ -55,71 +67,120 @@ export function NotificationPreferences() {
     toast.success(t("savedToast"));
   };
 
-  const requestPush = async () => {
+  const handlePushToggle = async (checked: boolean) => {
+    if (!mounted) return;
+
     if (typeof Notification === "undefined") {
       toast.error(t("unsupported"));
       return;
     }
-    const result = await Notification.requestPermission();
-    setPermission(result);
-    if (result === "granted") {
-      toast.success(t("pushEnabled"));
-    } else if (result === "denied") {
-      toast.error(t("pushBlocked"));
+
+    setPushLoading(true);
+    try {
+      if (checked) {
+        const result = await enablePushNotifications();
+        setPermission(Notification.permission);
+
+        if (result.ok) {
+          setPushEnabled(true);
+          toast.success(t("pushEnabled"));
+        } else if (result.reason === "denied") {
+          setPushEnabled(false);
+          toast.error(t("pushBlocked"));
+        } else if (result.reason === "no-token") {
+          setPushEnabled(false);
+          toast.error(t("unsupported"));
+        } else {
+          setPushEnabled(false);
+          toast.error("Could not register this device for notifications.");
+        }
+      } else {
+        await disablePushNotifications();
+        setPushEnabled(false);
+        toast.success("Push notifications turned off for this device.");
+      }
+    } catch {
+      setPushEnabled(getStoredFcmToken() !== null);
+      toast.error("Could not update push notification settings.");
+    } finally {
+      setPushLoading(false);
     }
   };
 
   return (
     <div className="space-y-6">
-      {/* Push Notifications */}
-      <Card className="border-none bg-white rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.02)] overflow-hidden">
-        <CardHeader className="py-4 px-6 border-b border-gray-50 flex flex-row items-center justify-between">
+      <Card className={accountCardClass}>
+        <CardHeader className="py-4 px-6 border-b border-black/6">
           <div className="space-y-1">
-            <CardTitle className="text-sm font-medium text-black flex items-center gap-2">
-              <Smartphone className="h-4 w-4 text-gray-400" /> {t("browserPush")}
+            <CardTitle className="text-sm font-semibold flex items-center gap-2">
+              <Smartphone className="h-4 w-4 text-primary/70" />
+              {t("browserPush")}
             </CardTitle>
-            <p className="text-[10px] font-medium text-gray-400">
-              {t("browserPushHint")}
-            </p>
+            <p className="text-sm text-muted-foreground">{t("browserPushHint")}</p>
           </div>
         </CardHeader>
         <CardContent className="p-6">
-          <div className="flex items-center gap-4">
-            <Button
-              type="button"
-              size="sm"
-              className="h-9 rounded-xl font-medium text-xs"
-              onClick={() => void requestPush()}
-            >
-              {t("allowBrowser")}
-            </Button>
-            {mounted && (
-              <span className="text-[10px] font-medium text-gray-400">
-                {t("status")}:{" "}
-                <span className="text-black font-semibold capitalize">
-                  {permission === "default" ? t("statusDefault") : permission}
-                </span>
-              </span>
+          <div className="flex items-center justify-between gap-4">
+            <div className="space-y-1 pr-4">
+              <Label
+                htmlFor="push-enabled"
+                className="text-sm font-semibold cursor-pointer"
+              >
+                Enable push notifications
+              </Label>
+              <p className="text-xs text-muted-foreground">
+                Registers this device and saves your token so we can send order
+                updates.
+              </p>
+            </div>
+            {mounted ? (
+              <div className="flex items-center gap-2 shrink-0">
+                {pushLoading && (
+                  <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                )}
+                <Switch
+                  id="push-enabled"
+                  checked={pushEnabled}
+                  disabled={pushLoading}
+                  onCheckedChange={(v) => void handlePushToggle(v)}
+                />
+              </div>
+            ) : (
+              <span
+                className="h-6 w-11 rounded-full bg-muted animate-pulse shrink-0"
+                aria-hidden
+              />
             )}
           </div>
+          {mounted && (
+            <p className="text-xs text-muted-foreground mt-4">
+              {t("status")}:{" "}
+              <span className="font-medium text-foreground capitalize">
+                {permission === "default" ? t("statusDefault") : permission}
+              </span>
+              {pushEnabled && getStoredFcmToken() ? (
+                <span className="text-emerald-600 font-medium"> · Device registered</span>
+              ) : null}
+            </p>
+          )}
         </CardContent>
       </Card>
 
-      {/* Preferences */}
-      <Card className="border-none bg-white rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.02)] overflow-hidden">
-        <CardHeader className="py-4 px-6 border-b border-gray-50">
-          <CardTitle className="text-sm font-medium text-black flex items-center gap-2">
-            <Bell className="h-4 w-4 text-gray-400" /> {t("prefsTitle")}
+      <Card className={accountCardClass}>
+        <CardHeader className="py-4 px-6 border-b border-black/6">
+          <CardTitle className="text-sm font-semibold flex items-center gap-2">
+            <Bell className="h-4 w-4 text-primary/70" />
+            {t("prefsTitle")}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
-          <div className="divide-y divide-gray-50">
-            <div className="flex items-center justify-between gap-4 px-6 py-4 hover:bg-gray-50/50 transition-colors">
+          <div className="divide-y divide-black/6">
+            <div className="flex items-center justify-between gap-4 px-6 py-4">
               <div className="space-y-0.5">
-                <Label htmlFor="pref-orders" className="text-xs font-medium text-black cursor-pointer">
+                <Label htmlFor="pref-orders" className="text-sm font-medium cursor-pointer">
                   {t("prefOrders")}
                 </Label>
-                <p className="text-[10px] font-medium text-gray-400">{t("prefOrdersHint")}</p>
+                <p className="text-xs text-muted-foreground">{t("prefOrdersHint")}</p>
               </div>
               {mounted ? (
                 <Switch
@@ -128,15 +189,15 @@ export function NotificationPreferences() {
                   onCheckedChange={(v) => updatePref("tipsAndOrderUpdates", v)}
                 />
               ) : (
-                <span className="h-5 w-9 rounded-full bg-gray-100 animate-pulse" aria-hidden />
+                <span className="h-6 w-11 rounded-full bg-muted animate-pulse" aria-hidden />
               )}
             </div>
-            <div className="flex items-center justify-between gap-4 px-6 py-4 hover:bg-gray-50/50 transition-colors">
+            <div className="flex items-center justify-between gap-4 px-6 py-4">
               <div className="space-y-0.5">
-                <Label htmlFor="pref-wellness" className="text-xs font-medium text-black cursor-pointer">
+                <Label htmlFor="pref-wellness" className="text-sm font-medium cursor-pointer">
                   {t("prefWellness")}
                 </Label>
-                <p className="text-[10px] font-medium text-gray-400">{t("prefWellnessHint")}</p>
+                <p className="text-xs text-muted-foreground">{t("prefWellnessHint")}</p>
               </div>
               {mounted ? (
                 <Switch
@@ -145,12 +206,12 @@ export function NotificationPreferences() {
                   onCheckedChange={(v) => updatePref("wellnessTips", v)}
                 />
               ) : (
-                <span className="h-5 w-9 rounded-full bg-gray-100 animate-pulse" aria-hidden />
+                <span className="h-6 w-11 rounded-full bg-muted animate-pulse" aria-hidden />
               )}
             </div>
           </div>
-          <div className="px-6 py-3 border-t border-gray-50">
-            <p className="text-[10px] font-medium text-gray-300">{t("localNote")}</p>
+          <div className="px-6 py-3 border-t border-black/6 bg-muted/20">
+            <p className="text-xs text-muted-foreground">{t("inAppHint")}</p>
           </div>
         </CardContent>
       </Card>

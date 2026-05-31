@@ -58,7 +58,7 @@ export function VideoSection({ posts, isLoading }: VideoSectionProps) {
             <p className="text-[10px] font-bold uppercase tracking-widest text-[#f2c94c]">
               Inside Doctasimo
             </p>
-            <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-white leading-tight tracking-tight">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-white leading-tight tracking-tight">
               {featured
                 ? featured.title
                 : "See How We Combine Nature & Clinical Science"}
@@ -71,7 +71,7 @@ export function VideoSection({ posts, isLoading }: VideoSectionProps) {
             <div className="flex flex-wrap justify-center lg:justify-start gap-8 pt-4">
               {VIDEO_STATS.map((s) => (
                 <div key={s.label} className="text-center lg:text-left">
-                  <p className="text-3xl font-black text-white">{s.value}</p>
+                  <p className="text-3xl font-semibold text-white">{s.value}</p>
                   <p className="text-xs font-bold text-white/40 uppercase tracking-wider mt-1">
                     {s.label}
                   </p>
@@ -118,7 +118,7 @@ export function VideoSection({ posts, isLoading }: VideoSectionProps) {
                   </div>
                 </div>
                 <div className="absolute bottom-5 left-5 right-5">
-                  <p className="text-white font-black text-sm line-clamp-2">
+                  <p className="text-white font-semibold text-sm line-clamp-2">
                     {featured.title}
                   </p>
                   <p className="text-white/50 text-xs font-medium mt-0.5">
@@ -146,7 +146,7 @@ export function VideoSection({ posts, isLoading }: VideoSectionProps) {
                 )}
                 <div className="absolute inset-0 bg-primary/30 group-hover:bg-primary/20 transition-colors" />
                 <div className="absolute bottom-5 left-5 right-5">
-                  <p className="text-white font-black text-sm">Open article</p>
+                  <p className="text-white font-semibold text-sm">Open article</p>
                 </div>
               </Link>
             ) : null}

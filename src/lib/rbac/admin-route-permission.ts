@@ -13,7 +13,7 @@ export function requiredPermissionForAdminPath(restPath: string): Permission | n
   if (path.startsWith("/admin/analytics")) return "analytics:read";
   if (path.startsWith("/admin/support")) return "support:read";
   if (path.startsWith("/admin/blog")) return "blog:write";
-  if (path.startsWith("/admin/broadcasts")) return "notifications:write";
+  if (path.startsWith("/admin/broadcasts")) return "notifications:broadcast";
   if (path.startsWith("/admin/users")) return "users:read";
 
   if (/^\/admin\/products\/new\/?$/.test(path)) return "products:write";

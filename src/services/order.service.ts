@@ -9,7 +9,6 @@ import {
   ShippingProofDto,
   StandardResponse,
   UpdateOrderStatusDto,
-  WrappedData
 } from "../types/api";
 
 export const OrderService = {
@@ -19,14 +18,18 @@ export const OrderService = {
   },
 
   list: async (params?: { page?: number; limit?: number }) => {
-    // Handling the triple nesting: StandardResponse -> WrappedData -> PaginatedResponse
-    const response = await api.get<StandardResponse<WrappedData<PaginatedResponse<Order>>>>("/orders", { params });
-    return response.data.data.data;
+    const response = await api.get<StandardResponse<PaginatedResponse<Order>>>(
+      "/orders",
+      { params },
+    );
+    return response.data.data;
   },
 
   getMe: async () => {
-    const response = await api.get<StandardResponse<WrappedData<PaginatedResponse<Order>>>>("/orders/me");
-    return response.data.data.data;
+    const response = await api.get<StandardResponse<PaginatedResponse<Order>>>(
+      "/orders/me",
+    );
+    return response.data.data;
   },
 
   getById: async (id: string) => {
@@ -63,7 +66,10 @@ export const OrderService = {
   },
 
   pushLocation: async (id: string, data: PushOrderLocationDto) => {
-    const response = await api.post<StandardResponse<WrappedData<void>>>(`/orders/${id}/locations`, data);
+    const response = await api.post<StandardResponse<void>>(
+      `/orders/${id}/locations`,
+      data,
+    );
     return response.data;
   },
 };

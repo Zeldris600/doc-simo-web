@@ -16,7 +16,7 @@ function mapApiRole(role: ApiUser["role"]): UserRole {
 }
 
 function toNextAuthUser(
-  body: PhoneSessionApiBody | undefined,
+  body: PhoneSessionApiBody | undefined
 ): NextAuthUser | null {
   if (!body?.user?.id || !body.token) return null;
   const u = body.user;
@@ -58,18 +58,24 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         const phoneNumber = credentials?.phoneNumber as string | undefined;
         const code = credentials?.code as string | undefined;
         if (!phoneNumber || !code) return null;
+        console.log("phoneNumber", phoneNumber);
+        console.log("code", code);
+        console.log("credentials", credentials);
 
         try {
           const { data } = await api.post<PhoneSessionApiBody>(
             "/auth/phone-number/verify",
-            { phoneNumber, code },
+            { phoneNumber, code }
           );
+
+          console.log("data", data);
+          console.log("toNextAuthUser", toNextAuthUser(data));
           return toNextAuthUser(data);
         } catch (error: unknown) {
           if (error instanceof AxiosError) {
             console.error(error.response?.data);
             throw new Error(
-              error.response?.data?.message || "Invalid phone number or code",
+              error.response?.data?.message || "Invalid phone number or code"
             );
           }
           throw new Error("Invalid phone number or code");
