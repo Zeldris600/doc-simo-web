@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
 import { useMe } from "@/hooks/use-user";
 import { useMyOrders } from "@/hooks/use-order";
 import { useFavouriteProducts } from "@/hooks/use-favourites";
@@ -29,6 +30,10 @@ import { Link } from "@/i18n/routing";
 import Image from "next/image";
 import type { Order, Product } from "@/types/api";
 import { cn } from "@/lib/utils";
+import {
+  isAccountTab,
+  storefrontRoutes,
+} from "@/lib/storefront-routes";
 
 const accountCardClass =
   "border border-black/8 bg-white rounded-xl shadow-none overflow-hidden";
@@ -37,8 +42,19 @@ function formatMoney(n: number, currency = "XAF") {
   return `XAF ${n.toLocaleString()}`;
 }
 
-export default function AccountDashboardPage() {
+function AccountDashboardContent() {
   const tHub = useTranslations("account.hub");
+  const searchParams = useSearchParams();
+  const tabFromUrl = searchParams.get("tab");
+  const initialTab = isAccountTab(tabFromUrl) ? tabFromUrl : "orders";
+  const [activeTab, setActiveTab] = useState(initialTab);
+
+  useEffect(() => {
+    if (isAccountTab(tabFromUrl)) {
+      setActiveTab(tabFromUrl);
+    }
+  }, [tabFromUrl]);
+
   const { data: user, isLoading: isLoadingUser } = useMe();
   const { data: ordersPage, isLoading: loadingOrders } = useMyOrders();
   const { favourites, isLoading: loadingFavourites } = useFavouriteProducts();
@@ -85,12 +101,12 @@ export default function AccountDashboardPage() {
           </div>
           <div className="flex items-center gap-2">
             <Button asChild variant="outline" className="rounded-lg h-10 text-sm font-medium">
-              <Link href="/account/settings">
+              <Link href={storefrontRoutes.accountSettings}>
                 <Settings className="h-4 w-4 mr-2" />
                 {tHub("openSettings")}
               </Link>
             </Button>
-            <Link href="/products">
+            <Link href={storefrontRoutes.products}>
               <Button className="font-semibold rounded-lg h-10 px-5 text-sm">
                 {tHub("browseProducts")}
               </Button>
@@ -152,7 +168,13 @@ export default function AccountDashboardPage() {
         </div>
 
         {/* Tabs — clean, left-aligned, understated */}
-        <Tabs defaultValue="orders" className="w-full">
+        <Tabs
+          value={activeTab}
+          onValueChange={(value) => {
+            if (isAccountTab(value)) setActiveTab(value);
+          }}
+          className="w-full"
+        >
           <TabsList className="bg-white border border-black/8 rounded-xl h-11 p-1 shadow-none w-auto mb-6">
             <TabsTrigger
               value="orders"
@@ -295,33 +317,29 @@ export default function AccountDashboardPage() {
                                     size="sm"
                                     className="h-7 px-3 text-[10px] font-medium rounded-lg"
                                   >
-                                    <Link href={`/checkout/${order.id}`}>
+                                    <Link
+                                      href={storefrontRoutes.checkoutOrder(
+                                        order.id,
+                                      )}
+                                    >
                                       Complete Payment
                                     </Link>
                                   </Button>
                                 ) : (
-                                  <>
-                                    <Button
-                                      variant="ghost"
-                                      size="sm"
-                                      className="h-7 px-2 text-[10px] font-medium text-gray-500 hover:text-primary rounded-lg"
-                                      onClick={() => handleReorder(order)}
-                                      disabled={reorderingId === order.id}
-                                    >
-                                      {reorderingId === order.id ? (
-                                        <Loader2 className="h-3 w-3 animate-spin" />
-                                      ) : (
-                                        <RotateCcw className="h-3 w-3" />
-                                      )}
-                                      <span className="ml-1">Reorder</span>
-                                    </Button>
-                                    <Link
-                                      href={`/checkout/${order.id}`}
-                                      className="p-1.5 rounded-lg hover:bg-gray-50 text-gray-400 hover:text-primary transition-colors"
-                                    >
-                                      <ArrowRight className="h-3 w-3" />
-                                    </Link>
-                                  </>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="h-7 px-2 text-[10px] font-medium text-gray-500 hover:text-primary rounded-lg"
+                                    onClick={() => handleReorder(order)}
+                                    disabled={reorderingId === order.id}
+                                  >
+                                    {reorderingId === order.id ? (
+                                      <Loader2 className="h-3 w-3 animate-spin" />
+                                    ) : (
+                                      <RotateCcw className="h-3 w-3" />
+                                    )}
+                                    <span className="ml-1">Reorder</span>
+                                  </Button>
                                 )}
                               </div>
                             </td>
@@ -454,7 +472,7 @@ export default function AccountDashboardPage() {
                   )}
                 </div>
                 <Button asChild className="rounded-lg h-11 shrink-0 font-semibold">
-                  <Link href="/account/settings">
+                  <Link href={storefrontRoutes.accountSettings}>
                     <Settings className="h-4 w-4 mr-2" />
                     {tHub("openSettings")}
                   </Link>
@@ -477,7 +495,7 @@ export default function AccountDashboardPage() {
                   </p>
                 </div>
                 <Button asChild variant="outline" className="rounded-lg h-11 shrink-0 font-semibold">
-                  <Link href="/account/settings#notifications">
+                  <Link href={storefrontRoutes.accountSettingsNotifications}>
                     {tHub("openSettings")}
                     <ArrowRight className="h-4 w-4 ml-2" />
                   </Link>
@@ -488,5 +506,21 @@ export default function AccountDashboardPage() {
         </Tabs>
       </div>
     </div>
+  );
+}
+
+export default function AccountDashboardPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-[#EEF2EE]">
+          <div className="container mx-auto max-w-6xl px-4 pt-32 pb-16">
+            <PageSkeleton />
+          </div>
+        </div>
+      }
+    >
+      <AccountDashboardContent />
+    </Suspense>
   );
 }

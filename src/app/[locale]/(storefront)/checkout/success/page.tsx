@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
+import { storefrontRoutes } from "@/lib/storefront-routes";
 import { CheckCircle2, ArrowRight, Package, Home } from "@/lib/icons";
 import { Button } from "@/components/ui/button";
 
@@ -59,7 +60,7 @@ export default function CheckoutSuccessPage() {
           asChild
           className="bg-primary hover:bg-[#142c1b] h-12 px-8 rounded-xl font-bold shadow-lg shadow-primary/20"
         >
-          <Link href="/account/orders">
+          <Link href={storefrontRoutes.accountOrders}>
             <Package className="mr-2 h-4 w-4 opacity-70" />
             Track My Order
           </Link>
@@ -69,7 +70,7 @@ export default function CheckoutSuccessPage() {
           variant="outline"
           className="h-12 px-8 rounded-xl font-bold border-primary/20 text-primary hover:bg-primary/5 hover:text-primary"
         >
-          <Link href="/">
+          <Link href={storefrontRoutes.home}>
             <Home className="mr-2 h-4 w-4 opacity-70" />
             Return Home
           </Link>

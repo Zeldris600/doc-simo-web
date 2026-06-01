@@ -102,18 +102,13 @@ export function ProductCard({ product, layout = "grid" }: ProductCardProps) {
               )}
             </div>
 
-            <div className="flex items-center gap-4">
-              <Button
-                variant="outline"
-                className="rounded-full h-11 px-6 text-[11px] font-semibold tracking-widest uppercase transition-all hover:bg-primary/5 hover:text-primary hover:border-primary/20"
-                asChild
-              >
-                <Link href={`/products/${product.id}`}>Details</Link>
-              </Button>
-              <Button className="rounded-full h-11 px-8 text-[11px] font-semibold tracking-widest uppercase bg-primary text-white hover:bg-[#142c1b] transition-all">
-                Reserve now
-              </Button>
-            </div>
+            <Button
+              variant="outline"
+              className="rounded-full h-11 px-6 text-[11px] font-semibold tracking-widest uppercase transition-all hover:bg-primary/5 hover:text-primary hover:border-primary/20"
+              asChild
+            >
+              <Link href={`/products/${product.id}`}>Details</Link>
+            </Button>
           </div>
         </div>
       </div>

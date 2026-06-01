@@ -30,6 +30,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { useSession } from "next-auth/react";
+import { storefrontRoutes } from "@/lib/storefront-routes";
 
 export function UserSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: session } = useSession();
@@ -44,23 +45,23 @@ export function UserSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) 
   const navMain = [
     {
       title: "Dashboard",
-      url: "/account",
+      url: storefrontRoutes.account,
       icon: LayoutDashboard,
       isActive: true,
       items: [
         {
           title: "Overview",
-          url: "/account",
+          url: storefrontRoutes.account,
           icon: LayoutDashboard,
         },
         {
           title: "Orders",
-          url: "/account/orders",
+          url: storefrontRoutes.accountOrders,
           icon: Package,
         },
         {
           title: "Favourites",
-          url: "/account", // Anchored to dashboard for now
+          url: `${storefrontRoutes.account}?tab=favourites`,
           icon: Heart,
         },
       ],
@@ -79,12 +80,12 @@ export function UserSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) 
     },
     {
       title: "Settings",
-      url: "/account/profile",
+      url: storefrontRoutes.accountSettings,
       icon: Settings,
       items: [
         {
           title: "Profile",
-          url: "/account/profile",
+          url: storefrontRoutes.accountSettings,
           icon: User,
         },
       ],

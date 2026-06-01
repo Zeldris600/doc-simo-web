@@ -3,22 +3,35 @@
 import * as React from "react";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/routing";
+import { useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { LayoutDashboard, Package, User } from "@/lib/icons";
+import { storefrontRoutes } from "@/lib/storefront-routes";
 
 const nav = [
-  { href: "/account", key: "dashboard" as const, icon: LayoutDashboard },
-  { href: "/account/orders", key: "orders" as const, icon: Package },
-  { href: "/account/profile", key: "profile" as const, icon: User },
+  { href: storefrontRoutes.account, key: "dashboard" as const, icon: LayoutDashboard },
+  { href: storefrontRoutes.accountOrders, key: "orders" as const, icon: Package },
+  { href: storefrontRoutes.accountSettings, key: "profile" as const, icon: User },
 ];
 
 export function AccountLayoutShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const tab = searchParams.get("tab");
   const t = useTranslations("account.nav");
 
   const active = (href: string) => {
-    if (href === "/account") {
-      return pathname === "/account";
+    if (href === storefrontRoutes.accountSettings) {
+      return pathname === storefrontRoutes.accountSettings;
+    }
+    if (href === storefrontRoutes.accountOrders) {
+      return (
+        pathname === storefrontRoutes.account &&
+        (tab === "orders" || tab === null)
+      );
+    }
+    if (href === storefrontRoutes.account) {
+      return pathname === storefrontRoutes.account && tab !== "orders";
     }
     return pathname === href || pathname.startsWith(`${href}/`);
   };

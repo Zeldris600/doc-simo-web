@@ -1,6 +1,7 @@
 "use client";
 
-import { Link } from "@/i18n/routing";
+import { Link, useRouter } from "@/i18n/routing";
+import { storefrontRoutes } from "@/lib/storefront-routes";
 import {
   ShoppingBag,
   Heart,
@@ -10,7 +11,6 @@ import {
   RotateCcw,
   Plus,
   Minus,
-  Loader2,
   AlertCircle,
   Play,
   Leaf,
@@ -33,8 +33,6 @@ import { useReviewStats } from "@/hooks/use-product-reviews";
 import { StarRatingDisplay } from "@/components/storefront/star-rating-display";
 import { ProductReviewsSection } from "@/components/storefront/product-reviews-section";
 import { ReviewPrompt } from "@/components/storefront/review-prompt";
-import { useCreateOrder } from "@/hooks/use-order";
-import { useInitiatePayment } from "@/hooks/use-payment";
 import { useCart } from "@/store/use-cart";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
@@ -55,44 +53,23 @@ export default function ProductDetailsPage() {
   const { toggle: toggleFavourite, isFavourite } = useFavouriteIds();
   const isFavorite = isFavourite(id);
   const { data: session } = useSession();
+  const router = useRouter();
   const { addItem } = useCart();
 
-  const initiatePayment = useInitiatePayment({
-    onSuccess: (res) => {
-      window.location.href = res.link;
-    },
-    onError: () => {
-      toast.error("Failed to initiate payment.");
-    },
-  });
-
-  const createOrder = useCreateOrder({
-    onSuccess: (order) => {
-      initiatePayment.mutate({
-        orderId: order.id,
-        data: {
-          email: session?.user?.email || "customer@doctasimo.com",
-          redirectUrl: `${window.location.origin}/account/orders?status=SUCCESSFUL`,
-        },
-      });
-    },
-  });
-
-  const handleOrder = () => {
-    if (!session) {
-      toast.error("Please login to place an order");
-      return;
-    }
-    createOrder.mutate({
-      items: [{ productId: id, quantity }],
-    });
+  const handleAddToCart = () => {
+    if (!product) return;
+    addItem(product, quantity);
+    toast.success(`${product.name} added to cart`);
   };
 
-  const handleAddToCart = () => {
-    if (product) {
-      addItem(product, quantity);
-      toast.success(`${product.name} added to cart`);
+  const handleGoToCart = () => {
+    if (!session) {
+      toast.error(t("loginRequired"));
+      router.push("/login");
+      return;
     }
+    handleAddToCart();
+    router.push(storefrontRoutes.cart);
   };
 
   if (isLoading) {
@@ -334,42 +311,31 @@ export default function ProductDetailsPage() {
                 </button>
               </div>
 
-              {/* Buy + Cart buttons */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <Button
-                  size="lg"
-                  onClick={handleOrder}
-                  disabled={
-                    createOrder.isPending ||
-                      initiatePayment.isPending ||
-                    (product.inventoryLevel !== undefined &&
-                      product.inventoryLevel === 0)
-                  }
-                  className="gap-2 font-bold bg-primary hover:bg-[#142c1b] rounded-xl h-12 shadow-lg shadow-primary/20"
-                >
-                  {createOrder.isPending || initiatePayment.isPending ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <ShoppingBag className="h-4 w-4" />
-                  )}
-                  {createOrder.isPending
-                    ? "Processing…"
-                    : initiatePayment.isPending
-                      ? "Connecting…"
-                    : "Buy Now"}
-                </Button>
-                <Button
-                  variant="outline"
                   size="lg"
                   onClick={handleAddToCart}
                   disabled={
                     product.inventoryLevel !== undefined &&
                     product.inventoryLevel === 0
                   }
-                  className="gap-2 font-bold rounded-xl h-12 border-primary/20 text-primary hover:bg-primary/5"
+                  className="gap-2 font-bold bg-primary hover:bg-[#142c1b] rounded-xl h-12 shadow-lg shadow-primary/20"
                 >
                   <Plus className="h-4 w-4" />
                   Add to Cart
+                </Button>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  onClick={handleGoToCart}
+                  disabled={
+                    product.inventoryLevel !== undefined &&
+                    product.inventoryLevel === 0
+                  }
+                  className="gap-2 font-bold rounded-xl h-12 border-primary/20 text-primary hover:bg-primary/5"
+                >
+                  <ShoppingBag className="h-4 w-4" />
+                  {t("viewCart")}
                 </Button>
               </div>
 

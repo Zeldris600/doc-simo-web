@@ -29,6 +29,7 @@ import { useDiscounts } from "@/hooks/use-discount";
 import { Tag, X } from "@/lib/icons";
 import { DELIVERY_TIMELINES, DELIVERY_CITIES } from "@/lib/delivery-config";
 import { CheckoutPaymentPusher } from "@/components/realtime/checkout-payment-pusher";
+import { storefrontRoutes } from "@/lib/storefront-routes";
 
 export default function OrderCheckoutPage() {
   const t = useTranslations("checkout");
@@ -122,7 +123,7 @@ export default function OrderCheckoutPage() {
           Order Not Found
         </h1>
         <Button asChild>
-          <Link href="/account/orders">Back to Orders</Link>
+          <Link href={storefrontRoutes.accountOrders}>Back to orders</Link>
         </Button>
       </div>
     );
@@ -133,11 +134,11 @@ export default function OrderCheckoutPage() {
       <CheckoutPaymentPusher orderId={orderId} />
       <div className="flex items-center gap-2 mb-8 group">
         <Link
-          href="/cart"
+          href={storefrontRoutes.cart}
           className="flex items-center text-sm font-semibold text-black/40 hover:text-primary transition-all "
         >
           <ArrowLeft className="mr-2 h-3.5 w-3.5 transition-transform group-hover:-translate-x-1" />
-          Back to Registry
+          Back to cart
         </Link>
       </div>
 

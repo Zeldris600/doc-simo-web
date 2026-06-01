@@ -40,7 +40,10 @@ export function FCMProvider() {
 
     async function registerDevice() {
       try {
-        if (typeof Notification === "undefined" || Notification.permission !== "granted") {
+        if (
+          typeof Notification === "undefined" ||
+          Notification.permission !== "granted"
+        ) {
           return;
         }
 
@@ -79,7 +82,7 @@ export function FCMProvider() {
     void (async () => {
       const messaging = await getMessagingInstance();
       if (!messaging || cancelled) return;
-      unsubscribe = onMessage(messaging, (payload) => {
+      unsubscribe = onMessage(messaging, payload => {
         void queryClient.invalidateQueries({ queryKey: ["notifications"] });
         toast(payload.notification?.title || "Notification", {
           description: payload.notification?.body,

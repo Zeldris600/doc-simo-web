@@ -284,6 +284,7 @@
     "units": "units",
     "inventoryRestocking": "Inventory re-stocking",
     "initiateOrder": "Initiate order",
+    "viewCart": "View cart",
     "processing": "Processing...",
     "addToCart": "Add to cart",
     "viewSpecs": "View specs",
